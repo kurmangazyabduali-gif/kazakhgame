@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -17,21 +17,21 @@ export function HomeStatement() {
   const y = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [100, 0, 0, -100])
   const scale = useTransform(scrollYProgress, [0.2, 0.5], [0.9, 1])
 
-  const titleChars = "БҰЛ ОЙЫН ЕМЕС.".split('')
+  const titleChars = "Р‘Т°Р› РћР™Р«Рќ Р•РњР•РЎ.".split('')
 
   return (
     <section 
       ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center bg-background py-32 overflow-hidden border-t border-b border-border/10"
+      className="relative min-h-screen flex items-center justify-center bg-white py-32 overflow-hidden border-t border-b border-border/10"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-surface-elevated/30 to-background pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-white to-sand pointer-events-none" />
       
       {/* Background large subtle ornament */}
       <motion.div 
         style={{ opacity: useTransform(scrollYProgress, [0.3, 0.5], [0, 0.05]) }}
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-gold w-[80vw] h-[80vw] max-w-[800px] max-h-[800px] pointer-events-none"
       >
-        <KazakhOrnament variant="tumar" className="w-full h-full" />
+        <KazakhOrnament variant="tumar" className="w-full h-full animate-ornament-spin" />
       </motion.div>
 
       <motion.div 
@@ -62,10 +62,11 @@ export function HomeStatement() {
         >
           <div className="w-12 h-px bg-gold/50 mb-8" />
           <p className="text-xl md:text-3xl font-heading text-gold font-light tracking-widest uppercase opacity-90">
-            Бұл — мұраны сезінудің жаңа жолы.
+            Р‘Т±Р» вЂ” РјТ±СЂР°РЅС‹ СЃРµР·С–РЅСѓРґС–ТЈ Р¶Р°ТЈР° Р¶РѕР»С‹.
           </p>
         </motion.div>
       </motion.div>
     </section>
   )
 }
+

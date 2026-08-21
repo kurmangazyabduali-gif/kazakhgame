@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -35,33 +35,33 @@ export function HomeWorldSection() {
   const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 1.1])
 
   return (
-    <div ref={containerRef} className="relative h-[300vh] w-full bg-background">
+    <div ref={containerRef} className="relative h-[300vh] w-full bg-white">
       {/* Sticky container that stays in view */}
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         
         {/* Unified Background / Vignette */}
-        <div className="absolute inset-0 z-20 shadow-[inset_0_0_100px_rgba(0,0,0,0.9)] pointer-events-none" />
+        <div className="absolute inset-0 z-20 shadow-[inset_0_0_100px_rgba(255,255,255,0.9)] pointer-events-none" />
 
         {/* IMAGE LAYERS */}
         <div className="absolute inset-0 z-0 w-full h-full">
           {/* World 1: Sport */}
           <motion.div style={{ opacity: imgOp1, scale: scale1 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/jamby-atu.jpg" alt="National Sport" fill className="object-cover mix-blend-luminosity grayscale" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+            <Image src="/images/games/jamby-atu.jpg" alt="National Sport" fill className="object-cover opacity-30" priority />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
             <div className="absolute inset-0 bg-gold/5" />
           </motion.div>
 
           {/* World 2: Tradition */}
           <motion.div style={{ opacity: imgOp2, scale: scale2 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/kelin-shai.jpg" alt="National Tradition" fill className="object-cover mix-blend-luminosity grayscale" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+            <Image src="/images/games/kelin-shai.jpg" alt="National Tradition" fill className="object-cover opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
             <div className="absolute inset-0 bg-[#8B4513]/10" />
           </motion.div>
 
           {/* World 3: Steppe */}
           <motion.div style={{ opacity: imgOp3, scale: scale3 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/togyzqumalak.jpg" alt="The Great Steppe" fill className="object-cover mix-blend-luminosity grayscale" />
-            <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+            <Image src="/images/games/togyzqumalak.jpg" alt="The Great Steppe" fill className="object-cover opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
             <div className="absolute inset-0 bg-[#0F172A]/20" />
           </motion.div>
         </div>
@@ -73,34 +73,34 @@ export function HomeWorldSection() {
             {/* World 1 Content */}
             <motion.div style={{ opacity: op1 }} className="absolute w-full">
               <KazakhOrnament variant="geometric" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ СПОРТ</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›РўРўР«Тљ РЎРџРћР Рў</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Меткость, сила и выдержка. Ощутите дух соревнований, передаваемый из поколения в поколение.
+                РњРµС‚РєРѕСЃС‚СЊ, СЃРёР»Р° Рё РІС‹РґРµСЂР¶РєР°. РћС‰СѓС‚РёС‚Рµ РґСѓС… СЃРѕСЂРµРІРЅРѕРІР°РЅРёР№, РїРµСЂРµРґР°РІР°РµРјС‹Р№ РёР· РїРѕРєРѕР»РµРЅРёСЏ РІ РїРѕРєРѕР»РµРЅРёРµ.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Асық ату • Жамбы ату • Құсбегілік</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РђСЃС‹Т› Р°С‚Сѓ вЂў Р–Р°РјР±С‹ Р°С‚Сѓ вЂў ТљТ±СЃР±РµРіС–Р»С–Рє</div>
             </motion.div>
 
             {/* World 2 Content */}
             <motion.div style={{ opacity: op2 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="tumar" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ ДӘСТҮР</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›РўРўР«Тљ Р”УРЎРўТ®Р </h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Гостеприимство и уважение. Живая этика, которая формирует связь между людьми.
+                Р“РѕСЃС‚РµРїСЂРёРёРјСЃС‚РІРѕ Рё СѓРІР°Р¶РµРЅРёРµ. Р–РёРІР°СЏ СЌС‚РёРєР°, РєРѕС‚РѕСЂР°СЏ С„РѕСЂРјРёСЂСѓРµС‚ СЃРІСЏР·СЊ РјРµР¶РґСѓ Р»СЋРґСЊРјРё.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Келін шай</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РљРµР»С–РЅ С€Р°Р№</div>
             </motion.div>
 
             {/* World 3 Content */}
             <motion.div style={{ opacity: op3 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="su" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛЫ ДАЛА</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›Р« Р”РђР›Рђ</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Стратегия и интеллект. Интеллектуальные битвы, требующие глубокого мышления.
+                РЎС‚СЂР°С‚РµРіРёСЏ Рё РёРЅС‚РµР»Р»РµРєС‚. РРЅС‚РµР»Р»РµРєС‚СѓР°Р»СЊРЅС‹Рµ Р±РёС‚РІС‹, С‚СЂРµР±СѓСЋС‰РёРµ РіР»СѓР±РѕРєРѕРіРѕ РјС‹С€Р»РµРЅРёСЏ.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Тоғызқұмалақ</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РўРѕТ“С‹Р·Т›Т±РјР°Р»Р°Т›</div>
             </motion.div>
           </div>
 
@@ -109,10 +109,10 @@ export function HomeWorldSection() {
         {/* Section Global Title */}
         <div className="absolute right-8 top-1/2 -translate-y-1/2 z-40 hidden md:block">
           <div 
-            className="text-surface font-display text-[150px] font-bold uppercase tracking-tighter opacity-10 leading-none select-none pointer-events-none"
+            className="text-sand font-display text-[150px] font-bold uppercase tracking-tighter opacity-10 leading-none select-none pointer-events-none"
             style={{ writingMode: 'vertical-rl' }}
           >
-            ҮШ ӘЛЕМ
+            Т®РЁ УР›Р•Рњ
           </div>
         </div>
 
@@ -120,3 +120,4 @@ export function HomeWorldSection() {
     </div>
   )
 }
+
