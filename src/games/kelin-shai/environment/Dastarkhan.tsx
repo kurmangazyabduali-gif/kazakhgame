@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React from 'react'
 import { ScenarioEngine } from '@/games/engine/scenario/ScenarioEngine'
@@ -56,13 +56,13 @@ export default function Dastarkhan({ engine, state }: DastarkhanProps) {
       {/* Traditional Kazakh Rug (Syrmaq/Tekemet) underneath the table */}
       <mesh position={[0, -0.04, -1]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[9, 7]} />
-        <meshStandardMaterial color="#5c1d1a" roughness={1} /> 
+        <meshStandardMaterial color="#5c1d1a" roughness={1} bumpScale={0.05} metalness={0.1} /> 
       </mesh>
       
       {/* Rug Gold/Beige Border */}
       <mesh position={[0, -0.038, -1]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[8.4, 6.4]} />
-        <meshStandardMaterial color="#8B2520" roughness={0.9} />
+        <meshStandardMaterial color="#8B2520" roughness={0.8} clearcoat={0.1} bumpScale={0.05} />
       </mesh>
 
       {/* Wooden Table Base (low table) */}
@@ -74,10 +74,11 @@ export default function Dastarkhan({ engine, state }: DastarkhanProps) {
       <RoundedBox args={[4.8, 0.12, 2.8]} radius={0.05} smoothness={4} position={[0, 0.02, 0]} castShadow receiveShadow>
         <meshStandardMaterial 
           color="#ffffff" 
-          roughness={0.9} 
-          map={clothTexture || undefined} 
+          roughness={0.8} clearcoat={0.1} bumpScale={0.05} 
+          map={clothTexture || undefined} clearcoat={0.3} clearcoatRoughness={0.6} 
         />
       </RoundedBox>
     </group>
   )
 }
+

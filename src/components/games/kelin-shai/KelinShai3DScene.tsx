@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useRef, useMemo, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
@@ -16,7 +16,8 @@ import Character3D from '@/games/kelin-shai/characters/Character3D'
 import CameraController from '@/games/kelin-shai/camera/CameraController'
 import InteractionGuide from '@/games/kelin-shai/guidance/InteractionGuide'
 import { useHintSystem } from '@/games/kelin-shai/guidance/useHintSystem'
-import { EffectComposer, DepthOfField, Bloom } from '@react-three/postprocessing'
+import { EffectComposer, DepthOfField, Bloom, Vignette, Noise } from '@react-three/postprocessing'
+import { Environment, Sparkles } from '@react-three/drei'
 
 interface KelinShai3DSceneProps {
   engine: ScenarioEngine | null
@@ -99,9 +100,13 @@ function SceneContent({ engine, state }: KelinShai3DSceneProps) {
       })}
       
       {/* Post-Processing for Cinematic Look */}
+      <Environment preset="apartment" environmentIntensity={0.8} />
+      <Sparkles count={100} scale={10} size={1} speed={0.2} opacity={0.3} color="#D4AF37" position={[0, 2, 0]} />
       <EffectComposer multisampling={4}>
         <DepthOfField focusDistance={0.015} focalLength={0.02} bokehScale={2} height={480} />
-        <Bloom luminanceThreshold={1} luminanceSmoothing={0.9} intensity={0.5} />
+        <Bloom luminanceThreshold={0.8} luminanceSmoothing={0.9} intensity={1.2} />
+        <Vignette eskil={false} offset={0.1} darkness={1.1} />
+        <Noise opacity={0.03} />
       </EffectComposer>
 
       {/* Player (Kelin) - Over the shoulder presence */}
@@ -139,3 +144,4 @@ export default function KelinShai3DScene({ engine, state }: KelinShai3DSceneProp
     </Canvas>
   )
 }
+
