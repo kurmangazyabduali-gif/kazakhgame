@@ -1,48 +1,139 @@
-import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import Link from "next/link";
+import { ShanyraqMark } from "../ui/heritage/ShanyraqMark";
+import { HeritageButton } from "../ui/heritage/HeritageButton";
+import { KazakhOrnament } from "../ui/heritage/KazakhOrnament";
+import { createClient } from "@/lib/supabase/server";
+import Image from "next/image";
 
 export default async function Navbar() {
-  const supabase = await createClient()
+  const supabase = await createClient();
   const {
     data: { user },
-  } = await supabase.auth.getUser()
+  } = await supabase.auth.getUser();
 
   return (
-    <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-      <div className="w-full max-w-7xl flex justify-between items-center p-3 px-5 text-sm">
-        <div className="flex gap-5 items-center font-semibold">
-          <Link href="/">ULY DALA</Link>
-          <div className="hidden md:flex gap-4">
-            <Link href="/games" className="text-muted-foreground hover:text-foreground">Игры</Link>
-            <Link href="/traditions" className="text-muted-foreground hover:text-foreground">Традиции</Link>
-            <Link href="/map" className="text-muted-foreground hover:text-foreground">Қазақстан</Link>
-            <Link href="/championship" className="text-muted-foreground hover:text-foreground">Чемпионат</Link>
-            <Link href="/ai-mentor" className="text-muted-foreground hover:text-foreground">AI Mentor</Link>
+    <nav className="w-full border-b border-gold/10 h-20 sticky top-0 z-50 bg-background/70 backdrop-blur-xl flex justify-center transition-colors duration-500">
+      <div className="absolute inset-0 pointer-events-none opacity-5 bg-[url('/textures/sand.png')] mix-blend-overlay" />
+
+      <div className="w-full max-w-7xl flex justify-between items-center px-6 relative z-10">
+        {/* LOGO */}
+        <div className="flex gap-8 items-center">
+          <Link href="/" className="flex items-center gap-3 group">
+            <ShanyraqMark
+              size="sm"
+              className="text-gold group-hover:rotate-90 transition-transform duration-700"
+            />
+            <span className="font-display text-2xl tracking-widest text-foreground uppercase group-hover:text-gold transition-colors duration-300">
+              ULY DALA
+            </span>
+          </Link>
+
+          <div className="hidden md:flex gap-1 items-center ml-4">
+            <NavLink href="/games">Игры</NavLink>
+            <span className="text-gold/30 px-2">
+              <KazakhOrnament
+                variant="geometric"
+                animate="spin"
+                className="w-2 h-2 opacity-50"
+              />
+            </span>
+            <NavLink href="/map">Қазақстан</NavLink>
+            <span className="text-gold/30 px-2">
+              <KazakhOrnament
+                variant="geometric"
+                animate="spin"
+                className="w-2 h-2 opacity-50"
+              />
+            </span>
+            <NavLink href="/culture">Наследие</NavLink>
+            <span className="text-gold/30 px-2">
+              <KazakhOrnament
+                variant="geometric"
+                animate="spin"
+                className="w-2 h-2 opacity-50"
+              />
+            </span>
+            <NavLink href="/profile">Профиль</NavLink>
           </div>
         </div>
-        
+        {/* ACTIONS */}
         <div className="flex gap-4 items-center">
-          {user ? (
-            <>
-              <Link href="/dashboard" className="text-muted-foreground hover:text-foreground">Dashboard</Link>
-              <Link href="/profile" className="text-muted-foreground hover:text-foreground">Профиль</Link>
-              <form action="/auth/actions" method="POST">
-                {/* Note: In a real app we'd use a server action bound to a button, we'll do this via client later or standard form */}
-                <Link href="/auth/actions" className="py-2 px-4 rounded-md no-underline bg-btn-background hover:bg-btn-background-hover">
-                  Выйти
-                </Link>
-              </form>
-            </>
+          <Link href="/showcase" className="hidden md:block">
+            <HeritageButton variant="cultural" size="sm" tabIndex={-1}>
+              Showcase
+            </HeritageButton>
+          </Link>
+          {!user ? (
+            <div className="flex gap-2">
+              <Link href="/login">
+                <HeritageButton variant="secondary" size="sm" tabIndex={-1}>
+                  Войти
+                </HeritageButton>
+              </Link>
+              <Link href="/register">
+                <HeritageButton variant="primary" size="sm" tabIndex={-1}>
+                  Регистрация
+                </HeritageButton>
+              </Link>
+            </div>
           ) : (
-            <Link
-              href="/auth/login"
-              className="py-2 px-3 flex rounded-md no-underline bg-btn-background hover:bg-btn-background-hover"
-            >
-              Войти
-            </Link>
+            <div className="flex gap-4 items-center">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-surface-elevated border border-gold/50 flex items-center justify-center overflow-hidden">
+                  {user.user_metadata?.avatar_url ? (
+                    <Image
+                      src={user.user_metadata.avatar_url}
+                      alt="Avatar"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-gold font-bold text-xs uppercase">
+                      {user.email?.slice(0, 2)}
+                    </span>
+                  )}
+                </div>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-bold text-gold hover:underline"
+                >
+                  {user.user_metadata?.username || "Батыр"}
+                </Link>
+              </div>
+              <form
+                action={async () => {
+                  "use server";
+                  const { signout } = await import("@/app/auth/actions");
+                  await signout();
+                }}
+              >
+                <HeritageButton variant="cultural" size="sm" type="submit">
+                  Выйти
+                </HeritageButton>
+              </form>
+            </div>
           )}
         </div>
       </div>
     </nav>
-  )
+  );
+}
+
+function NavLink({
+  href,
+  children,
+}: {
+  href: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Link
+      href={href}
+      className="text-foreground/70 hover:text-gold font-heading text-xs uppercase tracking-widest px-3 py-2 transition-colors duration-300 relative group"
+    >
+      {children}
+      <span className="absolute bottom-0 left-1/2 w-0 h-px bg-gold group-hover:w-1/2 transition-all duration-300 -translate-x-1/2 opacity-50" />
+    </Link>
+  );
 }

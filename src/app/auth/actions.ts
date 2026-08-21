@@ -1,7 +1,8 @@
 'use server'
 
-import { createClient } from '@/lib/supabase/server'
+import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
+import { createClient } from '@/lib/supabase/server'
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -14,31 +15,40 @@ export async function login(formData: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data)
 
   if (error) {
-    return redirect('/auth/login?message=Could not authenticate user')
+    redirect(`/login?error=${encodeURIComponent(error.message)}`)
   }
 
-  return redirect('/dashboard')
+  revalidatePath('/', 'layout')
+  redirect('/dashboard')
 }
 
-export async function signup(formData: FormData) {
+export async function register(formData: FormData) {
   const supabase = await createClient()
 
   const data = {
     email: formData.get('email') as string,
     password: formData.get('password') as string,
+    options: {
+      data: {
+        username: formData.get('username') as string,
+        full_name: formData.get('full_name') as string,
+      }
+    }
   }
 
   const { error } = await supabase.auth.signUp(data)
 
   if (error) {
-    return redirect('/auth/register?message=Could not sign up user')
+    redirect(`/register?error=${encodeURIComponent(error.message)}`)
   }
 
-  return redirect('/dashboard')
+  revalidatePath('/', 'layout')
+  redirect('/dashboard')
 }
 
-export async function logout() {
+export async function signout() {
   const supabase = await createClient()
   await supabase.auth.signOut()
-  return redirect('/')
+  revalidatePath('/', 'layout')
+  redirect('/')
 }

@@ -3,7 +3,7 @@ import { GameSession } from '@/games/engine/GameSession'
 import { NationalGame } from '@/types/game'
 
 describe('GameSession', () => {
-  it('should initialize and start the game', () => {
+  it('should start, pause, resume, and finish the game', () => {
     const mockGame: NationalGame = {
       id: '1',
       slug: 'test-game',
@@ -13,6 +13,7 @@ describe('GameSession', () => {
       start: vi.fn(),
       pause: vi.fn(),
       resume: vi.fn(),
+      restart: vi.fn(),
       finish: vi.fn().mockReturnValue({ score: 100, xp: 50, completed: true, achievements: [] }),
     }
 
@@ -22,6 +23,14 @@ describe('GameSession', () => {
     session.start()
     expect(mockGame.initialize).toHaveBeenCalled()
     expect(mockGame.start).toHaveBeenCalled()
+    expect(session.getStatus()).toBe('running')
+    
+    session.pause()
+    expect(mockGame.pause).toHaveBeenCalled()
+    expect(session.getStatus()).toBe('paused')
+
+    session.resume()
+    expect(mockGame.resume).toHaveBeenCalled()
     expect(session.getStatus()).toBe('running')
 
     const result = session.finish()

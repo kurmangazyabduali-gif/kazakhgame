@@ -1,4 +1,13 @@
 export type GameCategory = 'Ұлттық спорт' | 'Ұлттық дәстүр' | 'Стратегия'
+export type GameLifecycle = 'INITIALIZING' | 'READY' | 'PLAYING' | 'PAUSED' | 'FINISHED'
+export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced'
+
+export interface RoundResult {
+  roundNumber: number
+  score: number
+  accuracy: number
+  metadata?: Record<string, unknown>
+}
 
 export interface GameResult {
   score: number
@@ -20,5 +29,6 @@ export interface NationalGame {
   start(): void
   pause(): void
   resume(): void
+  restart(): void
   finish(): GameResult
 }
