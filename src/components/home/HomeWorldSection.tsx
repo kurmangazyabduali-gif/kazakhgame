@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import React, { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -39,8 +39,7 @@ export function HomeWorldSection() {
       {/* Sticky container that stays in view */}
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         
-        {/* Unified Background / Vignette */}
-        <div className="absolute inset-0 z-20 shadow-[inset_0_0_100px_rgba(255,255,255,0.9)] pointer-events-none" />
+        
 
         {/* IMAGE LAYERS */}
         <div className="absolute inset-0 z-0 w-full h-full">
@@ -73,34 +72,34 @@ export function HomeWorldSection() {
             {/* World 1 Content */}
             <motion.div style={{ opacity: op1 }} className="absolute w-full">
               <KazakhOrnament variant="geometric" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›РўРўР«Тљ РЎРџРћР Рў</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР СћР СћР В«РўС™ Р РЋР СџР С›Р В Р Сћ</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                РњРµС‚РєРѕСЃС‚СЊ, СЃРёР»Р° Рё РІС‹РґРµСЂР¶РєР°. РћС‰СѓС‚РёС‚Рµ РґСѓС… СЃРѕСЂРµРІРЅРѕРІР°РЅРёР№, РїРµСЂРµРґР°РІР°РµРјС‹Р№ РёР· РїРѕРєРѕР»РµРЅРёСЏ РІ РїРѕРєРѕР»РµРЅРёРµ.
+                Р СљР ВµРЎвЂљР С”Р С•РЎРѓРЎвЂљРЎРЉ, РЎРѓР С‘Р В»Р В° Р С‘ Р Р†РЎвЂ№Р Т‘Р ВµРЎР‚Р В¶Р С”Р В°. Р С›РЎвЂ°РЎС“РЎвЂљР С‘РЎвЂљР Вµ Р Т‘РЎС“РЎвЂ¦ РЎРѓР С•РЎР‚Р ВµР Р†Р Р…Р С•Р Р†Р В°Р Р…Р С‘Р в„–, Р С—Р ВµРЎР‚Р ВµР Т‘Р В°Р Р†Р В°Р ВµР СРЎвЂ№Р в„– Р С‘Р В· Р С—Р С•Р С”Р С•Р В»Р ВµР Р…Р С‘РЎРЏ Р Р† Р С—Р С•Р С”Р С•Р В»Р ВµР Р…Р С‘Р Вµ.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РђСЃС‹Т› Р°С‚Сѓ вЂў Р–Р°РјР±С‹ Р°С‚Сѓ вЂў ТљТ±СЃР±РµРіС–Р»С–Рє</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р С’РЎРѓРЎвЂ№РўвЂє Р В°РЎвЂљРЎС“ РІР‚Сћ Р вЂ“Р В°Р СР В±РЎвЂ№ Р В°РЎвЂљРЎС“ РІР‚Сћ РўС™РўВ±РЎРѓР В±Р ВµР С–РЎвЂ“Р В»РЎвЂ“Р С”</div>
             </motion.div>
 
             {/* World 2 Content */}
             <motion.div style={{ opacity: op2 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="tumar" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›РўРўР«Тљ Р”УРЎРўТ®Р </h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР СћР СћР В«РўС™ Р вЂќРЈВР РЋР СћРўВ®Р В </h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Р“РѕСЃС‚РµРїСЂРёРёРјСЃС‚РІРѕ Рё СѓРІР°Р¶РµРЅРёРµ. Р–РёРІР°СЏ СЌС‚РёРєР°, РєРѕС‚РѕСЂР°СЏ С„РѕСЂРјРёСЂСѓРµС‚ СЃРІСЏР·СЊ РјРµР¶РґСѓ Р»СЋРґСЊРјРё.
+                Р вЂњР С•РЎРѓРЎвЂљР ВµР С—РЎР‚Р С‘Р С‘Р СРЎРѓРЎвЂљР Р†Р С• Р С‘ РЎС“Р Р†Р В°Р В¶Р ВµР Р…Р С‘Р Вµ. Р вЂ“Р С‘Р Р†Р В°РЎРЏ РЎРЊРЎвЂљР С‘Р С”Р В°, Р С”Р С•РЎвЂљР С•РЎР‚Р В°РЎРЏ РЎвЂћР С•РЎР‚Р СР С‘РЎР‚РЎС“Р ВµРЎвЂљ РЎРѓР Р†РЎРЏР В·РЎРЉ Р СР ВµР В¶Р Т‘РЎС“ Р В»РЎР‹Р Т‘РЎРЉР СР С‘.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РљРµР»С–РЅ С€Р°Р№</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р С™Р ВµР В»РЎвЂ“Р Р… РЎв‚¬Р В°Р в„–</div>
             </motion.div>
 
             {/* World 3 Content */}
             <motion.div style={{ opacity: op3 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="su" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">Т°Р›Р« Р”РђР›Рђ</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР В« Р вЂќР С’Р вЂєР С’</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                РЎС‚СЂР°С‚РµРіРёСЏ Рё РёРЅС‚РµР»Р»РµРєС‚. РРЅС‚РµР»Р»РµРєС‚СѓР°Р»СЊРЅС‹Рµ Р±РёС‚РІС‹, С‚СЂРµР±СѓСЋС‰РёРµ РіР»СѓР±РѕРєРѕРіРѕ РјС‹С€Р»РµРЅРёСЏ.
+                Р РЋРЎвЂљРЎР‚Р В°РЎвЂљР ВµР С–Р С‘РЎРЏ Р С‘ Р С‘Р Р…РЎвЂљР ВµР В»Р В»Р ВµР С”РЎвЂљ. Р ВР Р…РЎвЂљР ВµР В»Р В»Р ВµР С”РЎвЂљРЎС“Р В°Р В»РЎРЉР Р…РЎвЂ№Р Вµ Р В±Р С‘РЎвЂљР Р†РЎвЂ№, РЎвЂљРЎР‚Р ВµР В±РЎС“РЎР‹РЎвЂ°Р С‘Р Вµ Р С–Р В»РЎС“Р В±Р С•Р С”Р С•Р С–Р С• Р СРЎвЂ№РЎв‚¬Р В»Р ВµР Р…Р С‘РЎРЏ.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">РўРѕТ“С‹Р·Т›Т±РјР°Р»Р°Т›</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р СћР С•РўвЂњРЎвЂ№Р В·РўвЂєРўВ±Р СР В°Р В»Р В°РўвЂє</div>
             </motion.div>
           </div>
 
@@ -112,7 +111,7 @@ export function HomeWorldSection() {
             className="text-sand font-display text-[150px] font-bold uppercase tracking-tighter opacity-10 leading-none select-none pointer-events-none"
             style={{ writingMode: 'vertical-rl' }}
           >
-            Т®РЁ УР›Р•Рњ
+            РўВ®Р РЃ РЈВР вЂєР вЂўР Сљ
           </div>
         </div>
 
@@ -120,4 +119,5 @@ export function HomeWorldSection() {
     </div>
   )
 }
+
 
