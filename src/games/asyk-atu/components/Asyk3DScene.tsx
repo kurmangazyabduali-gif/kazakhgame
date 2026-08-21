@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+﻿import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, RigidBody, RapierRigidBody, useRapier } from '@react-three/rapier';
 import { AsykBone } from './AsykBone';
@@ -284,51 +284,54 @@ export function Asyk3DScene({
 
   return (
     <group>
-      {/* Fog for atmospheric depth */}
-      <fog attach="fog" args={['#0F1115', 5, 30]} />
+      {/* Bright daylight fog */}
+      <fog attach="fog" args={['#F4F8FA', 10, 50]} />
+      <color attach="background" args={['#87CEEB']} />
       
-      {/* Refined Lighting */}
-      <ambientLight intensity={0.4} color="#FFF5E6" />
+      {/* Bright Daylight Lighting */}
+      <ambientLight intensity={0.8} color="#FFFFFF" />
       <directionalLight 
-        position={[8, 15, -5]} 
+        position={[-15, 25, 10]} 
         castShadow 
-        intensity={2.0} 
-        color="#FFE5B4"
+        intensity={2.5} 
+        color="#FFF5E6"
         shadow-mapSize={[2048, 2048]}
         shadow-camera-near={0.5}
         shadow-camera-far={50}
-        shadow-camera-left={-10}
-        shadow-camera-right={10}
-        shadow-camera-top={10}
-        shadow-camera-bottom={-10}
+        shadow-camera-left={-15}
+        shadow-camera-right={15}
+        shadow-camera-top={15}
+        shadow-camera-bottom={-15}
         shadow-bias={-0.0001}
       />
-      {/* Soft rim light */}
-      <spotLight position={[-10, 5, 10]} intensity={1.5} color="#4A90E2" angle={0.5} penumbra={1} castShadow />
+      {/* Fill light from opposite side */}
+      <directionalLight position={[15, 10, -10]} intensity={1.0} color="#E0F2FE" />
 
-      <Environment preset="night" environmentIntensity={0.2} />
-      <ContactShadows resolution={1024} scale={20} blur={2.5} opacity={0.7} far={10} color="#0a0a0a" />
+      {/* Realistic daytime environment reflection */}
+      <Environment preset="park" environmentIntensity={0.6} />
+      <ContactShadows resolution={1024} scale={25} blur={2} opacity={0.6} far={10} color="#2A1A10" />
       
       {/* Subtle floating dust particles */}
-      <Sparkles count={150} scale={20} size={1} speed={0.1} opacity={0.3} color="#D4AF37" position={[0, 2, 0]} />
+      <Sparkles count={50} scale={20} size={1.5} speed={0.1} opacity={0.2} color="#FFFFFF" position={[0, 2, 0]} />
       
       <Physics gravity={[0, -20, 0]} paused={true} timeStep="vary">
         <SlowMoStepper isThrowing={currentPhase === 'THROWING'} />
+        
         <RigidBody type="fixed" friction={levelConfig.friction} restitution={0.1} name="ground">
-          {/* Ground environment */}
+          {/* Ground environment (Steppe/Sand) */}
           <mesh receiveShadow position={[0, -0.26, 0]} rotation={[-Math.PI/2, 0, 0]}>
-            <planeGeometry args={[100, 100]} />
-            <meshStandardMaterial color="#0F1115" roughness={1.0} />
+            <planeGeometry args={[150, 150]} />
+            <meshStandardMaterial color="#E6C898" roughness={1.0} />
           </mesh>
           
-          {/* Main Felt/Wood Arena Surface */}
-          <mesh receiveShadow position={[0, -0.25, 0]}>
-            <cylinderGeometry args={[15, 15, 0.5, 64]} />
-            <meshStandardMaterial color="#2A1B14" roughness={0.95} bumpScale={0.05} />
+          {/* Main Playing Arena (Tekemet/Syrmak style base) */}
+          <mesh receiveShadow position={[0, -0.15, 0]}>
+            <cylinderGeometry args={[20, 20, 0.2, 64]} />
+            <meshStandardMaterial color="#C59C6D" roughness={0.9} />
           </mesh>
-          <mesh receiveShadow position={[0, 0.01, 0]}>
-            <cylinderGeometry args={[levelConfig.arenaRadius + 0.5, levelConfig.arenaRadius + 0.5, 0.02, 64]} />
-            <meshStandardMaterial color="#3E2723" roughness={0.8} metalness={0.1} />
+          <mesh receiveShadow position={[0, -0.04, 0]}>
+            <cylinderGeometry args={[levelConfig.arenaRadius + 1, levelConfig.arenaRadius + 1, 0.05, 64]} />
+            <meshStandardMaterial color="#A87C51" roughness={0.85} bumpScale={0.1} />
           </mesh>
         </RigidBody>
         
@@ -343,29 +346,32 @@ export function Asyk3DScene({
                 PLAYER_START.z + Math.cos(THREE.MathUtils.degToRad(aimParams.angleDeg - 180)) * (aimParams.powerPercent / 10)
               ] 
             ]}
-            color={aimParams.powerPercent > 80 ? "#C0392B" : "#D4AF37"}
-            lineWidth={3}
+            color={aimParams.powerPercent > 80 ? "#C0392B" : "#FFF"}
+            lineWidth={4}
             dashed
             dashScale={0.5}
-            opacity={0.6}
+            opacity={0.8}
             transparent
           />
         )}
         
-        {/* Target Circle Boundary Visualization - Elegant glowing ring */}
+        {/* Target Circle Boundary Visualization - Traditional white chalk/rope line */}
         <mesh position={[CIRCLE_CENTER.x, 0.02, CIRCLE_CENTER.z]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[levelConfig.arenaRadius - 0.05, levelConfig.arenaRadius, 128]} />
-          <meshStandardMaterial color="#D4AF37" emissive="#D4AF37" emissiveIntensity={0.5} transparent opacity={0.4} />
+          <ringGeometry args={[levelConfig.arenaRadius - 0.1, levelConfig.arenaRadius, 128]} />
+          <meshStandardMaterial color="#FFFFFF" roughness={1} opacity={0.9} transparent />
         </mesh>
         
-        {/* Center Target subtle glow */}
-        <pointLight position={[CIRCLE_CENTER.x, 0.5, CIRCLE_CENTER.z]} intensity={0.5} distance={3} color="#D4AF37" />
+        {/* Inner circle decoration (Ornamental touch) */}
+        <mesh position={[CIRCLE_CENTER.x, 0.015, CIRCLE_CENTER.z]} rotation={[-Math.PI / 2, 0, 0]}>
+          <ringGeometry args={[levelConfig.arenaRadius - 0.8, levelConfig.arenaRadius - 0.75, 64]} />
+          <meshStandardMaterial color="#8B4513" roughness={0.9} opacity={0.5} transparent />
+        </mesh>
 
         {/* Target Asyks */}
-        <group key={`targets`}>
+        <group key={	argets}>
           {activeTargets.map((id) => (
             <AsykBone 
-              key={`target-${id}`}
+              key={	arget- + id}
               bodyRef={(r) => { if (r) targetRefs.current[id] = r; }}
               position={levelConfig.positions[id] as [number, number, number]} 
               isGolden={id === 0}
@@ -374,13 +380,11 @@ export function Asyk3DScene({
         </group>
         
         {/* Player Throwing Asyk */}
-        <Trail width={0.3} length={12} color="#D4AF37" attenuation={(t) => t * t}>
+        <Trail width={0.4} length={10} color="#FFFFFF" attenuation={(t) => t * t}>
           <AsykBone 
             bodyRef={(r) => { playerRef.current = r; }} 
             position={[PLAYER_START.x, PLAYER_START.y, PLAYER_START.z]} 
             isPlayer={true} 
-            emissive="#D4AF37"
-            emissiveIntensity={0.2}
           />
         </Trail>
         
@@ -392,10 +396,10 @@ export function Asyk3DScene({
           key={ft.id}
           position={ft.pos}
           fontSize={1.5}
-          color="#D4AF37"
-          font="/fonts/CormorantGaramond-Bold.ttf" // if it doesn't load it will fallback nicely
-          outlineWidth={0.05}
-          outlineColor="#2A1B14"
+          color="#FFF"
+          font="/fonts/CormorantGaramond-Bold.ttf"
+          outlineWidth={0.06}
+          outlineColor="#8B4513"
           anchorX="center"
           anchorY="middle"
         >
@@ -406,3 +410,4 @@ export function Asyk3DScene({
     </group>
   );
 }
+
