@@ -1,4 +1,4 @@
-﻿import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Physics, RigidBody, RapierRigidBody, useRapier } from '@react-three/rapier';
 import { AsykBone } from './AsykBone';

@@ -10,7 +10,7 @@ export default function Room() {
       {/* Floor (Rich Wooden Planks) */}
       <mesh position={[0, -0.05, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[30, 30]} />
-        <meshStandardMaterial color="#2c1a0f" roughness={0.5} metalness={0.15} clearcoat={0.2} />
+        <meshPhysicalMaterial color="#2c1a0f" roughness={0.5} metalness={0.15} clearcoat={0.2} />
       </mesh>
 
       {/* Backdrop walls */}
@@ -28,7 +28,7 @@ export default function Room() {
       {/* Tuskiz (Wall hanging carpet) in center back */}
       <mesh position={[0, 4, -7.9]} receiveShadow>
         <planeGeometry args={[8, 5]} />
-        <meshStandardMaterial color="#5c1d1a" roughness={1.0} bumpScale={0.1} />`n        <Sparkles count={20} scale={[8, 5, 1]} size={2} color="#D4AF37" position={[0, 0, 0.1]} speed={0.1} opacity={0.5} />
+        <meshStandardMaterial color="#5c1d1a" roughness={1.0} bumpScale={0.1} />
       </mesh>
       {/* Tuskiz golden border */}
       <mesh position={[0, 4, -7.89]} receiveShadow>
@@ -43,7 +43,7 @@ export default function Room() {
       {/* Sandyq (Traditional Chest) */}
       <group position={[-5, 0.5, -4]} rotation={[0, Math.PI / 5, 0]}>
         <RoundedBox args={[3, 1.2, 1.5]} radius={0.1} castShadow receiveShadow>
-          <meshStandardMaterial color="#3a1c0d" roughness={0.4} metalness={0.2} clearcoat={0.5} />
+          <meshPhysicalMaterial color="#3a1c0d" roughness={0.4} metalness={0.2} clearcoat={0.5} />
         </RoundedBox>
         {/* Metal Ornaments on Sandyq */}
         <mesh position={[0, 0, 0.76]}>
@@ -74,4 +74,5 @@ export default function Room() {
     </group>
   )
 }
+
 
