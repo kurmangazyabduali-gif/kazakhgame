@@ -368,10 +368,10 @@ export function Asyk3DScene({
         </mesh>
 
         {/* Target Asyks */}
-        <group key={	argets}>
+        <group key={"targets"}>
           {activeTargets.map((id) => (
             <AsykBone 
-              key={	arget- + id}
+              key={"target-" + id}
               bodyRef={(r) => { if (r) targetRefs.current[id] = r; }}
               position={levelConfig.positions[id] as [number, number, number]} 
               isGolden={id === 0}
@@ -410,4 +410,5 @@ export function Asyk3DScene({
     </group>
   );
 }
+
 
