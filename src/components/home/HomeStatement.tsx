@@ -17,7 +17,7 @@ export function HomeStatement() {
   const y = useTransform(scrollYProgress, [0.2, 0.4, 0.6, 0.8], [100, 0, 0, -100])
   const scale = useTransform(scrollYProgress, [0.2, 0.5], [0.9, 1])
 
-  const titleChars = "Р‘Т°Р› РћР™Р«Рќ Р•РњР•РЎ.".split('')
+  const titleChars = "БҰЛ ОЙЫН ЕМЕС.".split('')
 
   return (
     <section 
@@ -62,7 +62,7 @@ export function HomeStatement() {
         >
           <div className="w-12 h-px bg-gold/50 mb-8" />
           <p className="text-xl md:text-3xl font-heading text-gold font-light tracking-widest uppercase opacity-90">
-            Р‘Т±Р» вЂ” РјТ±СЂР°РЅС‹ СЃРµР·С–РЅСѓРґС–ТЈ Р¶Р°ТЈР° Р¶РѕР»С‹.
+            Бұл — мұраны сезінудің жаңа жолы.
           </p>
         </motion.div>
       </motion.div>

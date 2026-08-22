@@ -53,7 +53,7 @@ export function HomeHero() {
           transition={{ duration: 1, delay: 1.2, ease: "easeOut" }}
           className="text-lg md:text-2xl text-text-muted font-heading font-medium tracking-[0.15em] uppercase max-w-2xl mx-auto mb-16 drop-shadow-md"
         >
-          РўВ°Р В»РЎвЂ№ Р Т‘Р В°Р В»Р В°Р Р…РЎвЂ№РўР€ Р СРўВ±РЎР‚Р В°РЎРѓРЎвЂ№<br />Р В¶Р В°РўР€Р В° РЎвЂћР С•РЎР‚Р СР В°РЎвЂљРЎвЂљР В°
+          ҰЛЫ ДАЛАНЫҢ МҰРАСЫ<br />ЖАҢА ФОРМАТТА
         </motion.p>
 
         {/* 4. CTA */}
@@ -80,7 +80,7 @@ export function HomeHero() {
           transition={{ duration: 1, delay: 2.2 }}
           className="mt-12 text-[9px] font-heading font-bold text-gold uppercase tracking-[0.4em]"
         >
-          РўВ°Р вЂєР СћР СћР В«РўС™ Р С›Р в„ўР В«Р СњР вЂќР С’Р В  РІР‚Сћ Р вЂќРЈВР РЋР СћРўВ®Р В  РІР‚Сћ РўВ°Р вЂєР В« Р вЂќР С’Р вЂєР С’
+          ҰЛТТЫҚ ОЙЫНДАР • ДӘСТҮР • ҰЛЫ ДАЛА
         </motion.div>
       </div>
 

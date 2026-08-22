@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import React, { useRef } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
@@ -72,34 +72,34 @@ export function HomeWorldSection() {
             {/* World 1 Content */}
             <motion.div style={{ opacity: op1 }} className="absolute w-full">
               <KazakhOrnament variant="geometric" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР СћР СћР В«РўС™ Р РЋР СџР С›Р В Р Сћ</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ СПОРТ</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Р СљР ВµРЎвЂљР С”Р С•РЎРѓРЎвЂљРЎРЉ, РЎРѓР С‘Р В»Р В° Р С‘ Р Р†РЎвЂ№Р Т‘Р ВµРЎР‚Р В¶Р С”Р В°. Р С›РЎвЂ°РЎС“РЎвЂљР С‘РЎвЂљР Вµ Р Т‘РЎС“РЎвЂ¦ РЎРѓР С•РЎР‚Р ВµР Р†Р Р…Р С•Р Р†Р В°Р Р…Р С‘Р в„–, Р С—Р ВµРЎР‚Р ВµР Т‘Р В°Р Р†Р В°Р ВµР СРЎвЂ№Р в„– Р С‘Р В· Р С—Р С•Р С”Р С•Р В»Р ВµР Р…Р С‘РЎРЏ Р Р† Р С—Р С•Р С”Р С•Р В»Р ВµР Р…Р С‘Р Вµ.
+                Мергендік, күш және төзімділік. Ұрпақтан ұрпаққа берілетін жарыс рухын сезініңіз.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р С’РЎРѓРЎвЂ№РўвЂє Р В°РЎвЂљРЎС“ РІР‚Сћ Р вЂ“Р В°Р СР В±РЎвЂ№ Р В°РЎвЂљРЎС“ РІР‚Сћ РўС™РўВ±РЎРѓР В±Р ВµР С–РЎвЂ“Р В»РЎвЂ“Р С”</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">АСЫҚ АТУ • ЖАМБЫ АТУ • ҚҰСБЕГІЛІК</div>
             </motion.div>
 
             {/* World 2 Content */}
             <motion.div style={{ opacity: op2 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="tumar" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР СћР СћР В«РўС™ Р вЂќРЈВР РЋР СћРўВ®Р В </h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ ДӘСТҮР</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Р вЂњР С•РЎРѓРЎвЂљР ВµР С—РЎР‚Р С‘Р С‘Р СРЎРѓРЎвЂљР Р†Р С• Р С‘ РЎС“Р Р†Р В°Р В¶Р ВµР Р…Р С‘Р Вµ. Р вЂ“Р С‘Р Р†Р В°РЎРЏ РЎРЊРЎвЂљР С‘Р С”Р В°, Р С”Р С•РЎвЂљР С•РЎР‚Р В°РЎРЏ РЎвЂћР С•РЎР‚Р СР С‘РЎР‚РЎС“Р ВµРЎвЂљ РЎРѓР Р†РЎРЏР В·РЎРЉ Р СР ВµР В¶Р Т‘РЎС“ Р В»РЎР‹Р Т‘РЎРЉР СР С‘.
+                Қонақжайлылық пен құрмет. Адамдар арасындағы байланысты қалыптастыратын тірі этика.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р С™Р ВµР В»РЎвЂ“Р Р… РЎв‚¬Р В°Р в„–</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">КЕЛІН ШӘЙ</div>
             </motion.div>
 
             {/* World 3 Content */}
             <motion.div style={{ opacity: op3 }} className="absolute w-full pointer-events-none">
               <KazakhOrnament variant="su" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">РўВ°Р вЂєР В« Р вЂќР С’Р вЂєР С’</h2>
+              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛЫ ДАЛА</h2>
               <div className="w-12 h-1 bg-gold mb-6" />
               <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Р РЋРЎвЂљРЎР‚Р В°РЎвЂљР ВµР С–Р С‘РЎРЏ Р С‘ Р С‘Р Р…РЎвЂљР ВµР В»Р В»Р ВµР С”РЎвЂљ. Р ВР Р…РЎвЂљР ВµР В»Р В»Р ВµР С”РЎвЂљРЎС“Р В°Р В»РЎРЉР Р…РЎвЂ№Р Вµ Р В±Р С‘РЎвЂљР Р†РЎвЂ№, РЎвЂљРЎР‚Р ВµР В±РЎС“РЎР‹РЎвЂ°Р С‘Р Вµ Р С–Р В»РЎС“Р В±Р С•Р С”Р С•Р С–Р С• Р СРЎвЂ№РЎв‚¬Р В»Р ВµР Р…Р С‘РЎРЏ.
+                Стратегия және зияткерлік. Терең ойлауды талап ететін интеллектуалды шайқастар.
               </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">Р СћР С•РўвЂњРЎвЂ№Р В·РўвЂєРўВ±Р СР В°Р В»Р В°РўвЂє</div>
+              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">ТОҒЫЗҚҰМАЛАҚ</div>
             </motion.div>
           </div>
 
@@ -111,7 +111,7 @@ export function HomeWorldSection() {
             className="text-sand font-display text-[150px] font-bold uppercase tracking-tighter opacity-10 leading-none select-none pointer-events-none"
             style={{ writingMode: 'vertical-rl' }}
           >
-            РўВ®Р РЃ РЈВР вЂєР вЂўР Сљ
+            ҮШ ӘЛЕМ
           </div>
         </div>
 

@@ -29,7 +29,7 @@ export default async function Navbar() {
           </Link>
 
           <div className="hidden md:flex gap-1 items-center ml-4">
-            <NavLink href="/games">Игры</NavLink>
+            <NavLink href="/games">ОЙЫНДАР</NavLink>
             <span className="text-gold/30 px-2">
               <KazakhOrnament
                 variant="geometric"
@@ -37,7 +37,7 @@ export default async function Navbar() {
                 className="w-2 h-2 opacity-50"
               />
             </span>
-            <NavLink href="/map">Қазақстан</NavLink>
+            <NavLink href="/map">ҚАЗАҚСТАН</NavLink>
             <span className="text-gold/30 px-2">
               <KazakhOrnament
                 variant="geometric"
@@ -45,7 +45,7 @@ export default async function Navbar() {
                 className="w-2 h-2 opacity-50"
               />
             </span>
-            <NavLink href="/culture">Наследие</NavLink>
+            <NavLink href="/culture">МҰРА</NavLink>
             <span className="text-gold/30 px-2">
               <KazakhOrnament
                 variant="geometric"
@@ -53,26 +53,26 @@ export default async function Navbar() {
                 className="w-2 h-2 opacity-50"
               />
             </span>
-            <NavLink href="/profile">Профиль</NavLink>
+            <NavLink href="/profile">ПРОФИЛЬ</NavLink>
           </div>
         </div>
         {/* ACTIONS */}
         <div className="flex gap-4 items-center">
           <Link href="/showcase" className="hidden md:block">
             <HeritageButton variant="cultural" size="sm" tabIndex={-1}>
-              Showcase
+              КӨРМЕ
             </HeritageButton>
           </Link>
           {!user ? (
             <div className="flex gap-2">
               <Link href="/login">
                 <HeritageButton variant="secondary" size="sm" tabIndex={-1}>
-                  Войти
+                  КІРУ
                 </HeritageButton>
               </Link>
               <Link href="/register">
                 <HeritageButton variant="primary" size="sm" tabIndex={-1}>
-                  Регистрация
+                  ТІРКЕЛУ
                 </HeritageButton>
               </Link>
             </div>
@@ -98,7 +98,7 @@ export default async function Navbar() {
                   href="/dashboard"
                   className="text-sm font-bold text-gold hover:underline"
                 >
-                  {user.user_metadata?.username || "Батыр"}
+                  {user.user_metadata?.username || "БАТЫР"}
                 </Link>
               </div>
               <form
@@ -109,7 +109,7 @@ export default async function Navbar() {
                 }}
               >
                 <HeritageButton variant="cultural" size="sm" type="submit">
-                  Выйти
+                  ШЫҒУ
                 </HeritageButton>
               </form>
             </div>

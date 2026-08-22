@@ -38,7 +38,7 @@ export function HomeGameShowcase() {
         <div className="flex flex-col lg:flex-row gap-6 md:gap-8 h-auto lg:h-[700px]">
           <ShowcaseCard 
             title="АСЫҚ АТУ"
-            desc="Испытайте свою меткость в традиционной 3D игре кочевников. Бросайте асыки, собирайте комбо и соревнуйтесь с другими."
+            desc="Көшпенділердің дәстүрлі 3D ойынында мергендігіңізді сынаңыз. Асық атып, комбо жинап, басқалармен жарысыңыз."
             category="СПОРТ"
             href="/games/asyk-atu"
             image="/images/games/asyk-atu.jpg"
@@ -47,7 +47,7 @@ export function HomeGameShowcase() {
           />
           <ShowcaseCard 
             title="КЕЛІН ШАЙ"
-            desc="Познайте тонкости этикета и уважения. Разливайте чай, следите за температурой и угощайте гостей в уютной юрте."
+            desc="Этикет пен құрметтің қыр-сырын біліңіз. Жайлы үйде шай құйып, қонақтарға құрмет көрсетіңіз."
             category="ДӘСТҮР"
             href="/games/kelin-shai"
             image="/images/games/kelin-shai.jpg"
@@ -56,7 +56,7 @@ export function HomeGameShowcase() {
           />
           <ShowcaseCard 
             title="ТОҒЫЗҚҰМАЛАҚ"
-            desc="Интеллектуальная битва на премиальной доске. Рассчитывайте ходы, создавайте туздыки и побеждайте искусственный интеллект."
+            desc="Премиум тақтадағы зияткерлік шайқас. Қадамдарыңызды есептеп, тұздықтар жасап, жасанды интеллектті жеңіңіз."
             category="СТРАТЕГИЯ"
             href="/games/togyz-kumalak"
             image="/images/games/togyzqumalak.jpg"
