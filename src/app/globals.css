@@ -225,3 +225,57 @@
   }
 }
 
+/* === Kazakh Heritage Animations === */
+@keyframes dust-float {
+  0% { transform: translateY(0px) translateX(0px); opacity: 0; }
+  20% { opacity: 0.8; }
+  80% { opacity: 0.5; }
+  100% { transform: translateY(-140px) translateX(25px); opacity: 0; }
+}
+
+@keyframes shanyrak-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ornament-shimmer {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.45; }
+}
+
+@keyframes ornament-sway {
+  0%, 100% { transform: scaleX(1) translateY(0px); }
+  50% { transform: scaleX(1.01) translateY(-2px); }
+}
+
+@keyframes corner-bloom {
+  from { opacity: 0; transform: scale(0.5); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-shanyrak {
+  animation: shanyrak-spin 45s linear infinite;
+  transform-origin: center;
+}
+
+.animate-shanyrak-reverse {
+  animation: shanyrak-spin 28s linear infinite reverse;
+  transform-origin: center;
+}
+
+.animate-dust {
+  animation: dust-float 7s ease-in-out infinite;
+}
+
+.animate-ornament-shimmer {
+  animation: ornament-shimmer 6s ease-in-out infinite;
+}
+
+.animate-ornament-sway {
+  animation: ornament-sway 8s ease-in-out infinite;
+}
+
+.animate-corner-bloom {
+  animation: corner-bloom 1s ease-out forwards;
+}
+
