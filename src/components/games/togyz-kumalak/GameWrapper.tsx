@@ -163,12 +163,8 @@ export default function GameWrapper({ sessionId }: GameWrapperProps) {
 
   const handleOtauClick = useCallback((otauIndex: number) => {
     if (!session || isAIThinking || isAnimating) return
-    if (selectedOtau === otauIndex) {
-      handlePlayerMove(otauIndex)
-    } else {
-      setSelectedOtau(otauIndex)
-    }
-  }, [session, isAIThinking, selectedOtau, handlePlayerMove, isAnimating])
+    handlePlayerMove(otauIndex)
+  }, [session, isAIThinking, handlePlayerMove, isAnimating])
 
   useEffect(() => {
     if (!session || gameResult || isAIThinking || isAnimating) return
@@ -257,29 +253,6 @@ export default function GameWrapper({ sessionId }: GameWrapperProps) {
               <RefreshCcw size={16} />
             </button>
           </div>
-        </div>
-
-        {/* Action Area (Center) */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex flex-col items-center">
-           {selectedOtau !== null && !isAIThinking && !gameResult && !isAnimating && (
-            <div className="pointer-events-auto flex flex-col items-center gap-3 bg-black/60 backdrop-blur-md p-4 rounded-2xl border border-[#d4af37]/30 shadow-2xl animate-in fade-in zoom-in duration-200">
-              <div className="text-stone-300 text-sm">Отау {selectedOtau + 1} таңдалды</div>
-              <div className="flex gap-2">
-                <button
-                  onClick={() => handlePlayerMove(selectedOtau)}
-                  className="px-8 py-3 bg-gradient-to-b from-[#d4af37] to-[#b89015] hover:to-[#a37f12] text-black font-bold rounded-xl text-sm transition-all shadow-[0_0_15px_rgba(212,175,55,0.4)]"
-                >
-                  ЖҮРІС ЖАСАУ
-                </button>
-                <button
-                  onClick={() => setSelectedOtau(null)}
-                  className="px-4 py-3 bg-stone-800 hover:bg-stone-700 text-stone-300 rounded-xl text-sm transition-all"
-                >
-                  Болдырмау
-                </button>
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Bottom Bar (Player Info) */}
