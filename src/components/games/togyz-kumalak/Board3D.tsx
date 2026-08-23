@@ -2,20 +2,26 @@
 
 import React, { useMemo, useState, useEffect } from 'react'
 import { Canvas, useThree } from '@react-three/fiber'
-import { Environment, Text, useCursor, RoundedBox, Center, ContactShadows } from '@react-three/drei'
+import { Environment, Text, useCursor, Center } from '@react-three/drei'
 import * as THREE from 'three'
 import { TogyzqumalakState, Player } from '@/games/togyz-kumalak/engine/types'
 
-const BOARD_COLOR = '#d4c3a3' // Light wood
-const HOLE_COLOR = '#8c735a' // Shadowed wood
-const STONE_COLOR = '#3d2b1f' // Dark brown stones
-const RED_STONE_COLOR = '#cc2900' // Red stone
+// Colors based on the reference image
+const WOOD_BASE = '#5a1f0a' // Dark red wood background
+const WOOD_HIGHLIGHT = '#8b3a1a' // Lighter wood for board top
+const HOLE_INNER = '#310a01' // Very dark red/brown for inside holes
+const GOLD_TRIM = '#d4a259' // Gold borders around everything
+const STONE_COLOR = '#e8d8c3' // White/ivory stones (qorghasyn)
+const SELECTED_GLOW = '#ffcc00'
 
-const SLOT_WIDTH = 0.45
-const SLOT_LENGTH = 3.2
-const SLOT_SPACING = 0.95
-const KAZAN_LENGTH = 8.5
-const KAZAN_WIDTH = 0.6
+// Dimensions
+const BOARD_W = 14
+const BOARD_H = 8
+const OTAU_W = 0.9
+const OTAU_H = 2.4
+const SPACING = 1.2
+const KAZAN_W = 12
+const KAZAN_H = 0.6
 
 interface Board3DProps {
   state: TogyzqumalakState
@@ -29,49 +35,91 @@ interface Board3DProps {
 function CameraRig() {
   const { camera, size } = useThree()
   useEffect(() => {
-    const aspect = size.width / size.height
-    let y = 10
-    let z = 10
-    if (aspect < 1) {
-      y = 16 / aspect
-      z = 4
-    }
-    camera.position.set(0, y, z)
+    // Exact top-down 2D orthographic-like feel, but in 3D
+    camera.position.set(0, 10, 0)
     camera.lookAt(0, 0, 0)
     camera.updateProjectionMatrix()
   }, [size, camera])
   return null
 }
 
-function getStonePositionInSlot(index: number, stoneCount: number, isP1: boolean, isKazan: boolean = false): [number, number, number] {
-  // Stones are arranged in a line. If they overflow, stack them.
-  const rowLen = isKazan ? 40 : 12
-  const spacing = 0.2
-  
-  const lineIdx = index % rowLen
-  const stackIdx = Math.floor(index / rowLen)
-  
-  const y = 0.05 + (stackIdx * 0.16)
+function CustomOtauShape({ position, isKazan = false }: { position: [number, number, number], isKazan?: boolean }) {
+  // We create a custom shape that looks like the decorative rectangles with pinched centers
+  const shape = useMemo(() => {
+    const s = new THREE.Shape()
+    const w = isKazan ? KAZAN_W / 2 : OTAU_W / 2
+    const h = isKazan ? KAZAN_H / 2 : OTAU_H / 2
+    
+    if (isKazan) {
+       // Kazan shape: long rectangle with decorative ends
+       s.moveTo(-w, -h)
+       s.lineTo(w, -h)
+       // decorative bump right
+       s.quadraticCurveTo(w + 0.2, 0, w, h)
+       s.lineTo(-w, h)
+       // decorative bump left
+       s.quadraticCurveTo(-w - 0.2, 0, -w, -h)
+    } else {
+       // Otau shape: rectangle with pinched sides
+       s.moveTo(-w, -h)
+       s.lineTo(w, -h)
+       // pinch right
+       s.quadraticCurveTo(w - 0.2, 0, w, h)
+       s.lineTo(-w, h)
+       // pinch left
+       s.quadraticCurveTo(-w + 0.2, 0, -w, -h)
+    }
+    return s
+  }, [isKazan])
+
+  const extrudeSettings = { depth: 0.2, bevelEnabled: true, bevelThickness: 0.05, bevelSize: 0.05, bevelSegments: 3 }
+
+  return (
+    <group position={position} rotation={[-Math.PI / 2, 0, 0]}>
+      {/* Gold Trim Outer Layer */}
+      <mesh position={[0, 0, -0.1]} receiveShadow castShadow>
+        <extrudeGeometry args={[shape, { ...extrudeSettings, depth: 0.22, bevelSize: 0.08 }]} />
+        <meshStandardMaterial color={GOLD_TRIM} metalness={0.6} roughness={0.3} />
+      </mesh>
+      {/* Dark Inner Hole */}
+      <mesh position={[0, 0, 0]}>
+        <extrudeGeometry args={[shape, { ...extrudeSettings, depth: 0.05, bevelSize: 0.01 }]} />
+        <meshStandardMaterial color={HOLE_INNER} roughness={0.9} />
+      </mesh>
+    </group>
+  )
+}
+
+function getStonePosition(index: number, stoneCount: number, isKazan: boolean): [number, number, number] {
+  // Arrange stones in neat rows/columns just like the reference picture
+  const r = 0.15 // stone radius
+  const spacing = 0.35 // space between centers
   
   if (isKazan) {
-    // Kazans are aligned along X axis
-    const startX = -((Math.min(stoneCount, rowLen) - 1) * spacing) / 2
-    return [startX + (lineIdx * spacing), y, 0]
+    // kazans: pack tightly left to right
+    const cols = 20
+    const col = index % cols
+    const row = Math.floor(index / cols)
+    const startX = -KAZAN_W / 2 + 0.4
+    return [startX + (col * spacing), 0.1, (row * spacing) - 0.15]
   } else {
-    // Otaus are aligned along Z axis
-    // For P1, start closest to player (positive Z) and go towards center (negative Z)
-    // For P2, start closest to player (negative Z) and go towards center (positive Z)
-    const totalInRow = Math.min(stoneCount, rowLen)
-    const zOffset = (lineIdx * spacing) - ((totalInRow - 1) * spacing) / 2
-    return [0, y, zOffset]
+    // otaus: columns of 5, filling bottom to top
+    // Since otaus face different ways, we just do local coordinates
+    const rows = 5
+    const row = index % rows
+    const col = Math.floor(index / rows)
+    // start from "bottom" of the otau
+    const startZ = OTAU_H / 2 - 0.3
+    const startX = -OTAU_W / 2 + 0.3
+    return [startX + (col * spacing), 0.1, startZ - (row * spacing)]
   }
 }
 
 function OtauSlot({
-  index, linearIndex, position, stones, isLegal, isSelected, isTuzdyk, isAnimating, isHoverTarget, isP1, onClick, onHover
+  index, position, stones, isLegal, isSelected, isTuzdyk, isHoverTarget, isP1, onClick, onHover
 }: {
-  index: number, linearIndex: number, position: [number, number, number], stones: number, 
-  isLegal: boolean, isSelected: boolean, isTuzdyk: boolean, isAnimating: boolean, isHoverTarget: boolean, isP1: boolean,
+  index: number, position: [number, number, number], stones: number, 
+  isLegal: boolean, isSelected: boolean, isTuzdyk: boolean, isHoverTarget: boolean, isP1: boolean,
   onClick: () => void, onHover: (idx: number | null) => void
 }) {
   const [hovered, setHovered] = useState(false)
@@ -80,91 +128,65 @@ function OtauSlot({
   const handlePointerOver = (e: any) => { e.stopPropagation(); setHovered(true); if(isLegal) onHover(index) }
   const handlePointerOut = (e: any) => { e.stopPropagation(); setHovered(false); onHover(null) }
 
+  // Need to rotate P2's stones 180 degrees so they fill from their edge inwards
+  const rotY = isP1 ? 0 : Math.PI
+
   return (
     <group position={position}>
-      {/* The Hole */}
-      <RoundedBox 
-        args={[SLOT_WIDTH, 0.1, SLOT_LENGTH]} 
-        radius={SLOT_WIDTH/2.1} 
-        smoothness={4} 
-        position={[0, -0.05, 0]}
+      {/* Clickable Area & Visuals */}
+      <group
         onClick={() => isLegal && onClick()}
         onPointerOver={handlePointerOver}
         onPointerOut={handlePointerOut}
       >
-        <meshStandardMaterial color={hovered && isLegal ? '#a68c70' : HOLE_COLOR} roughness={0.9} />
-      </RoundedBox>
-
-      {/* Target glow / Selection */}
-      {(isAnimating || isHoverTarget || isSelected) && (
-        <RoundedBox args={[SLOT_WIDTH + 0.15, 0.12, SLOT_LENGTH + 0.15]} radius={SLOT_WIDTH/2} position={[0, -0.06, 0]}>
-          <meshBasicMaterial color={isHoverTarget ? '#ff9900' : isSelected ? '#ffffff' : '#ffcc00'} transparent opacity={0.5} />
-        </RoundedBox>
-      )}
+        <CustomOtauShape position={[0, 0, 0]} />
+        
+        {/* Hover/Select Overlay */}
+        {(hovered && isLegal || isSelected || isHoverTarget) && (
+          <mesh position={[0, 0.2, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[OTAU_W, OTAU_H]} />
+            <meshBasicMaterial color={isSelected ? '#ffffff' : SELECTED_GLOW} transparent opacity={0.3} />
+          </mesh>
+        )}
+      </group>
 
       {/* Stones */}
-      {!isTuzdyk && Array.from({ length: stones }).map((_, i) => {
-        const [sx, sy, sz] = getStonePositionInSlot(i, stones, isP1)
-        // In the photo, there is usually one red stone mixed in, let's make the first stone red if there's an odd number or just randomly?
-        // Actually, let's just make the very first stone red to match the photo's aesthetic
-        const isRed = i === 0 && stones > 1 
-        return (
-          <mesh key={`stone-${i}`} position={[sx, sy, sz]} castShadow>
-            <sphereGeometry args={[0.09, 16, 16]} />
-            <meshPhysicalMaterial color={isRed ? RED_STONE_COLOR : STONE_COLOR} roughness={0.4} clearcoat={0.5} />
-          </mesh>
-        )
-      })}
+      <group rotation={[0, rotY, 0]}>
+        {!isTuzdyk && Array.from({ length: stones }).map((_, i) => {
+          const [sx, sy, sz] = getStonePosition(i, stones, false)
+          return (
+            <mesh key={`stone-${i}`} position={[sx, sy, sz]} castShadow>
+              <sphereGeometry args={[0.15, 32, 32]} />
+              <meshStandardMaterial color={STONE_COLOR} roughness={0.2} metalness={0.1} />
+            </mesh>
+          )
+        })}
+      </group>
 
-      {/* Tuzdyk Marker */}
-      {isTuzdyk && (
-        <group position={[0, 0.1, 0]}>
-           <mesh castShadow>
-             <boxGeometry args={[SLOT_WIDTH - 0.1, 0.2, SLOT_LENGTH - 0.2]} />
-             <meshStandardMaterial color="#b39a7b" />
-           </mesh>
-           <Text position={[0, 0.15, 0]} rotation={[-Math.PI/2, 0, 0]} fontSize={0.25} color="#4a3623">
-             ТУЗДЫК
-           </Text>
-        </group>
-      )}
-      
-      {/* Number Label */}
-      <Text position={[0, 0, isP1 ? SLOT_LENGTH/2 + 0.4 : -SLOT_LENGTH/2 - 0.4]} rotation={[-Math.PI/2, 0, isP1 ? 0 : Math.PI]} fontSize={0.3} color="#4a3623">
+      {/* Number Labels (Gold Text) */}
+      <Text 
+        position={[0, 0.1, isP1 ? OTAU_H/2 + 0.6 : -OTAU_H/2 - 0.6]} 
+        rotation={[-Math.PI/2, 0, isP1 ? 0 : Math.PI]} 
+        fontSize={0.4} 
+        color="#fff" 
+        font="/fonts/kz-ornament-font.woff"
+      >
         {index + 1}
       </Text>
-
-      {/* Hover stones count */}
-      {(hovered || isHoverTarget) && !isTuzdyk && (
-        <Text position={[0, 1.0, 0]} fontSize={0.5} color="#ff9900" outlineWidth={0.02} outlineColor="#000">
-          {stones}
-        </Text>
-      )}
     </group>
   )
 }
 
-function KazanSlot({ position, stones, isP1, isAnimating }: { position: [number, number, number], stones: number, isP1: boolean, isAnimating: boolean }) {
+function KazanSlot({ position, stones, isP1 }: { position: [number, number, number], stones: number, isP1: boolean }) {
   return (
     <group position={position}>
-      {/* Kazan Hole */}
-      <RoundedBox args={[KAZAN_LENGTH, 0.1, KAZAN_WIDTH]} radius={KAZAN_WIDTH/2.1} smoothness={4} position={[0, -0.05, 0]}>
-        <meshStandardMaterial color={HOLE_COLOR} roughness={0.9} />
-      </RoundedBox>
-
-      {isAnimating && (
-        <RoundedBox args={[KAZAN_LENGTH + 0.15, 0.12, KAZAN_WIDTH + 0.15]} radius={KAZAN_WIDTH/2} position={[0, -0.06, 0]}>
-          <meshBasicMaterial color="#ffcc00" transparent opacity={0.5} />
-        </RoundedBox>
-      )}
-
-      {/* Stones */}
+      <CustomOtauShape position={[0, 0, 0]} isKazan={true} />
       {Array.from({ length: stones }).map((_, i) => {
-        const [sx, sy, sz] = getStonePositionInSlot(i, stones, isP1, true)
+        const [sx, sy, sz] = getStonePosition(i, stones, true)
         return (
-          <mesh key={`kazan-stone-${i}`} position={[sx, sy, sz]} castShadow>
-            <sphereGeometry args={[0.09, 16, 16]} />
-            <meshPhysicalMaterial color={STONE_COLOR} roughness={0.4} clearcoat={0.5} />
+          <mesh key={`kstone-${i}`} position={[sx, sy, sz]} castShadow>
+            <sphereGeometry args={[0.15, 32, 32]} />
+            <meshStandardMaterial color={STONE_COLOR} roughness={0.2} metalness={0.1} />
           </mesh>
         )
       })}
@@ -173,7 +195,7 @@ function KazanSlot({ position, stones, isP1, isAnimating }: { position: [number,
 }
 
 export default function Board3D({
-  state, legalMoves, selectedOtau, animatingOtau, humanPlayer, onOtauClick,
+  state, legalMoves, selectedOtau, humanPlayer, onOtauClick,
 }: Board3DProps) {
   const [hoverTargetLinear, setHoverTargetLinear] = useState<number | null>(null)
 
@@ -196,57 +218,47 @@ export default function Board3D({
 
   const getOtauPosition = (linearIdx: number): [number, number, number] => {
     const isP1 = linearIdx < 9
+    // In the image, index 1 is on the right for P1? Wait, standard is left-to-right 1 to 9.
+    // The reference image shows 1 to 9 right-to-left for the top player, 1 to 9 left-to-right for bottom player.
     const colIdx = isP1 ? linearIdx : 17 - linearIdx
-    const x = (colIdx - 4) * SLOT_SPACING
+    const x = (colIdx - 4) * SPACING
     const z = isP1 ? 2.5 : -2.5
-    return [x, 0.1, z]
+    return [x, 0, z]
   }
 
-  const p1KazanPos: [number, number, number] = [0, 0.1, 0.45]
-  const p2KazanPos: [number, number, number] = [0, 0.1, -0.45]
+  const p1KazanPos: [number, number, number] = [0, 0, 0.6]
+  const p2KazanPos: [number, number, number] = [0, 0, -0.6]
 
   return (
-    <div className="absolute inset-0 w-full h-full bg-[#1e4a75]">
-      {/* Background Ornament pattern using CSS */}
-      <div className="absolute inset-0 opacity-30 mix-blend-overlay pointer-events-none" 
-           style={{ backgroundImage: 'radial-gradient(circle, #eebb00 10%, transparent 80%)' }} />
-           
-      <Canvas shadows gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}>
-        <CameraRig />
-        
-        <ambientLight intensity={0.6} color="#ffffff" />
-        <directionalLight position={[5, 10, 5]} intensity={1.5} castShadow shadow-mapSize={[2048, 2048]} color="#fffcf5" />
-        <Environment preset="city" />
+    <div className="absolute inset-0 w-full h-full" style={{ backgroundColor: WOOD_BASE, backgroundImage: 'url("https://www.transparenttextures.com/patterns/wood-pattern.png")' }}>
+      <Canvas shadows orthographic camera={{ zoom: 50, position: [0, 10, 0] }} gl={{ antialias: true }}>
+        <ambientLight intensity={1.2} />
+        <directionalLight position={[0, 10, 0]} intensity={1.5} castShadow />
         
         <Center>
           <group>
-            {/* The folding board base */}
-            <RoundedBox args={[9.5, 0.4, 8.5]} radius={0.1} smoothness={4} position={[0, -0.2, 0]} receiveShadow>
-              <meshPhysicalMaterial color={BOARD_COLOR} roughness={0.7} clearcoat={0.1} />
-            </RoundedBox>
-            
-            {/* Center Hinge Line */}
-            <mesh position={[0, 0.01, 0]}>
-              <boxGeometry args={[9.5, 0.01, 0.02]} />
-              <meshStandardMaterial color="#a08a6b" />
+            {/* The wooden board texture is mostly the background in this style, but let's add a backplate */}
+            <mesh position={[0, -0.5, 0]} receiveShadow>
+              <boxGeometry args={[BOARD_W, 0.5, BOARD_H]} />
+              <meshStandardMaterial color={WOOD_HIGHLIGHT} roughness={0.8} />
             </mesh>
 
             {/* Kazans */}
-            <KazanSlot position={p2KazanPos} stones={state.kazan.player2} isP1={false} isAnimating={animatingOtau === 19} />
-            <KazanSlot position={p1KazanPos} stones={state.kazan.player1} isP1={true} isAnimating={animatingOtau === 18} />
+            <KazanSlot position={p2KazanPos} stones={state.kazan.player2} isP1={false} />
+            <KazanSlot position={p1KazanPos} stones={state.kazan.player1} isP1={true} />
 
             {/* Otaus */}
             {state.board.player1Otaus.map((stones, i) => (
-              <OtauSlot key={`p1-${i}`} index={i} linearIndex={i} position={getOtauPosition(i)} stones={stones}
+              <OtauSlot key={`p1-${i}`} index={i} position={getOtauPosition(i)} stones={stones}
                 isLegal={humanPlayer === 1 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 1}
-                isTuzdyk={state.tuzdyk.player2 === i} isAnimating={animatingOtau === i} isHoverTarget={hoverTargetLinear === i}
+                isTuzdyk={state.tuzdyk.player2 === i} isHoverTarget={hoverTargetLinear === i}
                 isP1={true} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
             ))}
 
             {state.board.player2Otaus.map((stones, i) => (
-              <OtauSlot key={`p2-${i}`} index={i} linearIndex={i + 9} position={getOtauPosition(i + 9)} stones={stones}
+              <OtauSlot key={`p2-${i}`} index={i} position={getOtauPosition(i + 9)} stones={stones}
                 isLegal={humanPlayer === 2 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 2}
-                isTuzdyk={state.tuzdyk.player1 === i} isAnimating={animatingOtau === i + 9} isHoverTarget={hoverTargetLinear === i + 9}
+                isTuzdyk={state.tuzdyk.player1 === i} isHoverTarget={hoverTargetLinear === i + 9}
                 isP1={false} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
             ))}
           </group>
