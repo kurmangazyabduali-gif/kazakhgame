@@ -22,6 +22,17 @@ export class ArrowManager {
     // Wind is simulated by applying constant acceleration
     arrow.setAccelerationX(windX)
 
+    // Arrow trail (Juice)
+    const trail = this.scene.add.particles(0, 0, 'arrow', {
+      scale: { start: 0.1, end: 0 },
+      alpha: { start: 0.5, end: 0 },
+      lifespan: 300,
+      blendMode: 'ADD'
+    })
+    trail.startFollow(arrow)
+    // Attach to arrow so we can destroy it later
+    ;(arrow as any).trail = trail
+
     this.activeArrows.push(arrow)
     return arrow
   }
@@ -33,7 +44,12 @@ export class ArrowManager {
       const body = arrow.body as Phaser.Physics.Arcade.Body
       
       // Stop updating rotation if it hit something (velocity is zero)
-      if (body.velocity.x === 0 && body.velocity.y === 0) return
+      if (body.velocity.x === 0 && body.velocity.y === 0) {
+        if ((arrow as any).trail) {
+          (arrow as any).trail.stop() // Stop emitting
+        }
+        return
+      }
 
       // Rotate to match velocity vector (Air resistance/ aerodynamics)
       arrow.setRotation(Math.atan2(body.velocity.y, body.velocity.x))

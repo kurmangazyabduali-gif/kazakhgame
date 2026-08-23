@@ -39,9 +39,58 @@ export class MainScene extends Phaser.Scene {
     this.config = ZHAMBY_LEVELS[this.currentLevel]
 
     // 1. Setup Parallax
-    this.add.image(w/2, h/2, 'sky').setDisplaySize(w, h).setScrollFactor(0)
-    this.add.tileSprite(w/2, h - 250, w, 200, 'mountains').setOrigin(0.5, 1).setScrollFactor(0.2)
-    this.add.tileSprite(w/2, h, w, 250, 'steppe').setOrigin(0.5, 1).setScrollFactor(1).setTint(0xffffff)
+    let skyKey = 'sky_sunset'
+    let tint = 0xffffff
+    
+    if (this.config.timeOfDay === 'DAY') {
+      skyKey = 'sky_day'
+      tint = 0xffffff
+    } else if (this.config.timeOfDay === 'NIGHT') {
+      skyKey = 'sky_night'
+      tint = 0x555588
+    } else {
+      skyKey = 'sky_sunset'
+      tint = 0xffeebb
+    }
+
+    this.add.image(w/2, h/2, skyKey).setDisplaySize(w, h).setScrollFactor(0)
+    
+    if (this.config.timeOfDay === 'NIGHT') {
+      // Add moon
+      this.add.circle(w * 0.8, h * 0.2, 40, 0xffffee, 0.9).setScrollFactor(0.05)
+    }
+
+    const mnts = this.add.tileSprite(w/2, h - 250, w, 200, 'mountains').setOrigin(0.5, 1).setScrollFactor(0.2)
+    this.bgSteppe = this.add.tileSprite(w/2, h, w, 250, 'steppe').setOrigin(0.5, 1).setScrollFactor(1)
+    
+    mnts.setTint(tint)
+    this.bgSteppe.setTint(tint)
+    
+    // Weather
+    if (this.config.weather === 'SNOW') {
+      this.add.particles(0, 0, 'arrow', {
+        x: { min: 0, max: w },
+        y: 0,
+        lifespan: 4000,
+        speedY: { min: 100, max: 200 },
+        speedX: { min: this.config.windSpeed / 2, max: this.config.windSpeed },
+        scale: { start: 0.1, end: 0.1 },
+        quantity: 2,
+        blendMode: 'ADD'
+      }).setScrollFactor(0)
+    } else if (this.config.weather === 'RAIN') {
+      this.add.particles(0, 0, 'arrow', {
+        x: { min: 0, max: w },
+        y: 0,
+        lifespan: 1500,
+        speedY: { min: 400, max: 600 },
+        speedX: { min: this.config.windSpeed / 2, max: this.config.windSpeed },
+        scaleY: 0.5,
+        scaleX: 0.05,
+        quantity: 4,
+        tint: 0x88bbff
+      }).setScrollFactor(0)
+    }
 
     // 2. Setup Managers
     this.arrowManager = new ArrowManager(this)
@@ -70,12 +119,25 @@ export class MainScene extends Phaser.Scene {
       if (this.gameState !== 'AIMING') return
       this.drawTrajectory(dragVector)
       this.rider.setDrawPower(dragVector)
+      
+      // Bullet Time
+      if (dragVector.length() > 220) {
+        this.time.timeScale = 0.3
+      } else {
+        this.time.timeScale = 1.0
+      }
     }
 
     this.inputManager.onDragEnd = (dragVector) => {
       if (this.gameState !== 'AIMING') return
+      this.time.timeScale = 1.0 // Reset bullet time
       this.trajectoryGraphics.clear()
       this.rider.resetPose()
+      
+      if (dragVector.length() > 20) {
+        if (navigator.vibrate) navigator.vibrate(20) // Haptic feedback on release
+      }
+      
       this.fireArrow(dragVector)
     }
   }
@@ -192,12 +254,20 @@ export class MainScene extends Phaser.Scene {
     
     // Calculate accuracy (distance from center of Jamby)
     const distance = Phaser.Math.Distance.Between(arrow.x, arrow.y, this.target.jamby.x, this.target.jamby.y)
+    const dy = arrow.y - this.target.jamby.y
     
     let hitType = 'MISS'
     let score = 0
     let isPerfect = false
+    let isRopeCut = false
 
-    if (distance < 15) {
+    if (dy < -20 && distance < 45) {
+      hitType = 'ROPE CUT!'
+      score = 500
+      isPerfect = true
+      isRopeCut = true
+      this.target.cutRope()
+    } else if (distance < 15) {
       hitType = 'PERFECT!'
       score = 250
       isPerfect = true
@@ -210,16 +280,21 @@ export class MainScene extends Phaser.Scene {
     }
 
     // Jamby reacts
-    this.target.hit(impactVelocity)
+    if (!isRopeCut) {
+      this.target.hit(impactVelocity)
+    }
+    
     this.uiManager.addScore(score, true)
 
-    // Camera effect
+    // Camera effect & Haptics
     if (isPerfect) {
       this.cameras.main.shake(300, 0.02)
       this.time.timeScale = 0.1 // Deep slow-mo
+      if (navigator.vibrate) navigator.vibrate([50, 50, 50])
     } else {
       this.cameras.main.shake(150, 0.01)
       this.time.timeScale = 0.5 // Slight slow-mo
+      if (navigator.vibrate) navigator.vibrate(50)
     }
 
     // Particles
@@ -305,6 +380,9 @@ export class MainScene extends Phaser.Scene {
         this.target.x = this.rider.x + this.config.targetDistance
         this.target.pole.x = this.target.x
         this.target.jamby.x = this.target.x
+        this.target.jamby.y = this.target.y - 160 // Reset height in case it fell
+        this.target.isCut = false
+        ;(this.target.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
         this.target.jamby.setVelocity(0, 0)
         
         // Remove stuck arrows visually for new target

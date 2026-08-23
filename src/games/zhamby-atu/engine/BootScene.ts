@@ -28,17 +28,23 @@ export class BootScene extends Phaser.Scene {
     this.load.image('mountains', '/assets/zhamby-atu/bg_mountains.svg')
     this.load.image('steppe', '/assets/zhamby-atu/bg_steppe.svg')
 
-    // Generate Sky dynamically since it's just a gradient
-    const skyTexture = this.textures.createCanvas('sky', 2, 256)
-    if (skyTexture) {
-      const ctx = skyTexture.getContext()
-      const grd = ctx.createLinearGradient(0, 0, 0, 256)
-      grd.addColorStop(0, '#2b5876') // Deep blue sunset sky
-      grd.addColorStop(1, '#ffc371') // Golden hour horizon
-      ctx.fillStyle = grd
-      ctx.fillRect(0, 0, 2, 256)
-      skyTexture.refresh()
+    // Generate Sky dynamically
+    const generateSky = (key: string, top: string, bottom: string) => {
+      const skyTexture = this.textures.createCanvas(key, 2, 256)
+      if (skyTexture) {
+        const ctx = skyTexture.getContext()
+        const grd = ctx.createLinearGradient(0, 0, 0, 256)
+        grd.addColorStop(0, top)
+        grd.addColorStop(1, bottom)
+        ctx.fillStyle = grd
+        ctx.fillRect(0, 0, 2, 256)
+        skyTexture.refresh()
+      }
     }
+
+    generateSky('sky_day', '#4facfe', '#fdfbfb')
+    generateSky('sky_sunset', '#2b5876', '#ffc371')
+    generateSky('sky_night', '#0f2027', '#203a43')
   }
 
   create() {

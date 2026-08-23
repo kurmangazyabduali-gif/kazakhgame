@@ -8,6 +8,7 @@ export class JambyTarget {
   public x: number
   public y: number
   private initialY: number
+  public isCut = false
 
   constructor(scene: Phaser.Scene, x: number, y: number, scale: number) {
     this.x = x
@@ -35,7 +36,7 @@ export class JambyTarget {
 
   // To simulate swinging, we apply a spring constraint using Arcade physics velocity
   update(time: number, delta: number) {
-    if (!this.jamby.body) return
+    if (!this.jamby.body || this.isCut) return
     const body = this.jamby.body as Phaser.Physics.Arcade.Body
     
     // Spring physics back to center
@@ -56,10 +57,17 @@ export class JambyTarget {
   }
 
   hit(arrowVelocity: Phaser.Math.Vector2) {
+    if (this.isCut) return
     // Transfer momentum to the jamby
     const force = arrowVelocity.clone().normalize().scale(500)
     if (this.jamby.body) {
       this.jamby.setVelocity(force.x, force.y)
     }
+  }
+
+  cutRope() {
+    this.isCut = true
+    ;(this.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(true)
+    this.jamby.setDrag(0)
   }
 }
