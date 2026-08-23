@@ -22,9 +22,9 @@ export function HomeStatement() {
   return (
     <section 
       ref={containerRef} 
-      className="relative min-h-screen flex items-center justify-center bg-white py-32 overflow-hidden border-t border-b border-border/10"
+      className="relative min-h-screen flex items-center justify-center bg-[#FAF7F0] py-32 overflow-hidden border-t border-b border-border/10"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white via-white to-sand pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#FAF7F0] via-[#FAF7F0] to-[#EADEC9] pointer-events-none" />
       
       {/* Background large subtle ornament */}
       <motion.div 

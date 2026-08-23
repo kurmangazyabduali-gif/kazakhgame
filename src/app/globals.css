@@ -279,3 +279,19 @@
   animation: corner-bloom 1s ease-out forwards;
 }
 
+@keyframes marquee-horse {
+  0% { left: -15%; transform: translateY(0px) scaleX(1); }
+  25% { transform: translateY(-6px) scaleX(1); }
+  49% { transform: translateY(0px) scaleX(1); }
+  50% { left: 115%; transform: translateY(0px) scaleX(1); }
+  51% { left: 115%; transform: translateY(0px) scaleX(-1); }
+  75% { transform: translateY(-6px) scaleX(-1); }
+  99% { transform: translateY(0px) scaleX(-1); }
+  100% { left: -15%; transform: translateY(0px) scaleX(-1); }
+}
+
+.animate-marquee-horse {
+  animation: marquee-horse 28s linear infinite;
+}
+
+

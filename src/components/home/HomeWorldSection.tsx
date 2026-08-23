@@ -35,7 +35,7 @@ export function HomeWorldSection() {
   const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 1.1])
 
   return (
-    <div ref={containerRef} className="relative h-[300vh] w-full bg-white">
+    <div ref={containerRef} className="relative h-[300vh] w-full bg-[#FAF7F0]">
       {/* Sticky container that stays in view */}
       <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
         
@@ -46,21 +46,21 @@ export function HomeWorldSection() {
           {/* World 1: Sport */}
           <motion.div style={{ opacity: imgOp1, scale: scale1 }} className="absolute inset-0 origin-center will-change-transform">
             <Image src="/images/games/jamby-atu.jpg" alt="National Sport" fill className="object-cover opacity-30" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
             <div className="absolute inset-0 bg-gold/5" />
           </motion.div>
 
           {/* World 2: Tradition */}
           <motion.div style={{ opacity: imgOp2, scale: scale2 }} className="absolute inset-0 origin-center will-change-transform">
             <Image src="/images/games/kelin-shai.jpg" alt="National Tradition" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
             <div className="absolute inset-0 bg-[#8B4513]/10" />
           </motion.div>
 
           {/* World 3: Steppe */}
           <motion.div style={{ opacity: imgOp3, scale: scale3 }} className="absolute inset-0 origin-center will-change-transform">
             <Image src="/images/games/togyzqumalak.jpg" alt="The Great Steppe" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
             <div className="absolute inset-0 bg-[#0F172A]/20" />
           </motion.div>
         </div>
