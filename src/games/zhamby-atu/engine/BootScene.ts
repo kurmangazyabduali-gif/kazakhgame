@@ -58,184 +58,246 @@ export class BootScene extends Phaser.Scene {
   }
 
   private _generateHorseFrames() {
-    const W = 200, H = 160
+    // 320x220 gives us room for a proper horse silhouette
+    const W = 320, H = 220
 
-    const draw = (key: string, legPhase: number) => {
+    const drawFrame = (key: string, phase: number) => {
       const tex = this.textures.createCanvas(key, W, H)!
       const ctx = tex.getContext()
+      ctx.clearRect(0, 0, W, H)
 
-      const drawHorse = (lp: number) => {
-        ctx.clearRect(0, 0, W, H)
+      const sin = Math.sin(phase * Math.PI * 2)
+      const cos = Math.cos(phase * Math.PI * 2)
 
-        // Shadow
-        ctx.fillStyle = 'rgba(0,0,0,0.15)'
-        ctx.beginPath()
-        ctx.ellipse(100, H - 10, 70, 12, 0, 0, Math.PI * 2)
-        ctx.fill()
+      // ── Shadow on ground
+      ctx.save()
+      ctx.globalAlpha = 0.18
+      ctx.fillStyle = '#000'
+      ctx.beginPath()
+      ctx.ellipse(155, H - 8, 90, 14, 0, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.restore()
 
-        // Body gradient
-        const bodyGrad = ctx.createRadialGradient(95, 85, 10, 95, 85, 70)
-        bodyGrad.addColorStop(0, '#8b6347')
-        bodyGrad.addColorStop(0.5, '#5c3d22')
-        bodyGrad.addColorStop(1, '#3a2010')
-        ctx.fillStyle = bodyGrad
+      // ── BACK legs (draw first so body overlaps)
+      const drawLeg = (
+        sx: number, sy: number,
+        thighAngle: number, shinAngle: number,
+        col: string
+      ) => {
+        const tx = sx + Math.sin(thighAngle) * 48
+        const ty = sy + Math.cos(thighAngle) * 48
+        const fx = tx + Math.sin(shinAngle) * 44
+        const fy = ty + Math.cos(shinAngle) * 44
 
-        // Main body
-        ctx.beginPath()
-        ctx.moveTo(30, 100)
-        ctx.bezierCurveTo(25, 70, 40, 55, 80, 50)
-        ctx.bezierCurveTo(120, 45, 155, 48, 165, 60)
-        ctx.bezierCurveTo(175, 72, 170, 95, 160, 105)
-        ctx.bezierCurveTo(130, 115, 70, 115, 30, 100)
-        ctx.fill()
-
-        // Neck
-        const neckGrad = ctx.createLinearGradient(130, 55, 155, 30)
-        neckGrad.addColorStop(0, '#6b4c30')
-        neckGrad.addColorStop(1, '#4a2e18')
-        ctx.fillStyle = neckGrad
-        ctx.beginPath()
-        ctx.moveTo(135, 55)
-        ctx.bezierCurveTo(140, 35, 150, 20, 158, 15)
-        ctx.bezierCurveTo(165, 10, 172, 18, 168, 30)
-        ctx.bezierCurveTo(162, 45, 148, 55, 140, 60)
-        ctx.fill()
-
-        // Head
-        const headGrad = ctx.createLinearGradient(155, 10, 185, 45)
-        headGrad.addColorStop(0, '#7a5535')
-        headGrad.addColorStop(1, '#4a2e18')
-        ctx.fillStyle = headGrad
-        ctx.beginPath()
-        ctx.moveTo(158, 15)
-        ctx.bezierCurveTo(162, 5, 175, 5, 182, 12)
-        ctx.bezierCurveTo(188, 20, 186, 38, 178, 45)
-        ctx.bezierCurveTo(170, 52, 158, 48, 155, 40)
-        ctx.bezierCurveTo(152, 32, 154, 22, 158, 15)
-        ctx.fill()
-
-        // Nostril
-        ctx.fillStyle = '#2a1408'
-        ctx.beginPath()
-        ctx.ellipse(178, 40, 4, 3, 0.3, 0, Math.PI * 2)
-        ctx.fill()
-
-        // Eye
-        ctx.fillStyle = '#1a0f05'
-        ctx.beginPath()
-        ctx.arc(172, 22, 4, 0, Math.PI * 2)
-        ctx.fill()
-        ctx.fillStyle = 'rgba(255,255,255,0.6)'
-        ctx.beginPath()
-        ctx.arc(173, 21, 1.5, 0, Math.PI * 2)
-        ctx.fill()
-
-        // Ear
-        ctx.fillStyle = '#4a2e18'
-        ctx.beginPath()
-        ctx.moveTo(166, 8)
-        ctx.lineTo(160, -2)
-        ctx.lineTo(158, 8)
-        ctx.fill()
-
-        // Mane
-        ctx.fillStyle = '#1a0a00'
-        for (let i = 0; i < 6; i++) {
-          const mx = 140 - i * 8
-          const my = 35 - i * 2
-          ctx.beginPath()
-          ctx.moveTo(mx + 5, my - 5)
-          ctx.bezierCurveTo(mx, my - 15, mx - 10, my - 10, mx - 5, my + 5)
-          ctx.bezierCurveTo(mx + 2, my + 2, mx + 8, my - 2, mx + 5, my - 5)
-          ctx.fill()
-        }
-
-        // Saddle
-        const saddleGrad = ctx.createLinearGradient(90, 50, 120, 80)
-        saddleGrad.addColorStop(0, '#8b1a0a')
-        saddleGrad.addColorStop(1, '#5a0f05')
-        ctx.fillStyle = saddleGrad
-        ctx.beginPath()
-        ctx.moveTo(90, 53)
-        ctx.bezierCurveTo(105, 48, 125, 50, 135, 57)
-        ctx.bezierCurveTo(132, 68, 115, 72, 95, 70)
-        ctx.bezierCurveTo(88, 67, 88, 60, 90, 53)
-        ctx.fill()
-
-        // Saddle detail
-        ctx.strokeStyle = '#c0392b'
-        ctx.lineWidth = 1.5
-        ctx.beginPath()
-        ctx.moveTo(95, 52)
-        ctx.bezierCurveTo(110, 49, 128, 52, 133, 58)
-        ctx.stroke()
-
-        // Legs — using phase offset for gallop animation
-        const legPositions = [
-          // [frontLeft, frontRight, backLeft, backRight] ankle angles
-          { fl: lp * 40, fr: -lp * 35, bl: -lp * 40, br: lp * 35 },
-        ][0]
-
-        const drawLeg = (ox: number, oy: number, angle1: number, light: boolean) => {
-          ctx.strokeStyle = light ? '#6b4c30' : '#3a2010'
-          ctx.lineWidth = 11
-          ctx.lineCap = 'round'
-
-          const a1 = (angle1 * Math.PI) / 180
-          const kx = ox + Math.sin(a1) * 40
-          const ky = oy + Math.cos(a1) * 40
-          const hx = kx + Math.sin(a1 * 0.5) * 35
-          const hy = ky + Math.cos(a1 * 0.5) * 35
-
-          ctx.beginPath()
-          ctx.moveTo(ox, oy)
-          ctx.lineTo(kx, ky)
-          ctx.stroke()
-
-          ctx.lineWidth = 9
-          ctx.beginPath()
-          ctx.moveTo(kx, ky)
-          ctx.lineTo(hx, hy)
-          ctx.stroke()
-
-          // Hoof
-          ctx.fillStyle = '#1a0f05'
-          ctx.beginPath()
-          ctx.ellipse(hx, hy + 4, 9, 6, (a1 * 0.3), 0, Math.PI * 2)
-          ctx.fill()
-        }
-
-        // Back legs (darker)
-        drawLeg(70, 108, legPhase * -35, false)
-        drawLeg(90, 112, legPhase * 35, false)
-        // Front legs (lighter)
-        drawLeg(130, 105, legPhase * 40, true)
-        drawLeg(150, 108, legPhase * -40, true)
-
-        // Tail
-        ctx.strokeStyle = '#1a0a00'
-        ctx.lineWidth = 8
+        // Thigh
         ctx.lineCap = 'round'
+        ctx.lineJoin = 'round'
+        ctx.strokeStyle = col
+        ctx.lineWidth = 16
         ctx.beginPath()
-        ctx.moveTo(32, 88)
-        ctx.bezierCurveTo(15, 80 + lp * 10, 5, 100 + lp * 5, 10, 120 + lp * 8)
+        ctx.moveTo(sx, sy)
+        ctx.lineTo(tx, ty)
         ctx.stroke()
-        ctx.lineWidth = 4
-        ctx.strokeStyle = '#2a1408'
+
+        // Shin
+        ctx.lineWidth = 11
         ctx.beginPath()
-        ctx.moveTo(32, 88)
-        ctx.bezierCurveTo(20, 85 + lp * 8, 0, 95 + lp * 10, 5, 118 + lp * 6)
+        ctx.moveTo(tx, ty)
+        ctx.lineTo(fx, fy)
         ctx.stroke()
+
+        // Hoof
+        ctx.fillStyle = '#1a0d04'
+        ctx.beginPath()
+        ctx.ellipse(fx, fy + 4, 10, 6, shinAngle * 0.2, 0, Math.PI * 2)
+        ctx.fill()
       }
 
-      drawHorse(legPhase)
+      // Back legs positions (hindquarters at x~80)
+      const blThigh = -0.18 + sin * 0.45
+      const blShin  = 0.15 - sin * 0.35
+      const brThigh = -0.18 - sin * 0.45
+      const brShin  = 0.15 + sin * 0.35
+      drawLeg(85, 126, blThigh, blShin, '#3d2610')
+      drawLeg(100, 126, brThigh, brShin, '#4a2e18')
+
+      // ── BODY
+      const bodyGrad = ctx.createLinearGradient(80, 60, 200, 160)
+      bodyGrad.addColorStop(0, '#8b6040')
+      bodyGrad.addColorStop(0.35, '#6a4428')
+      bodyGrad.addColorStop(0.7, '#4d3018')
+      bodyGrad.addColorStop(1, '#3a2010')
+      ctx.fillStyle = bodyGrad
+
+      // Large, barrel-shaped body — horse should be BIG
+      ctx.beginPath()
+      ctx.moveTo(55, 135)                            // rear bottom
+      ctx.bezierCurveTo(50, 80, 80, 52, 130, 48)    // topline arch
+      ctx.bezierCurveTo(175, 44, 215, 50, 240, 62)   // wither to shoulder
+      ctx.bezierCurveTo(260, 72, 262, 95, 255, 115)  // chest drop
+      ctx.bezierCurveTo(240, 130, 180, 138, 130, 140)
+      ctx.bezierCurveTo(100, 142, 68, 148, 55, 135)
+      ctx.fill()
+
+      // Body highlight (top sheen)
+      ctx.fillStyle = 'rgba(255,200,120,0.12)'
+      ctx.beginPath()
+      ctx.moveTo(95, 50)
+      ctx.bezierCurveTo(140, 40, 195, 42, 230, 58)
+      ctx.bezierCurveTo(210, 52, 160, 46, 95, 50)
+      ctx.fill()
+
+      // ── NECK
+      const neckGrad = ctx.createLinearGradient(220, 60, 260, 10)
+      neckGrad.addColorStop(0, '#7a5030')
+      neckGrad.addColorStop(1, '#5a3820')
+      ctx.fillStyle = neckGrad
+      ctx.beginPath()
+      ctx.moveTo(232, 62)
+      ctx.bezierCurveTo(245, 45, 258, 20, 262, 8)   // front neckline up
+      ctx.bezierCurveTo(270, 6, 278, 12, 275, 22)   // poll
+      ctx.bezierCurveTo(270, 38, 255, 55, 245, 70)  // back of neck down
+      ctx.fill()
+
+      // ── HEAD
+      const headGrad = ctx.createLinearGradient(255, 5, 305, 55)
+      headGrad.addColorStop(0, '#8a5838')
+      headGrad.addColorStop(0.5, '#6a4025')
+      headGrad.addColorStop(1, '#4a2c15')
+      ctx.fillStyle = headGrad
+      ctx.beginPath()
+      ctx.moveTo(264, 8)                             // top of head
+      ctx.bezierCurveTo(270, 2, 292, 2, 300, 10)    // forehead
+      ctx.bezierCurveTo(308, 18, 310, 35, 307, 50)  // face
+      ctx.bezierCurveTo(305, 58, 300, 62, 293, 60)  // muzzle top
+      ctx.bezierCurveTo(298, 68, 298, 76, 290, 78)  // chin
+      ctx.bezierCurveTo(280, 80, 270, 75, 268, 65)  // jaw back
+      ctx.bezierCurveTo(260, 52, 258, 30, 264, 8)
+      ctx.fill()
+
+      // Muzzle (lighter)
+      ctx.fillStyle = '#9a7055'
+      ctx.beginPath()
+      ctx.ellipse(296, 70, 12, 10, 0.2, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Nostril
+      ctx.fillStyle = '#1a0a00'
+      ctx.beginPath()
+      ctx.ellipse(300, 68, 4, 3, 0.5, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Eye (expressive)
+      ctx.fillStyle = '#1a0a00'
+      ctx.beginPath()
+      ctx.ellipse(286, 22, 6, 5, -0.2, 0, Math.PI * 2)
+      ctx.fill()
+      // Eye whites (sclera hint)
+      ctx.fillStyle = 'rgba(255,255,255,0.4)'
+      ctx.beginPath()
+      ctx.arc(283, 20, 2, 0, Math.PI * 2)
+      ctx.fill()
+      // Eye shine
+      ctx.fillStyle = 'rgba(255,255,255,0.8)'
+      ctx.beginPath()
+      ctx.arc(289, 20, 1.5, 0, Math.PI * 2)
+      ctx.fill()
+
+      // Ear
+      ctx.fillStyle = '#5a3820'
+      ctx.beginPath()
+      ctx.moveTo(272, 4)
+      ctx.lineTo(265, -8)
+      ctx.lineTo(262, 6)
+      ctx.fill()
+      // Inner ear
+      ctx.fillStyle = '#c09080'
+      ctx.beginPath()
+      ctx.moveTo(271, 3)
+      ctx.lineTo(266, -5)
+      ctx.lineTo(263, 5)
+      ctx.fill()
+
+      // ── MANE (dramatic flowing)
+      ctx.save()
+      for (let i = 0; i < 8; i++) {
+        const mx = 262 - i * 15
+        const my = 10 + i * 6
+        const wave = sin * 8 * (i / 8)
+        ctx.fillStyle = i < 4 ? '#1a0800' : '#2a1208'
+        ctx.beginPath()
+        ctx.moveTo(mx, my)
+        ctx.bezierCurveTo(mx - 18 + wave, my + 10, mx - 22 + wave, my + 25, mx - 14 + wave, my + 35)
+        ctx.bezierCurveTo(mx - 8 + wave, my + 28, mx - 4, my + 15, mx, my)
+        ctx.fill()
+      }
+      ctx.restore()
+
+      // ── SADDLE (red, ornate Kazakh style)
+      const saddleGrad = ctx.createLinearGradient(155, 48, 210, 85)
+      saddleGrad.addColorStop(0, '#aa2010')
+      saddleGrad.addColorStop(0.5, '#881508')
+      saddleGrad.addColorStop(1, '#5a0d05')
+      ctx.fillStyle = saddleGrad
+      ctx.beginPath()
+      ctx.moveTo(155, 50)
+      ctx.bezierCurveTo(172, 44, 200, 45, 218, 54)
+      ctx.bezierCurveTo(222, 65, 212, 78, 195, 80)
+      ctx.bezierCurveTo(175, 82, 155, 78, 150, 68)
+      ctx.bezierCurveTo(148, 60, 150, 53, 155, 50)
+      ctx.fill()
+
+      // Saddle gold trim
+      ctx.strokeStyle = '#d4af37'
+      ctx.lineWidth = 2.5
+      ctx.beginPath()
+      ctx.moveTo(158, 50)
+      ctx.bezierCurveTo(178, 44, 205, 45, 216, 55)
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.moveTo(152, 66)
+      ctx.bezierCurveTo(160, 75, 185, 80, 210, 74)
+      ctx.stroke()
+
+      // ── FRONT legs
+      const flThigh = 0.20 + cos * 0.42
+      const flShin  = -0.10 - cos * 0.32
+      const frThigh = 0.20 - cos * 0.42
+      const frShin  = -0.10 + cos * 0.32
+      drawLeg(210, 128, flThigh, flShin, '#4a2e18')
+      drawLeg(225, 125, frThigh, frShin, '#5a3820')
+
+      // ── TAIL (flowing)
+      ctx.save()
+      const tailWave = sin * 18
+      ctx.strokeStyle = '#1a0800'
+      ctx.lineWidth = 12
+      ctx.lineCap = 'round'
+      ctx.beginPath()
+      ctx.moveTo(57, 110)
+      ctx.bezierCurveTo(35, 105 + tailWave * 0.5, 18, 128 + tailWave, 22, 158 + tailWave)
+      ctx.stroke()
+      ctx.strokeStyle = '#2a1208'
+      ctx.lineWidth = 7
+      ctx.beginPath()
+      ctx.moveTo(57, 110)
+      ctx.bezierCurveTo(30, 102 + tailWave * 0.7, 10, 125 + tailWave, 15, 155 + tailWave)
+      ctx.stroke()
+      ctx.strokeStyle = '#3a1a0a'
+      ctx.lineWidth = 4
+      ctx.beginPath()
+      ctx.moveTo(56, 108)
+      ctx.bezierCurveTo(25, 100 + tailWave, 5, 120 + tailWave * 0.8, 10, 150 + tailWave * 0.9)
+      ctx.stroke()
+      ctx.restore()
+
       tex.refresh()
     }
 
-    draw('horse_0', 0)
-    draw('horse_1', 0.7)
-    draw('horse_2', 1)
-    draw('horse_3', 0.3)
+    drawFrame('horse_0', 0.0)
+    drawFrame('horse_1', 0.25)
+    drawFrame('horse_2', 0.5)
+    drawFrame('horse_3', 0.75)
   }
 
   private _generateRider() {

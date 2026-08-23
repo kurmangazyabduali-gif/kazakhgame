@@ -10,10 +10,10 @@ export class RiderEntity extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y)
 
-    // Horse (animated sprite)
+    // Horse — drawn at 320x220, needs to be scaled down to fit the scene nicely
     this.horse = scene.add.sprite(0, 0, 'horse_0')
-    this.horse.setOrigin(0.5, 1)
-    this.horse.setScale(1.2)
+    this.horse.setOrigin(0.65, 0.85) // Origin roughly at center-bottom of body
+    this.horse.setScale(0.85)
     this.horse.play('horse_gallop')
 
     // Torso

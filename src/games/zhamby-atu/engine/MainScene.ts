@@ -18,20 +18,28 @@ export class MainScene extends Phaser.Scene {
 
   private rider!: RiderEntity
   private target!: JambyTarget
-  
+
   private arrowManager!: ArrowManager
   private inputManager!: InputManager
   private cameraManager!: CameraManager
   private uiManager!: UIManager
-  
+
   private trajectoryGraphics!: Phaser.GameObjects.Graphics
-  
+
   private baseScrollX = 0
   private gameState: 'RIDING' | 'AIMING' | 'FLIGHT' | 'RESULT' = 'RIDING'
   private attemptsUsed = 0
+  private hitsThisLevel = 0
 
   constructor() {
     super('MainScene')
+  }
+
+  init(data: { level?: number }) {
+    // Receive level from scene restart or launch
+    if (data?.level) {
+      this.currentLevel = Math.min(data.level, 15)
+    }
   }
 
   create() {
@@ -281,6 +289,7 @@ export class MainScene extends Phaser.Scene {
     }
     
     this.uiManager.addScore(score, true)
+    if (hitType !== 'GRAZE') this.hitsThisLevel++
 
     // Camera effect & Haptics
     if (isPerfect) {
@@ -360,33 +369,41 @@ export class MainScene extends Phaser.Scene {
 
     this.time.delayedCall(1000, () => {
       this.cameraManager.returnToRider()
-      
-      if (this.attemptsUsed >= this.config.attempts) {
-        // Level complete
-        const stars = 3 // Calculate based on accuracy/score
-        this.uiManager.showLevelComplete(stars, () => {
-          this.currentLevel++
-          this.attemptsUsed = 0
-          this.scene.restart()
-        })
-      } else {
-        // Spawn next target visually if needed, but for now we just keep riding to the same target?
-        // Wait, if it's the SAME target, we should reset its position further away!
-        // The game design says multiple shots per level.
-        this.target.x = this.rider.x + this.config.targetDistance
-        this.target.pole.x = this.target.x
-        this.target.jamby.x = this.target.x
-        this.target.jamby.y = this.target.y - 160 // Reset height in case it fell
-        this.target.isCut = false
-        ;(this.target.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
-        this.target.jamby.setVelocity(0, 0)
-        
-        // Remove stuck arrows visually for new target
-        this.stuckArrows.forEach(a => a.arrow.destroy())
-        this.stuckArrows = []
 
-        this.gameState = 'RIDING'
+      // Level complete when all attempts used
+      if (this.attemptsUsed >= this.config.attempts) {
+        const stars = this.hitsThisLevel >= this.config.attempts
+          ? 3
+          : this.hitsThisLevel >= Math.ceil(this.config.attempts / 2)
+            ? 2
+            : this.hitsThisLevel > 0 ? 1 : 1
+
+        this.uiManager.showLevelComplete(stars, () => {
+          const nextLevel = this.currentLevel + 1
+          if (nextLevel > 15) {
+            // Game complete - restart from level 1
+            this.scene.restart({ level: 1 })
+          } else {
+            this.scene.restart({ level: nextLevel })
+          }
+        })
+        return
       }
+
+      // Move target ahead for next shot (same level, next attempt)
+      this.target.x = this.rider.x + this.config.targetDistance
+      this.target.pole.x = this.target.x
+      this.target.jamby.x = this.target.x
+      this.target.jamby.y = this.target.y - 160
+      this.target.isCut = false
+      ;(this.target.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
+      this.target.jamby.setVelocity(0, 0)
+
+      // Clear stuck arrows
+      this.stuckArrows.forEach(a => a.arrow.destroy())
+      this.stuckArrows = []
+
+      this.gameState = 'RIDING'
     })
   }
 }
