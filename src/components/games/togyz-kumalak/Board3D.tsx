@@ -135,7 +135,7 @@ function OtauSlot({
 
   return (
     <group position={position}>
-      <group onClick={() => isLegal && onClick()} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}>
+      <group onPointerDown={(e) => { e.stopPropagation(); if(isLegal) onClick() }} onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}>
         <CustomOtauShape position={[0, 0, 0]} />
         
         {/* Interaction Glow */}
