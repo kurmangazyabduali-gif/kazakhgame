@@ -13,6 +13,16 @@ export class BootScene extends Phaser.Scene {
 
     // Load actual SVG assets created as beautiful vector silhouettes
     this.load.image('rider', '/assets/zhamby-atu/rider.svg')
+    this.load.image('rider_torso', '/assets/zhamby-atu/sprites/rider_torso.svg')
+    this.load.image('bow_idle', '/assets/zhamby-atu/sprites/bow_idle.svg')
+    this.load.image('bow_drawn', '/assets/zhamby-atu/sprites/bow_drawn.svg')
+    
+    // Load horse animation frames
+    this.load.image('horse_run_0', '/assets/zhamby-atu/sprites/horse_run_0.svg')
+    this.load.image('horse_run_1', '/assets/zhamby-atu/sprites/horse_run_1.svg')
+    this.load.image('horse_run_2', '/assets/zhamby-atu/sprites/horse_run_2.svg')
+    this.load.image('horse_run_3', '/assets/zhamby-atu/sprites/horse_run_3.svg')
+
     this.load.image('arrow', '/assets/zhamby-atu/arrow.svg')
     this.load.image('target', '/assets/zhamby-atu/target.svg')
     this.load.image('mountains', '/assets/zhamby-atu/bg_mountains.svg')
@@ -32,6 +42,18 @@ export class BootScene extends Phaser.Scene {
   }
 
   create() {
+    this.anims.create({
+      key: 'horse_gallop',
+      frames: [
+        { key: 'horse_run_0' },
+        { key: 'horse_run_1' },
+        { key: 'horse_run_2' },
+        { key: 'horse_run_3' }
+      ],
+      frameRate: 12,
+      repeat: -1
+    })
+
     this.scene.start('MainScene')
   }
 }

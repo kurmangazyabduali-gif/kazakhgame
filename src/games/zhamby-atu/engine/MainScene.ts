@@ -5,6 +5,7 @@ import { ArrowManager } from './managers/ArrowManager'
 import { InputManager } from './managers/InputManager'
 import { CameraManager } from './managers/CameraManager'
 import { UIManager } from './managers/UIManager'
+import { RiderEntity } from './entities/RiderEntity'
 
 export class MainScene extends Phaser.Scene {
   private currentLevel = 1
@@ -14,7 +15,7 @@ export class MainScene extends Phaser.Scene {
 
   private stuckArrows: { arrow: Phaser.Physics.Arcade.Image, offsetX: number, offsetY: number, angleOffset: number }[] = []
 
-  private rider!: Phaser.GameObjects.Image
+  private rider!: RiderEntity
   private target!: JambyTarget
   
   private arrowManager!: ArrowManager
@@ -49,7 +50,7 @@ export class MainScene extends Phaser.Scene {
     this.uiManager = new UIManager(this, this.currentLevel)
 
     // 3. Setup Entities
-    this.rider = this.add.image(w * 0.2, h - 100, 'rider').setOrigin(0.5, 1)
+    this.rider = new RiderEntity(this, w * 0.2, h - 100)
     
     // Calculate world width dynamically based on target distance
     const worldWidth = this.config.targetDistance + w
@@ -68,11 +69,13 @@ export class MainScene extends Phaser.Scene {
     this.inputManager.onDragMove = (dragVector) => {
       if (this.gameState !== 'AIMING') return
       this.drawTrajectory(dragVector)
+      this.rider.setDrawPower(dragVector)
     }
 
     this.inputManager.onDragEnd = (dragVector) => {
       if (this.gameState !== 'AIMING') return
       this.trajectoryGraphics.clear()
+      this.rider.resetPose()
       this.fireArrow(dragVector)
     }
   }
