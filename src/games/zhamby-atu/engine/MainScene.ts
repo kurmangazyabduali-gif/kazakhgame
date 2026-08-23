@@ -40,6 +40,13 @@ export class MainScene extends Phaser.Scene {
     if (data?.level) {
       this.currentLevel = Math.min(data.level, 15)
     }
+    
+    // Reset all state for the new level
+    this.baseScrollX = 0
+    this.gameState = 'RIDING'
+    this.attemptsUsed = 0
+    this.hitsThisLevel = 0
+    this.stuckArrows = []
   }
 
   create() {
@@ -398,6 +405,11 @@ export class MainScene extends Phaser.Scene {
       this.target.isCut = false
       ;(this.target.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
       this.target.jamby.setVelocity(0, 0)
+      
+      // Expand physics world dynamically so we don't hit an invisible wall!
+      const w = this.scale.width
+      const h = this.scale.height
+      this.physics.world.setBounds(0, -h * 2, this.target.x + w * 2, h * 4)
 
       // Clear stuck arrows
       this.stuckArrows.forEach(a => a.arrow.destroy())
