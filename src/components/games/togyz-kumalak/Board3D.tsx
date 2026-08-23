@@ -247,58 +247,60 @@ export default function Board3D({
            style={{ background: 'radial-gradient(circle at center, #3a1505 0%, #000000 80%)' }} />
            
       <Canvas shadows dpr={[1, 2]} gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping }}>
-        <CameraRig />
-        
-        <ambientLight intensity={0.5} />
-        
-        {/* Cinematic Spotlight */}
-        <SpotLight 
-          position={[0, 15, 5]} 
-          angle={0.6} 
-          penumbra={0.8} 
-          intensity={2.5} 
-          castShadow 
-          color="#ffefe0"
-        />
-        
-        <Environment preset="studio" />
-        
-        <Center>
-          <group>
-            {/* Massive Wooden Board Base */}
-            <mesh position={[0, -0.4, 0]} receiveShadow>
-              <boxGeometry args={[BOARD_W, 0.8, BOARD_H]} />
-              <meshPhysicalMaterial 
-                color={BOARD_WOOD} 
-                roughness={0.6} 
-                metalness={0.1}
-                clearcoat={0.3}
-              />
-            </mesh>
+        <React.Suspense fallback={null}>
+          <CameraRig />
+          
+          <ambientLight intensity={0.5} />
+          
+          {/* Cinematic Spotlight */}
+          <SpotLight 
+            position={[0, 15, 5]} 
+            angle={0.6} 
+            penumbra={0.8} 
+            intensity={2.5} 
+            castShadow 
+            color="#ffefe0"
+          />
+          
+          <Environment preset="studio" />
+          
+          <Center>
+            <group>
+              {/* Massive Wooden Board Base */}
+              <mesh position={[0, -0.4, 0]} receiveShadow>
+                <boxGeometry args={[BOARD_W, 0.8, BOARD_H]} />
+                <meshPhysicalMaterial 
+                  color={BOARD_WOOD} 
+                  roughness={0.6} 
+                  metalness={0.1}
+                  clearcoat={0.3}
+                />
+              </mesh>
 
-            {/* Kazans */}
-            <KazanSlot position={p2KazanPos} stones={state.kazan.player2} isP1={false} />
-            <KazanSlot position={p1KazanPos} stones={state.kazan.player1} isP1={true} />
+              {/* Kazans */}
+              <KazanSlot position={p2KazanPos} stones={state.kazan.player2} isP1={false} />
+              <KazanSlot position={p1KazanPos} stones={state.kazan.player1} isP1={true} />
 
-            {/* Otaus */}
-            {state.board.player1Otaus.map((stones, i) => (
-              <OtauSlot key={`p1-${i}`} index={i} position={getOtauPosition(i)} stones={stones}
-                isLegal={humanPlayer === 1 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 1}
-                isTuzdyk={state.tuzdyk.player2 === i} isHoverTarget={hoverTargetLinear === i}
-                isP1={true} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
-            ))}
+              {/* Otaus */}
+              {state.board.player1Otaus.map((stones, i) => (
+                <OtauSlot key={`p1-${i}`} index={i} position={getOtauPosition(i)} stones={stones}
+                  isLegal={humanPlayer === 1 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 1}
+                  isTuzdyk={state.tuzdyk.player2 === i} isHoverTarget={hoverTargetLinear === i}
+                  isP1={true} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
+              ))}
 
-            {state.board.player2Otaus.map((stones, i) => (
-              <OtauSlot key={`p2-${i}`} index={i} position={getOtauPosition(i + 9)} stones={stones}
-                isLegal={humanPlayer === 2 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 2}
-                isTuzdyk={state.tuzdyk.player1 === i} isHoverTarget={hoverTargetLinear === i + 9}
-                isP1={false} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
-            ))}
-          </group>
-        </Center>
+              {state.board.player2Otaus.map((stones, i) => (
+                <OtauSlot key={`p2-${i}`} index={i} position={getOtauPosition(i + 9)} stones={stones}
+                  isLegal={humanPlayer === 2 && legalMoves.has(i)} isSelected={selectedOtau === i && humanPlayer === 2}
+                  isTuzdyk={state.tuzdyk.player1 === i} isHoverTarget={hoverTargetLinear === i + 9}
+                  isP1={false} onClick={() => onOtauClick(i)} onHover={handleHoverOtau} />
+              ))}
+            </group>
+          </Center>
 
-        {/* Soft shadow under the board to ground it */}
-        <ContactShadows position={[0, -0.8, 0]} opacity={0.6} scale={20} blur={2.5} far={4} />
+          {/* Soft shadow under the board to ground it */}
+          <ContactShadows position={[0, -0.8, 0]} opacity={0.6} scale={20} blur={2.5} far={4} />
+        </React.Suspense>
       </Canvas>
     </div>
   )
