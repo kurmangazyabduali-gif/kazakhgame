@@ -41,15 +41,15 @@ export default function GameWrapper({ sessionId }: GameWrapperProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showHistory, setShowHistory] = useState(false)
 
-  const [pendingResult, setPendingResult] = useState<{ session: GameSession, result: MoveResult } | null>(null)
+  const pendingResultRef = useRef<{ session: GameSession, result: MoveResult } | null>(null)
 
   const aiRef = useRef<TogyzAI | null>(null)
   const totalCapturedRef = useRef(0)
   const tuzdykCreatedRef = useRef(false)
 
   const handleAnimationComplete = useCallback(() => {
-    if (pendingResult) {
-      const { session: currentSession, result } = pendingResult
+    if (pendingResultRef.current) {
+      const { session: currentSession, result } = pendingResultRef.current
       
       setSession({
         ...currentSession,
@@ -69,9 +69,9 @@ export default function GameWrapper({ sessionId }: GameWrapperProps) {
         })
         submitResult(currentSession, result.nextState, result.winner, result.isDraw, captured, duration)
       }
-      setPendingResult(null)
+      pendingResultRef.current = null
     }
-  }, [pendingResult])
+  }, [])
 
   const { visualState, animatingPit, isAnimating, startAnimation } = useSowingAnimation(
     session?.state || TogyzqumalakEngine.getInitialState(), 
@@ -144,7 +144,7 @@ export default function GameWrapper({ sessionId }: GameWrapperProps) {
       tuzdykCreatedRef.current = true
     }
 
-    setPendingResult({ session: currentSession, result })
+    pendingResultRef.current = { session: currentSession, result }
     startAnimation(currentSession.state, move, result.moveRecord, result.nextState)
     
   }, [startAnimation])
