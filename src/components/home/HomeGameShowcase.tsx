@@ -35,7 +35,7 @@ export function HomeGameShowcase() {
           </div>
         </motion.div>
         
-        <div className="flex flex-col lg:flex-row gap-6 md:gap-8 h-auto lg:h-[700px]">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8 h-auto xl:h-[700px]">
           <ShowcaseCard 
             title="АСЫҚ АТУ"
             desc="Көшпенділердің дәстүрлі 3D ойынында мергендігіңізді сынаңыз. Асық атып, комбо жинап, басқалармен жарысыңыз."
@@ -46,13 +46,22 @@ export function HomeGameShowcase() {
             delay={0}
           />
           <ShowcaseCard 
+            title="ЖАМБЫ АТУ"
+            desc="Ат үстінде садақ ату өнері. Шауып келе жатып нысанаға дәл тигізіп, нағыз мерген екеніңізді дәлелдеңіз."
+            category="СПОРТ"
+            href="/games/zhamby-atu"
+            image="/images/games/jamby-atu.jpg"
+            ornament="su"
+            delay={0.15}
+          />
+          <ShowcaseCard 
             title="КЕЛІН ШАЙ"
             desc="Этикет пен құрметтің қыр-сырын біліңіз. Жайлы үйде шай құйып, қонақтарға құрмет көрсетіңіз."
             category="ДӘСТҮР"
             href="/games/kelin-shai"
             image="/images/games/kelin-shai.jpg"
             ornament="tumar"
-            delay={0.2}
+            delay={0.3}
           />
           <ShowcaseCard 
             title="ТОҒЫЗҚҰМАЛАҚ"
@@ -61,7 +70,7 @@ export function HomeGameShowcase() {
             href="/games/togyz-kumalak"
             image="/images/games/togyzqumalak.jpg"
             ornament="geometric"
-            delay={0.4}
+            delay={0.45}
           />
         </div>
       </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import { motion } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { HeritageButton } from '../ui/heritage/HeritageButton'
 import { HomeScrollIndicator } from './HomeScrollIndicator'
 import Link from 'next/link'
@@ -88,22 +88,29 @@ const DUST = Array.from({ length: 14 }, (_, i) => ({
 const TITLE = ['U', 'L', 'Y', ' ', 'D', 'A', 'L', 'A']
 
 export function HomeHero() {
-  return (
-    <section className="relative w-full h-[100dvh] flex items-center justify-center overflow-hidden bg-[#FAF7F0]">
+  const { scrollY } = useScroll()
+  
+  const yBg = useTransform(scrollY, [0, 1000], [0, 300])
+  const yFront = useTransform(scrollY, [0, 1000], [0, -150])
+  const opacityText = useTransform(scrollY, [0, 400], [1, 0])
+  const scaleText = useTransform(scrollY, [0, 400], [1, 0.8])
 
-      {/* === Background: two rotating shanyraks === */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+  return (
+    <section className="relative w-full h-[100dvh] flex items-center justify-center overflow-hidden bg-[#FAF7F0] perspective-1000">
+
+      {/* === Background: two rotating shanyraks with Parallax === */}
+      <motion.div style={{ y: yBg }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {/* Outer large — slow clockwise */}
         <div className="w-[900px] h-[900px] text-gold animate-shanyrak" style={{ opacity: 0.07 }}>
           <ShanyraqSVG className="w-full h-full"/>
         </div>
-      </div>
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+      </motion.div>
+      <motion.div style={{ y: yBg }} className="absolute inset-0 flex items-center justify-center pointer-events-none">
         {/* Inner medium — faster counter-clockwise */}
         <div className="w-[520px] h-[520px] text-gold animate-shanyrak-reverse" style={{ opacity: 0.12 }}>
           <ShanyraqSVG className="w-full h-full"/>
         </div>
-      </div>
+      </motion.div>
 
       {/* === Ornament top band === */}
       <motion.div
@@ -155,7 +162,10 @@ export function HomeHero() {
       ))}
 
       {/* === Foreground content === */}
-      <div className="relative z-20 flex flex-col items-center text-center px-4 w-full max-w-5xl">
+      <motion.div 
+        style={{ y: yFront, opacity: opacityText, scale: scaleText }}
+        className="relative z-20 flex flex-col items-center text-center px-4 w-full max-w-5xl"
+      >
 
         {/* Gold line */}
         <motion.div
@@ -216,7 +226,7 @@ export function HomeHero() {
         >
           ҰЛТТЫҚ ОЙЫНДАР • ДӘСТҮР • ҰЛЫ ДАЛА
         </motion.div>
-      </div>
+      </motion.div>
 
       <HomeScrollIndicator />
     </section>
