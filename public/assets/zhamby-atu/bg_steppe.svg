@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" preserveAspectRatio="none">
+  <defs>
+    <linearGradient id="steppeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#dfb15b"/>
+      <stop offset="100%" stop-color="#c18336"/>
+    </linearGradient>
+    <pattern id="grass" width="50" height="50" patternUnits="userSpaceOnUse">
+      <path d="M 10 50 Q 15 30 20 50 M 30 50 Q 32 35 35 50" stroke="#b07025" fill="none" stroke-width="2" stroke-linecap="round"/>
+    </pattern>
+  </defs>
+
+  <rect width="1000" height="300" fill="url(#steppeGrad)"/>
+  
+  <!-- Subtle hills in the steppe -->
+  <path d="M 0 50 Q 250 0 500 50 T 1000 50 L 1000 300 L 0 300 Z" fill="#cf9944"/>
+  <path d="M 0 100 Q 300 50 600 120 T 1000 100 L 1000 300 L 0 300 Z" fill="url(#steppeGrad)"/>
+  
+  <rect width="1000" height="300" fill="url(#grass)" opacity="0.4"/>
+</svg>

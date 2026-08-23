@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20">
+  <defs>
+    <linearGradient id="shaft" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="100%" stop-color="#4a3018"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Shaft -->
+  <rect x="15" y="8" width="70" height="4" fill="url(#shaft)"/>
+  
+  <!-- Arrowhead (Iron/Steel) -->
+  <path d="M 85 6 L 100 10 L 85 14 Z" fill="#8899a6"/>
+  <path d="M 85 6 L 100 10 L 85 10 Z" fill="#d1d9e0"/> <!-- highlight -->
+
+  <!-- Feathers (Red/White) -->
+  <path d="M 5 6 L 20 6 L 15 10 L 0 10 Z" fill="#ffffff"/>
+  <path d="M 5 14 L 20 14 L 15 10 L 0 10 Z" fill="#aa0000"/>
+</svg>

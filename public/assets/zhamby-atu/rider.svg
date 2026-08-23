@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="riderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4a2e1b"/>
+      <stop offset="100%" stop-color="#2c1a0e"/>
+    </linearGradient>
+    <linearGradient id="bowGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#8b5a2b"/>
+      <stop offset="100%" stop-color="#5c3a18"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Horse Silhouette -->
+  <path d="M 50 150 C 60 110, 80 90, 120 90 C 150 90, 160 110, 170 140 C 180 120, 190 90, 195 70 C 185 60, 170 65, 160 80 C 140 70, 110 70, 90 80 C 70 70, 40 80, 20 120 C 30 140, 40 145, 50 150 Z" fill="url(#riderGrad)" />
+  
+  <!-- Horse Tail & Mane -->
+  <path d="M 30 110 C 15 120, 10 140, 15 160 C 25 150, 30 130, 30 110 Z" fill="#1a0f08"/>
+  <path d="M 160 80 C 155 65, 165 55, 180 50 C 175 65, 165 75, 160 80 Z" fill="#1a0f08"/>
+
+  <!-- Rider Body -->
+  <path d="M 90 90 C 80 60, 90 40, 100 30 C 110 40, 120 60, 110 90 Z" fill="url(#riderGrad)"/>
+  
+  <!-- Rider Head & Tymak (Hat) -->
+  <path d="M 100 30 C 95 20, 105 10, 115 15 C 110 25, 105 30, 100 30 Z" fill="#8b2500"/>
+  <circle cx="102" cy="22" r="8" fill="#ffcc99"/>
+
+  <!-- Arms Drawing Bow -->
+  <path d="M 100 50 C 120 40, 140 45, 150 55" fill="none" stroke="url(#riderGrad)" stroke-width="8" stroke-linecap="round"/>
+  <path d="M 100 50 C 80 45, 60 55, 50 65" fill="none" stroke="url(#riderGrad)" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Bow -->
+  <path d="M 150 10 C 170 30, 170 80, 150 100" fill="none" stroke="url(#bowGrad)" stroke-width="6" stroke-linecap="round"/>
+  
+  <!-- Bowstring -->
+  <path d="M 150 10 L 50 65 L 150 100" fill="none" stroke="#ffffff" stroke-width="1.5" stroke-opacity="0.8"/>
+  
+  <!-- Loaded Arrow -->
+  <path d="M 50 65 L 160 65" fill="none" stroke="#cccccc" stroke-width="3"/>
+  <polygon points="160,62 170,65 160,68" fill="#dddddd"/>
+  <polygon points="50,62 55,65 50,68" fill="#ffffff"/>
+</svg>
