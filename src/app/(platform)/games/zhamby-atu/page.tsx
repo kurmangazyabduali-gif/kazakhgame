@@ -8,7 +8,11 @@ export const metadata: Metadata = {
 
 export default function ZhambyAtuPage() {
   return (
-    <div className="w-full h-screen overflow-hidden bg-black text-white">
+    // Fixed to full viewport, sits below platform navbar (which is ~64px)
+    <div
+      className="w-full overflow-hidden bg-[#1a78c8]"
+      style={{ height: 'calc(100vh - 64px)' }}
+    >
       <GameClientWrapper />
     </div>
   )

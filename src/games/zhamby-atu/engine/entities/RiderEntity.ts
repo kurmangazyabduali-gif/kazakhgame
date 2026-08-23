@@ -39,6 +39,7 @@ export class RiderEntity extends Phaser.GameObjects.Container {
     this.loadedArrow.setVisible(false)
 
     this.add([this.horse, this.torso, this.bowIdle, this.bowDrawn, this.loadedArrow])
+    this.setDepth(8)           // Must be above steppe (3) and mountains (2)
     scene.add.existing(this)
   }
 

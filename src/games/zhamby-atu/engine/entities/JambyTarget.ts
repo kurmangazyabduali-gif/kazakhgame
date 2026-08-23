@@ -17,21 +17,22 @@ export class JambyTarget {
 
     // The pole
     this.pole = scene.add.image(x, y, 'target')
-    this.pole.setOrigin(0.5, 1) // Origin at bottom
-    
+    this.pole.setOrigin(0.5, 1)
+    this.pole.setDepth(7)
+
     // The jamby (the gold disc to hit)
-    // We attach it physically to the top of the pole
     this.jamby = scene.physics.add.image(x, y - 160, 'target')
     this.jamby.setOrigin(0.5, 0.5)
     this.jamby.setScale(scale)
-    
-    // We only care about the jamby for collision, so we crop its hitbox
+    this.jamby.setDepth(7)
+
+    // Hitbox
     this.jamby.body!.setSize(60, 60)
     this.jamby.body!.setOffset(20, 20)
     ;(this.jamby.body as Phaser.Physics.Arcade.Body).setAllowGravity(false)
-    this.jamby.setImmovable(false) // Allow it to be pushed
+    this.jamby.setImmovable(false)
     this.jamby.setMass(10)
-    this.jamby.setDrag(100) // Air resistance so it stops swinging
+    this.jamby.setDrag(100)
   }
 
   // To simulate swinging, we apply a spring constraint using Arcade physics velocity
