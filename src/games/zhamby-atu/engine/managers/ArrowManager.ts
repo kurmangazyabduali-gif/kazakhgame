@@ -23,14 +23,14 @@ export class ArrowManager {
     arrow.setAccelerationX(windX)
 
     // Arrow trail (Juice)
-    const trail = this.scene.add.particles(0, 0, 'arrow', {
-      scale: { start: 0.1, end: 0 },
-      alpha: { start: 0.5, end: 0 },
-      lifespan: 300,
+    const trail = this.scene.add.particles(0, 0, 'particle', {
+      scale: { start: 0.18, end: 0 },
+      alpha: { start: 0.6, end: 0 },
+      tint: 0xffc060,
+      lifespan: 250,
       blendMode: 'ADD'
     })
     trail.startFollow(arrow)
-    // Attach to arrow so we can destroy it later
     ;(arrow as any).trail = trail
 
     this.activeArrows.push(arrow)

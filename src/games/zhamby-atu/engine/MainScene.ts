@@ -12,6 +12,7 @@ export class MainScene extends Phaser.Scene {
   private config = ZHAMBY_LEVELS[1]
 
   private bgSteppe!: Phaser.GameObjects.TileSprite
+  private bgMountains!: Phaser.GameObjects.TileSprite
 
   private stuckArrows: { arrow: Phaser.Physics.Arcade.Image, offsetX: number, offsetY: number, angleOffset: number }[] = []
 
@@ -38,58 +39,60 @@ export class MainScene extends Phaser.Scene {
     const h = this.scale.height
     this.config = ZHAMBY_LEVELS[this.currentLevel]
 
-    // 1. Setup Parallax
+    // 1. Sky
     let skyKey = 'sky_sunset'
-    let tint = 0xffffff
-    
+    let envTint = 0xffffff
+
+    if (this.config.timeOfDay === 'DAY') { skyKey = 'sky_day'; envTint = 0xffffff }
+    else if (this.config.timeOfDay === 'NIGHT') { skyKey = 'sky_night'; envTint = 0x8899bb }
+    else { skyKey = 'sky_sunset'; envTint = 0xffddaa }
+
+    this.add.image(w / 2, h / 2, skyKey).setDisplaySize(w, h).setScrollFactor(0).setDepth(0)
+
+    // Sun / Moon / Stars
     if (this.config.timeOfDay === 'DAY') {
-      skyKey = 'sky_day'
-      tint = 0xffffff
+      const sunGlow = this.add.circle(w * 0.78, h * 0.14, 55, 0xffffaa, 0.18).setScrollFactor(0).setDepth(1)
+      this.add.circle(w * 0.78, h * 0.14, 35, 0xfff5a0, 0.85).setScrollFactor(0).setDepth(1)
+      this.tweens.add({ targets: sunGlow, alpha: { from: 0.12, to: 0.25 }, duration: 2000, yoyo: true, repeat: -1 })
     } else if (this.config.timeOfDay === 'NIGHT') {
-      skyKey = 'sky_night'
-      tint = 0x555588
-    } else {
-      skyKey = 'sky_sunset'
-      tint = 0xffeebb
+      this.add.circle(w * 0.78, h * 0.12, 45, 0xffffee, 0.12).setScrollFactor(0).setDepth(1)
+      this.add.circle(w * 0.78, h * 0.12, 30, 0xfffde0, 0.9).setScrollFactor(0).setDepth(1)
+      for (let s = 0; s < 55; s++) {
+        const sx = (Math.sin(s * 73.4) * 0.5 + 0.5) * w
+        const sy = (Math.sin(s * 37.1) * 0.5 + 0.5) * h * 0.4
+        const star = this.add.circle(sx, sy, 1 + (s % 2), 0xffffff, 0.5 + (s % 3) * 0.2)
+          .setScrollFactor(0).setDepth(1)
+        this.tweens.add({ targets: star, alpha: { from: 0.3, to: 1 }, duration: 900 + (s * 137 % 1200), yoyo: true, repeat: -1, delay: s * 60 })
+      }
     }
 
-    this.add.image(w/2, h/2, skyKey).setDisplaySize(w, h).setScrollFactor(0)
-    
-    if (this.config.timeOfDay === 'NIGHT') {
-      // Add moon
-      this.add.circle(w * 0.8, h * 0.2, 40, 0xffffee, 0.9).setScrollFactor(0.05)
-    }
+    // Mountains parallax (manually scrolled)
+    this.bgMountains = this.add.tileSprite(w / 2, h - 140, w, 420, 'mountains')
+      .setOrigin(0.5, 1).setScrollFactor(0).setDepth(2).setTint(envTint)
 
-    const mnts = this.add.tileSprite(w/2, h - 250, w, 200, 'mountains').setOrigin(0.5, 1).setScrollFactor(0.2)
-    this.bgSteppe = this.add.tileSprite(w/2, h, w, 250, 'steppe').setOrigin(0.5, 1).setScrollFactor(1)
-    
-    mnts.setTint(tint)
-    this.bgSteppe.setTint(tint)
-    
+    // Steppe ground
+    this.bgSteppe = this.add.tileSprite(w / 2, h, w, 340, 'steppe')
+      .setOrigin(0.5, 1).setScrollFactor(0).setDepth(3).setTint(envTint)
+
     // Weather
     if (this.config.weather === 'SNOW') {
-      this.add.particles(0, 0, 'arrow', {
-        x: { min: 0, max: w },
-        y: 0,
-        lifespan: 4000,
-        speedY: { min: 100, max: 200 },
-        speedX: { min: this.config.windSpeed / 2, max: this.config.windSpeed },
-        scale: { start: 0.1, end: 0.1 },
-        quantity: 2,
-        blendMode: 'ADD'
-      }).setScrollFactor(0)
+      this.add.particles(0, 0, 'particle', {
+        x: { min: -50, max: w + 50 }, y: { min: -10, max: 0 },
+        lifespan: 5000,
+        speedY: { min: 60, max: 130 },
+        speedX: { min: this.config.windSpeed * 0.3, max: this.config.windSpeed * 0.5 },
+        scale: { start: 0.25, end: 0.12 }, alpha: { start: 0.85, end: 0.2 },
+        tint: 0xe8f4ff, quantity: 1, frequency: 80,
+      }).setScrollFactor(0).setDepth(14)
     } else if (this.config.weather === 'RAIN') {
-      this.add.particles(0, 0, 'arrow', {
-        x: { min: 0, max: w },
-        y: 0,
-        lifespan: 1500,
-        speedY: { min: 400, max: 600 },
-        speedX: { min: this.config.windSpeed / 2, max: this.config.windSpeed },
-        scaleY: 0.5,
-        scaleX: 0.05,
-        quantity: 4,
-        tint: 0x88bbff
-      }).setScrollFactor(0)
+      this.add.particles(0, 0, 'particle', {
+        x: { min: -50, max: w + 50 }, y: { min: -10, max: 0 },
+        lifespan: 1200,
+        speedY: { min: 500, max: 700 },
+        speedX: { min: this.config.windSpeed * 0.2, max: this.config.windSpeed * 0.4 },
+        scaleX: 0.08, scaleY: 0.6, alpha: { start: 0.65, end: 0.1 },
+        tint: 0xaaccee, quantity: 3, frequency: 30,
+      }).setScrollFactor(0).setDepth(14)
     }
 
     // 2. Setup Managers
@@ -99,45 +102,34 @@ export class MainScene extends Phaser.Scene {
     this.uiManager = new UIManager(this, this.currentLevel)
 
     // 3. Setup Entities
-    this.rider = new RiderEntity(this, w * 0.2, h - 100)
-    
-    // Calculate world width dynamically based on target distance
-    const worldWidth = this.config.targetDistance + w
-    this.physics.world.setBounds(0, -h, worldWidth, h * 2) // Expand Y bounds for high arcs
-    
-    this.target = new JambyTarget(this, this.config.targetDistance, h - 200, this.config.targetSize)
+    this.rider = new RiderEntity(this, w * 0.22, h - 120)
+
+    const worldWidth = this.config.targetDistance + w * 2
+    this.physics.world.setBounds(0, -h * 2, worldWidth, h * 4)
+
+    this.target = new JambyTarget(this, this.config.targetDistance, h - 120, this.config.targetSize)
 
     // 4. Input Wiring
-    this.trajectoryGraphics = this.add.graphics().setDepth(10)
-    
+    this.trajectoryGraphics = this.add.graphics().setDepth(12)
+
     this.inputManager.onDragStart = () => {
       if (this.gameState !== 'RIDING' && this.gameState !== 'AIMING') return
       this.gameState = 'AIMING'
     }
-    
+
     this.inputManager.onDragMove = (dragVector) => {
       if (this.gameState !== 'AIMING') return
       this.drawTrajectory(dragVector)
       this.rider.setDrawPower(dragVector)
-      
-      // Bullet Time
-      if (dragVector.length() > 220) {
-        this.time.timeScale = 0.3
-      } else {
-        this.time.timeScale = 1.0
-      }
+      this.time.timeScale = dragVector.length() > 210 ? 0.28 : 1.0
     }
 
     this.inputManager.onDragEnd = (dragVector) => {
       if (this.gameState !== 'AIMING') return
-      this.time.timeScale = 1.0 // Reset bullet time
+      this.time.timeScale = 1.0
       this.trajectoryGraphics.clear()
       this.rider.resetPose()
-      
-      if (dragVector.length() > 20) {
-        if (navigator.vibrate) navigator.vibrate(20) // Haptic feedback on release
-      }
-      
+      if (dragVector.length() > 20 && navigator.vibrate) navigator.vibrate(18)
       this.fireArrow(dragVector)
     }
   }
@@ -154,7 +146,11 @@ export class MainScene extends Phaser.Scene {
     this.rider.x = this.baseScrollX + this.scale.width * 0.2
     
     this.cameraManager.updateRiding(this.baseScrollX)
-    
+
+    // Manual parallax scrolling
+    if (this.bgMountains) this.bgMountains.tilePositionX = this.baseScrollX * 0.2
+    if (this.bgSteppe) this.bgSteppe.tilePositionX = this.baseScrollX * 0.6
+
     // Update Managers & Entities
     this.arrowManager.update()
     this.target.update(time, delta)
@@ -298,14 +294,14 @@ export class MainScene extends Phaser.Scene {
     }
 
     // Particles
-    const particles = this.add.particles(arrow.x, arrow.y, 'arrow', {
-      speed: isPerfect ? 300 : 150,
-      scale: { start: isPerfect ? 0.5 : 0.3, end: 0 },
+    const particles = this.add.particles(arrow.x, arrow.y, 'particle', {
+      speed: isPerfect ? 320 : 160,
+      scale: { start: isPerfect ? 0.8 : 0.5, end: 0 },
       blendMode: 'ADD',
-      lifespan: isPerfect ? 800 : 400,
-      tint: isPerfect ? 0xffd700 : 0xffffff
+      lifespan: isPerfect ? 900 : 500,
+      tint: isPerfect ? 0xffd700 : 0xffaa44
     })
-    particles.explode(isPerfect ? 40 : 20)
+    particles.explode(isPerfect ? 50 : 25)
 
     // Score Popup
     const text = this.add.text(arrow.x, arrow.y - 50, `${hitType}\n+${score}`, {

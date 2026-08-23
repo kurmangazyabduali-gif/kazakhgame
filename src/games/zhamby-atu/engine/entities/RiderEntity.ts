@@ -10,26 +10,32 @@ export class RiderEntity extends Phaser.GameObjects.Container {
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y)
 
-    // Horse
-    this.horse = scene.add.sprite(0, 0, 'horse_run_0')
-    this.horse.setOrigin(0.5, 1) // Origin bottom center
+    // Horse (animated sprite)
+    this.horse = scene.add.sprite(0, 0, 'horse_0')
+    this.horse.setOrigin(0.5, 1)
+    this.horse.setScale(1.2)
     this.horse.play('horse_gallop')
 
-    // Torso (Sits on horse back)
-    this.torso = scene.add.image(-10, -80, 'rider_torso')
+    // Torso
+    this.torso = scene.add.image(-8, -75, 'rider_body')
     this.torso.setOrigin(0.5, 1)
+    this.torso.setScale(0.8)
 
-    // Bow
-    this.bowIdle = scene.add.image(20, -110, 'bow_idle')
+    // Bow (idle)
+    this.bowIdle = scene.add.image(18, -105, 'bow_idle')
     this.bowIdle.setOrigin(0.5, 0.5)
+    this.bowIdle.setScale(0.7)
 
-    this.bowDrawn = scene.add.image(20, -110, 'bow_drawn')
+    // Bow (drawn)
+    this.bowDrawn = scene.add.image(18, -105, 'bow_drawn')
     this.bowDrawn.setOrigin(0.5, 0.5)
+    this.bowDrawn.setScale(0.7)
     this.bowDrawn.setVisible(false)
 
-    // Loaded arrow (visible only when drawing)
-    this.loadedArrow = scene.add.image(20, -110, 'arrow')
+    // Loaded arrow
+    this.loadedArrow = scene.add.image(18, -105, 'arrow')
     this.loadedArrow.setOrigin(0.5, 0.5)
+    this.loadedArrow.setScale(0.9)
     this.loadedArrow.setVisible(false)
 
     this.add([this.horse, this.torso, this.bowIdle, this.bowDrawn, this.loadedArrow])
