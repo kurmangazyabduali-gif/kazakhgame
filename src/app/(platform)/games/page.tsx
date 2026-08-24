@@ -68,17 +68,6 @@ export default function GamesLibraryPage() {
       duration: '5 мин',
       image: '/images/games/jamby-atu.jpg',
       status: 'locked'
-    },
-    { 
-      slug: 'kusbegilik', 
-      name: 'Құсбегілік', 
-      category: 'Дәстүр', 
-      description: 'Саятшылық. Управляйте полетом ловчей птицы в бескрайних степях Казахстана.', 
-      difficulty: 'Орташа (Medium)',
-      players: '1',
-      duration: '5-10 мин',
-      image: '/images/games/kusbegilik.jpg',
-      status: 'locked'
     }
   ]
 

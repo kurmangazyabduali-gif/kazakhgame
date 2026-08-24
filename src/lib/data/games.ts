@@ -51,15 +51,5 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     difficulty: 'Hard',
     skills: ['Координация', 'Реакция', 'Тайминг'],
     imageUrl: '/images/games/jamby-atu.jpg'
-  },
-  'kusbegilik': {
-    id: 'kusbegilik',
-    slug: 'kusbegilik',
-    title: 'Құсбегілік',
-    description: 'Искусство охоты с беркутом',
-    category: 'Ұлттық дәстүр',
-    difficulty: 'Medium',
-    skills: ['Наблюдение', 'Пространственное мышление', 'Фокус'],
-    imageUrl: '/images/games/kusbegilik.jpg'
   }
 }

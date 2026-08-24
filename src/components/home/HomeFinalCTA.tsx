@@ -8,10 +8,10 @@ import { KazakhOrnament } from '../ui/heritage/KazakhOrnament'
 
 export function HomeFinalCTA() {
   return (
-    <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden bg-white">
+    <section className="relative h-[80vh] min-h-[600px] flex items-center justify-center overflow-hidden bg-[#FAF7F0]">
       {/* Background layer */}
-      <div className="absolute inset-0 bg-[url('/images/games/kusbegilik.jpg')] bg-cover bg-center bg-fixed opacity-[0.10]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white via-white/90 to-white" />
+      <div className="absolute inset-0 bg-[url('/images/games/jamby-atu.jpg')] bg-cover bg-center bg-fixed opacity-[0.10]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#FAF7F0] via-[#FAF7F0]/90 to-[#FAF7F0]" />
 
       {/* Rotating central giant ornament */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1200px] h-[1200px] opacity-10 pointer-events-none">

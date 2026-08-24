@@ -18,9 +18,9 @@ export const REGIONS: Record<string, Region> = {
     nameKk: 'Солтүстік Қазақстан',
     nameRu: 'Северный Казахстан',
     nameEn: 'Northern Kazakhstan',
-    games: ['kusbegilik'],
-    traditions: ['Охота с собаками (тазы)', 'Зимние виды конного спорта'],
-    description: 'Культурная зона исследования: Северный макро-регион. Известен зимними видами конного спорта и охоты.',
+    games: [],
+    traditions: ['Тазымен аңшылық', 'Қысқы ат спорты түрлері'],
+    description: 'Зерттеудің мәдени аймағы: Солтүстік макро-аймақ. Ат спортының қысқы түрлерімен және аңшылықпен танымал.',
     verified: true,
     sourceIds: ['enc-nomadic-games']
   },
@@ -31,8 +31,8 @@ export const REGIONS: Record<string, Region> = {
     nameRu: 'Южный Казахстан',
     nameEn: 'Southern Kazakhstan',
     games: ['asyk-atu', 'kelin-shai'],
-    traditions: ['Празднование Наурыз', 'Традиционное гостеприимство'],
-    description: 'Культурная зона исследования: Южный макро-регион. Центр весенних традиций и обрядов гостеприимства.',
+    traditions: ['Наурыз мейрамы', 'Дәстүрлі қонақжайлылық'],
+    description: 'Зерттеудің мәдени аймағы: Оңтүстік макро-аймақ. Көктемгі дәстүрлер мен қонақжайлылық салт-жоралғыларының орталығы.',
     verified: true,
     sourceIds: ['enc-nomadic-games']
   },
@@ -43,8 +43,8 @@ export const REGIONS: Record<string, Region> = {
     nameRu: 'Западный Казахстан',
     nameEn: 'Western Kazakhstan',
     games: ['jamby-atu'],
-    traditions: ['Суровые степные игры', 'Конно-спортивные состязания'],
-    description: 'Культурная зона исследования: Западный макро-регион. Известен выдающимися мастерами верховой езды и стрельбы.',
+    traditions: ['Сұрапыл дала ойындары', 'Ат спорты жарыстары'],
+    description: 'Зерттеудің мәдени аймағы: Батыс макро-аймақ. Атқа міну мен садақ атудың көрнекті шеберлерімен танымал.',
     verified: true,
     sourceIds: ['enc-nomadic-games']
   },
@@ -55,8 +55,8 @@ export const REGIONS: Record<string, Region> = {
     nameRu: 'Восточный Казахстан',
     nameEn: 'Eastern Kazakhstan',
     games: ['togyzqumalak'],
-    traditions: ['Алтайские традиции', 'Лесные и горные промыслы'],
-    description: 'Культурная зона исследования: Восточный макро-регион. Место развития интеллектуальных игр и глубоких философских традиций Алтая.',
+    traditions: ['Алтай дәстүрлері', 'Орман және тау кәсіпшілігі'],
+    description: 'Зерттеудің мәдени аймағы: Шығыс макро-аймақ. Зияткерлік ойындар мен Алтайдың терең философиялық дәстүрлері дамыған мекен.',
     verified: true,
     sourceIds: ['enc-nomadic-games']
   },
@@ -67,8 +67,8 @@ export const REGIONS: Record<string, Region> = {
     nameRu: 'Центральный Казахстан',
     nameEn: 'Central Kazakhstan',
     games: [],
-    traditions: ['Степные курултаи', 'Песенные состязания (айтыс)'],
-    description: 'Культурная зона исследования: Центральный макро-регион. Сарыарка — сердце Великой Степи.',
+    traditions: ['Дала құрылтайлары', 'Айтыс өнері'],
+    description: 'Зерттеудің мәдени аймағы: Орталық макро-аймақ. Сарыарқа — Ұлы Даланың жүрегі.',
     verified: true,
     sourceIds: ['enc-nomadic-games']
   }

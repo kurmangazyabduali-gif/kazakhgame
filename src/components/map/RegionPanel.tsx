@@ -17,9 +17,9 @@ export function RegionPanel({ region }: RegionPanelProps) {
     return (
       <MaterialSurface material="felt" className="w-full h-full min-h-[600px] flex flex-col items-center justify-center p-8 text-center rounded-3xl border border-gold/20 animate-in fade-in">
         <KazakhOrnament variant="tumar" className="w-24 h-24 text-gold opacity-30 mb-6" />
-        <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-gold mb-4">Выберите регион</h3>
+        <h3 className="font-heading text-xl font-bold uppercase tracking-wider text-gold mb-4">Аймақты таңдаңыз</h3>
         <p className="text-text-muted text-sm max-w-xs font-serif leading-relaxed">
-          Нажмите на карту, чтобы исследовать культурное наследие и национальные игры региона.
+          Аймақтың мәдени мұрасы мен ұлттық ойындарын зерттеу үшін картаны басыңыз.
         </p>
       </MaterialSurface>
     )
@@ -37,7 +37,7 @@ export function RegionPanel({ region }: RegionPanelProps) {
         </div>
         <div className="relative z-10">
           <CulturalBadge variant="gold" className="mb-4">
-            Культурный регион
+            Мәдени аймақ
           </CulturalBadge>
           <h2 className="font-display text-4xl font-black uppercase tracking-tight text-foreground mb-2">{region.name}</h2>
           <div className="text-sm font-bold text-gold uppercase tracking-widest mb-6 font-heading">
@@ -56,7 +56,7 @@ export function RegionPanel({ region }: RegionPanelProps) {
         {region.traditions.length > 0 && (
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wider text-gold mb-6 flex items-center gap-2 font-heading">
-              <Info className="w-4 h-4" /> Традиции
+              <Info className="w-4 h-4" /> Дәстүрлер
             </h3>
             <div className="flex flex-wrap gap-2">
               {region.traditions.map((t, i) => (
@@ -71,7 +71,7 @@ export function RegionPanel({ region }: RegionPanelProps) {
         {/* Games */}
         <div>
           <h3 className="text-sm font-bold uppercase tracking-wider text-gold mb-6 font-heading">
-            Национальные игры региона
+            Аймақтың ұлттық ойындары
           </h3>
           
           {games.length > 0 ? (
@@ -94,7 +94,7 @@ export function RegionPanel({ region }: RegionPanelProps) {
             <div className="p-8 bg-surface-elevated rounded-2xl border border-border/50 text-center">
               <KazakhOrnament variant="su" className="w-12 h-12 mx-auto text-gold opacity-20 mb-4" />
               <p className="text-sm text-text-muted font-serif">
-                Культурные материалы (игры) для этого региона будут добавлены позже.
+                Бұл аймақ үшін мәдени материалдар (ойындар) кейінірек қосылады.
               </p>
             </div>
           )}
@@ -110,7 +110,7 @@ export function RegionPanel({ region }: RegionPanelProps) {
           ) : (
             <div className="w-2 h-2 rounded-full bg-terracotta" />
           )}
-          Источники: {region.sourceIds.length}
+          Дереккөздер: {region.sourceIds.length}
         </div>
       )}
     </div>

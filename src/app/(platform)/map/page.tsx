@@ -45,7 +45,7 @@ function MapPageContent() {
   const selectedRegion = activeRegionId ? REGIONS[activeRegionId] : null
 
   return (
-    <div className="w-full min-h-[calc(100vh-80px)] bg-primary flex flex-col relative overflow-hidden">
+    <div className="w-full min-h-[calc(100vh-80px)] bg-[#FAF7F0] flex flex-col relative overflow-hidden">
       
       {/* Background Ornaments */}
       <div className="absolute top-0 right-0 opacity-10 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
@@ -65,10 +65,10 @@ function MapPageContent() {
           </div>
           <div>
             <h1 className="font-display text-4xl md:text-6xl font-bold uppercase tracking-tight text-foreground">
-              Культурная Карта
+              Мәдени Карта
             </h1>
             <p className="font-heading text-gold tracking-widest uppercase text-sm md:text-base mt-2">
-              Интерактивное путешествие по регионам Казахстана.
+              Қазақстан өңірлері бойынша интерактивті саяхат.
             </p>
           </div>
         </div>

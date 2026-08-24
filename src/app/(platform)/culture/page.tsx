@@ -9,26 +9,26 @@ import { CulturalBadge } from '@/components/ui/heritage/CulturalBadge'
 import { HeritageButton } from '@/components/ui/heritage/HeritageButton'
 
 export const metadata = {
-  title: 'ULY DALA — Культурный контекст',
-  description: 'История, правила, культурный контекст и цифровые адаптации национальных игр и традиций Казахстана.',
+  title: 'ULY DALA — Мәдени мұра',
+  description: 'Қазақстанның ұлттық ойындары мен дәстүрлерінің тарихы, ережелері мен мәдени мән-мағынасы.',
 }
 
 export default function CulturePage() {
   const games = Object.values(GAMES_METADATA)
 
   return (
-    <div className="w-full flex flex-col min-h-screen bg-background">
+    <div className="w-full flex flex-col min-h-screen bg-[#FAF7F0]">
       
       {/* 1. Header Area */}
       <MaterialSurface material="felt" className="py-20 border-b border-border/30">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <BookOpen className="w-12 h-12 text-gold mx-auto mb-6 opacity-60" />
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-6 text-foreground uppercase">
-            Культурный контекст
+            Мәдени Мұра
           </h1>
           <p className="text-text-muted max-w-3xl mx-auto text-lg md:text-xl font-heading tracking-widest">
-            Истоки игровых механик, традиций и навыков, представленных в ULY DALA. 
-            Все данные верифицированы историками и исследователями.
+            ULY DALA жобасындағы ұлттық ойындар мен дәстүрлердің шығу тарихы мен мән-мағынасы. 
+            Барлық деректерді тарихшылар мен зерттеушілер мақұлдаған.
           </p>
         </div>
       </MaterialSurface>
@@ -53,7 +53,7 @@ export default function CulturePage() {
                 <div className="md:col-span-4 flex flex-col">
                   <div className="sticky top-24">
                     <CulturalBadge variant="gold" className="mb-4">
-                      {game.slug === 'kelin-shai' ? 'Традиция' : 'Спорт'}
+                      {game.slug === 'kelin-shai' ? 'Дәстүр' : 'Спорт'}
                     </CulturalBadge>
                     
                     <h2 className="font-display text-4xl md:text-5xl font-black uppercase tracking-tight mb-4 text-foreground">
@@ -66,7 +66,7 @@ export default function CulturePage() {
                     
                     <Link href={`/games/info/${game.slug}`} className="block">
                       <HeritageButton variant="primary" className="w-full">
-                        Перейти к игре
+                        Ойынға көшу
                       </HeritageButton>
                     </Link>
                   </div>
@@ -82,14 +82,14 @@ export default function CulturePage() {
                         <div key={claim.id} className="relative">
                           <div className="flex items-center gap-3 mb-4 border-b border-border/40 pb-2">
                             <h3 className="text-xs font-bold uppercase tracking-widest text-gold">
-                              {claim.category === 'history' ? 'История' : 
-                               claim.category === 'modern_sport' ? 'Современный Спорт' : 
-                               claim.category === 'tradition' || claim.category === 'cultural_practice' ? 'Традиция' : 
-                               claim.category === 'rules' ? 'Правила' : claim.category}
+                              {claim.category === 'history' ? 'Тарих' : 
+                               claim.category === 'modern_sport' ? 'Қазіргі спорт' : 
+                               claim.category === 'tradition' || claim.category === 'cultural_practice' ? 'Дәстүр' : 
+                               claim.category === 'rules' ? 'Ережелер' : claim.category}
                             </h3>
                             {claim.verified && (
                               <span className="px-2 py-0.5 bg-gold/10 text-gold rounded border border-gold/20 text-[10px] font-bold uppercase flex items-center gap-1">
-                                <CheckCircle className="w-3 h-3" /> Верифицировано
+                                <CheckCircle className="w-3 h-3" /> Мақұлданған
                               </span>
                             )}
                           </div>
@@ -126,7 +126,7 @@ export default function CulturePage() {
                               <div key={term.term} className="bg-background/50 p-5 rounded-xl border border-border/50">
                                 <div className="flex items-center justify-between mb-2">
                                   <span className="font-display font-bold text-2xl text-foreground">{term.term}</span>
-                                  <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted px-2 py-0.5 border border-border rounded">{term.language}</span>
+                                  <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted px-2 py-0.5 border border-border rounded">{term.transliteration}</span>
                                 </div>
                                 <div className="text-sm text-gold font-medium mb-3">{term.transliteration}</div>
                                 <p className="text-sm text-text-muted leading-relaxed">{term.meaning}</p>
@@ -140,8 +140,7 @@ export default function CulturePage() {
                       <div className="pt-8 mt-12 border-t border-border/40 flex items-start gap-4">
                         <Info className="w-5 h-5 text-gold shrink-0 mt-0.5" />
                         <p className="text-xs text-text-muted uppercase tracking-wider leading-relaxed">
-                          Представленная на платформе игровая механика является цифровой адаптацией 
-                          и не заменяет реальные правила или культурную практику.
+                          Платформада ұсынылған ойын механикасы цифрлық адаптация болып табылады және шынайы мәдени дәстүрлерді алмастырмайды.
                         </p>
                       </div>
 
@@ -156,3 +155,4 @@ export default function CulturePage() {
     </div>
   )
 }
+
