@@ -59,7 +59,7 @@ export default function GamesLibraryPage() {
       status: (bestScores['togyz-kumalak'] !== undefined ? 'completed' : 'available')
     },
     { 
-      slug: 'jamby-atu', 
+      slug: 'zhamby-atu', 
       name: 'Жамбы ату', 
       category: 'Спорт', 
       description: 'Искусство стрельбы из лука на скаку. Продемонстрируйте превосходную реакцию.', 
@@ -67,7 +67,7 @@ export default function GamesLibraryPage() {
       players: '1',
       duration: '5 мин',
       image: '/images/games/jamby-atu.jpg',
-      status: 'locked'
+      status: (bestScores['zhamby-atu'] !== undefined ? 'completed' : 'available')
     }
   ]
 

@@ -42,7 +42,7 @@ export const REGIONS: Record<string, Region> = {
     nameKk: 'Батыс Қазақстан',
     nameRu: 'Западный Казахстан',
     nameEn: 'Western Kazakhstan',
-    games: ['jamby-atu'],
+    games: ['zhamby-atu'],
     traditions: ['Сұрапыл дала ойындары', 'Ат спорты жарыстары'],
     description: 'Зерттеудің мәдени аймағы: Батыс макро-аймақ. Атқа міну мен садақ атудың көрнекті шеберлерімен танымал.',
     verified: true,

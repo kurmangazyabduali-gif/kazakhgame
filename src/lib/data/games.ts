@@ -42,9 +42,9 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     skills: ['Логика', 'Стратегия', 'Математический счет'],
     imageUrl: '/images/games/togyzqumalak.jpg'
   },
-  'jamby-atu': {
-    id: 'jamby-atu',
-    slug: 'jamby-atu',
+  'zhamby-atu': {
+    id: 'zhamby-atu',
+    slug: 'zhamby-atu',
     title: 'Жамбы ату',
     description: 'Стрельба из лука на скаку',
     category: 'Спорт',
