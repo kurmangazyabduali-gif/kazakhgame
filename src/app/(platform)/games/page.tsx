@@ -78,7 +78,7 @@ export default function GamesLibraryPage() {
       players: 'Командалық',
       duration: '5-10 мин',
       image: '/images/games/arqan-tartys.jpg',
-      status: 'locked'
+      status: (bestScores['arqan-tartys'] !== undefined ? 'completed' : 'available')
     }
   ]
 
