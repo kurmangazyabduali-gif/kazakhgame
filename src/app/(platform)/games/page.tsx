@@ -77,7 +77,7 @@ export default function GamesLibraryPage() {
       difficulty: 'Орташа (Medium)',
       players: 'Командалық',
       duration: '5-10 мин',
-      image: '/images/games/arqan-tartys.jpg',
+      image: '/images/games/arqan-tartys-bg.jpg',
       status: (bestScores['arqan-tartys'] !== undefined ? 'completed' : 'available')
     }
   ]

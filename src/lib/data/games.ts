@@ -60,6 +60,6 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     category: 'Спорт',
     difficulty: 'Medium',
     skills: ['Ырғақ', 'Күш', 'Команда рухы'],
-    imageUrl: '/images/games/arqan-tartys.jpg'
+    imageUrl: '/images/games/arqan-tartys-bg.jpg'
   }
 }
