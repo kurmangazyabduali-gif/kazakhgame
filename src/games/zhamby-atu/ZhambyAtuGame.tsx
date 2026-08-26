@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import * as Phaser from 'phaser'
 import { getPhaserConfig } from './engine/Game'
+import { gameAudio } from '@/lib/services/GameAudioService'
 
 export default function ZhambyAtuGame() {
   const gameRef = useRef<HTMLDivElement>(null)
@@ -15,6 +16,7 @@ export default function ZhambyAtuGame() {
 
     // Initialize Phaser only once
     if (!phaserGameRef.current) {
+      gameAudio.init()
       const config = getPhaserConfig(gameRef.current)
       phaserGameRef.current = new Phaser.Game(config)
       setIsLoaded(true)

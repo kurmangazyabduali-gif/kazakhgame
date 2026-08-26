@@ -51,5 +51,15 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     difficulty: 'Hard',
     skills: ['Координация', 'Реакция', 'Тайминг'],
     imageUrl: '/images/games/jamby-atu.jpg'
+  },
+  'arqan-tartys': {
+    id: 'arqan-tartys',
+    slug: 'arqan-tartys',
+    title: 'Арқан тартыс',
+    description: 'Күш пен ырғаққа құрылған дәстүрлі арқан тартыс',
+    category: 'Спорт',
+    difficulty: 'Medium',
+    skills: ['Ырғақ', 'Күш', 'Команда рухы'],
+    imageUrl: '/images/games/arqan-tartys.jpg'
   }
 }

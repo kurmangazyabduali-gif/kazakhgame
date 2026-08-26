@@ -1,151 +1,263 @@
 'use client'
 
-import React from 'react'
+import React, { useRef, useState, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
-import { KazakhOrnament } from '../ui/heritage/KazakhOrnament'
+
+interface GameCard {
+  title: string
+  desc: string
+  category: string
+  href: string
+  image: string
+  color: string
+  soft: string
+}
+
+const GAMES: GameCard[] = [
+  {
+    title: 'АСЫҚ АТУ',
+    desc: 'Көшпенділердің дәстүрлі 3D ойынында мергендігіңізді сынаңыз. Асық атып, комбо жинап, басқалармен жарысыңыз.',
+    category: 'СПОРТ',
+    href: '/games/asyk-atu',
+    image: '/images/games/asyk-atu.jpg',
+    color: 'var(--home-terracotta)',
+    soft: 'var(--home-terracotta-soft)',
+  },
+  {
+    title: 'ЖАМБЫ АТУ',
+    desc: 'Ат үстінде садақ ату өнері. Шауып келе жатып нысанаға дәл тигізіп, нағыз мерген екеніңізді дәлелдеңіз.',
+    category: 'СПОРТ',
+    href: '/games/zhamby-atu',
+    image: '/images/games/jamby-atu.jpg',
+    color: 'var(--home-terracotta)',
+    soft: 'var(--home-terracotta-soft)',
+  },
+  {
+    title: 'КЕЛІН ШАЙ',
+    desc: 'Этикет пен құрметтің қыр-сырын біліңіз. Жайлы үйде шай құйып, қонақтарға құрмет көрсетіңіз.',
+    category: 'ДӘСТҮР',
+    href: '/games/kelin-shai',
+    image: '/images/games/kelin-shai.jpg',
+    color: 'var(--home-turquoise)',
+    soft: 'var(--home-turquoise-soft)',
+  },
+  {
+    title: 'ТОҒЫЗҚҰМАЛАҚ',
+    desc: 'Премиум тақтадағы зияткерлік шайқас. Қадамдарыңызды есептеп, тұздықтар жасап, жасанды интеллектті жеңіңіз.',
+    category: 'СТРАТЕГИЯ',
+    href: '/games/togyz-kumalak',
+    image: '/images/games/togyzqumalak.jpg',
+    color: 'var(--home-saffron)',
+    soft: 'var(--home-saffron-soft)',
+  },
+]
 
 export function HomeGameShowcase() {
-  return (
-    <section className="py-32 relative bg-background border-t border-border/10 overflow-hidden">
-      {/* Background large ornaments */}
-      <div className="absolute top-0 right-0 opacity-5 pointer-events-none transform translate-x-1/4 -translate-y-1/4">
-        <KazakhOrnament variant="qoshqar-muiiz" className="w-[800px] h-[800px] text-gold" />
-      </div>
-      <div className="absolute bottom-0 left-0 opacity-5 pointer-events-none transform -translate-x-1/4 translate-y-1/4">
-        <KazakhOrnament variant="tumar" className="w-[600px] h-[600px] text-gold" />
-      </div>
+  const trackRef = useRef<HTMLDivElement>(null)
+  const [progress, setProgress] = useState(0)
+  const dragState = useRef({
+    dragging: false,
+    startX: 0,
+    startScroll: 0,
+    lastX: 0,
+    lastT: 0,
+    velocity: 0,
+  })
+  const momentumRaf = useRef(0)
 
-      <div className="max-w-[1600px] mx-auto px-4 md:px-8 relative z-10">
-        <motion.div 
+  const updateProgress = useCallback(() => {
+    const el = trackRef.current
+    if (!el) return
+    const max = el.scrollWidth - el.clientWidth
+    setProgress(max > 0 ? el.scrollLeft / max : 0)
+  }, [])
+
+  function scrollByCard(dir: 1 | -1) {
+    const el = trackRef.current
+    if (!el) return
+    el.scrollBy({ left: dir * 380, behavior: 'smooth' })
+  }
+
+  function stopMomentum() {
+    if (momentumRaf.current) cancelAnimationFrame(momentumRaf.current)
+    momentumRaf.current = 0
+  }
+
+  function runMomentum() {
+    const el = trackRef.current
+    if (!el) return
+    let v = dragState.current.velocity
+    function step() {
+      if (!el || Math.abs(v) < 0.05) {
+        momentumRaf.current = 0
+        return
+      }
+      el.scrollLeft -= v
+      v *= 0.94
+      momentumRaf.current = requestAnimationFrame(step)
+    }
+    momentumRaf.current = requestAnimationFrame(step)
+  }
+
+  function onPointerDown(e: React.PointerEvent) {
+    const el = trackRef.current
+    if (!el) return
+    stopMomentum()
+    dragState.current = {
+      dragging: true,
+      startX: e.clientX,
+      startScroll: el.scrollLeft,
+      lastX: e.clientX,
+      lastT: performance.now(),
+      velocity: 0,
+    }
+    el.setPointerCapture(e.pointerId)
+  }
+  function onPointerMove(e: React.PointerEvent) {
+    const el = trackRef.current
+    if (!el || !dragState.current.dragging) return
+    el.scrollLeft = dragState.current.startScroll - (e.clientX - dragState.current.startX)
+
+    const now = performance.now()
+    const dt = now - dragState.current.lastT
+    if (dt > 0) {
+      dragState.current.velocity = ((e.clientX - dragState.current.lastX) / dt) * 16
+      dragState.current.lastX = e.clientX
+      dragState.current.lastT = now
+    }
+  }
+  function onPointerUp() {
+    if (dragState.current.dragging) runMomentum()
+    dragState.current.dragging = false
+  }
+
+  useEffect(() => stopMomentum, [])
+
+  return (
+    <section className="py-32 relative bg-[var(--home-bg)] overflow-hidden">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-10 relative z-10">
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-10%" }}
+          viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 1 }}
-          className="text-center mb-24"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-14"
         >
-          <h2 className="font-display text-5xl md:text-7xl font-bold mb-6 text-foreground drop-shadow-lg uppercase tracking-wide">Ұлы Даланың Ойындары</h2>
-          <div className="flex justify-center items-center gap-4 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">
-            <span>Спорт</span>
-            <span className="w-1.5 h-1.5 bg-gold/50 rotate-45" />
-            <span>Дәстүр</span>
-            <span className="w-1.5 h-1.5 bg-gold/50 rotate-45" />
-            <span>Стратегия</span>
+          <div>
+            <span className="inline-block font-body-premium text-xs font-bold tracking-[0.35em] uppercase text-[var(--home-terracotta)] mb-4">
+              Ойын кітапханасы
+            </span>
+            <h2 className="font-display-premium text-4xl md:text-6xl font-semibold text-[var(--home-ink)]">
+              Ұлы Даланың <span className="italic text-accent-gradient">ойындары</span>
+            </h2>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => scrollByCard(-1)}
+              aria-label="Алдыңғы"
+              className="w-11 h-11 rounded-full border border-[var(--home-border-strong)] flex items-center justify-center text-[var(--home-ink)] hover:bg-[var(--home-ink)] hover:text-[var(--home-bg)] transition-colors duration-300"
+            >
+              ←
+            </button>
+            <button
+              onClick={() => scrollByCard(1)}
+              aria-label="Келесі"
+              className="w-11 h-11 rounded-full border border-[var(--home-border-strong)] flex items-center justify-center text-[var(--home-ink)] hover:bg-[var(--home-ink)] hover:text-[var(--home-bg)] transition-colors duration-300"
+            >
+              →
+            </button>
           </div>
         </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 md:gap-8 h-auto xl:h-[700px]">
-          <ShowcaseCard 
-            title="АСЫҚ АТУ"
-            desc="Көшпенділердің дәстүрлі 3D ойынында мергендігіңізді сынаңыз. Асық атып, комбо жинап, басқалармен жарысыңыз."
-            category="СПОРТ"
-            href="/games/asyk-atu"
-            image="/images/games/asyk-atu.jpg"
-            ornament="qoshqar-muiiz"
-            delay={0}
-          />
-          <ShowcaseCard 
-            title="ЖАМБЫ АТУ"
-            desc="Ат үстінде садақ ату өнері. Шауып келе жатып нысанаға дәл тигізіп, нағыз мерген екеніңізді дәлелдеңіз."
-            category="СПОРТ"
-            href="/games/zhamby-atu"
-            image="/images/games/jamby-atu.jpg"
-            ornament="su"
-            delay={0.15}
-          />
-          <ShowcaseCard 
-            title="КЕЛІН ШАЙ"
-            desc="Этикет пен құрметтің қыр-сырын біліңіз. Жайлы үйде шай құйып, қонақтарға құрмет көрсетіңіз."
-            category="ДӘСТҮР"
-            href="/games/kelin-shai"
-            image="/images/games/kelin-shai.jpg"
-            ornament="tumar"
-            delay={0.3}
-          />
-          <ShowcaseCard 
-            title="ТОҒЫЗҚҰМАЛАҚ"
-            desc="Премиум тақтадағы зияткерлік шайқас. Қадамдарыңызды есептеп, тұздықтар жасап, жасанды интеллектті жеңіңіз."
-            category="СТРАТЕГИЯ"
-            href="/games/togyz-kumalak"
-            image="/images/games/togyzqumalak.jpg"
-            ornament="geometric"
-            delay={0.45}
+      </div>
+
+      {/* Drag-to-scroll horizontal gallery */}
+      <div
+        ref={trackRef}
+        onScroll={updateProgress}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerLeave={onPointerUp}
+        className="flex gap-6 md:gap-7 overflow-x-auto snap-x snap-mandatory scroll-smooth px-6 md:px-10 pb-6 cursor-grab active:cursor-grabbing [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+      >
+        {GAMES.map((game, i) => (
+          <motion.div
+            key={game.href}
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-10%' }}
+            transition={{ duration: 0.8, delay: i * 0.1, ease: [0.22, 0.61, 0.36, 1] }}
+            className="snap-start shrink-0 w-[300px] md:w-[380px]"
+          >
+            <Link
+              href={game.href}
+              draggable={false}
+              data-cursor="Ойнау"
+              data-cursor-color={game.color}
+              className="home-tinted-shadow group relative flex flex-col aspect-[3/4] w-full rounded-2xl overflow-hidden border border-[var(--home-border)] bg-[var(--home-surface)] transition-all duration-500 hover:-translate-y-2 select-none"
+              style={{ ['--shadow-tint' as string]: `${game.color}33` }}
+              onMouseEnter={(e) => (e.currentTarget.style.boxShadow = `0 30px 60px -20px ${game.color}55`)}
+              onMouseLeave={(e) => (e.currentTarget.style.boxShadow = '')}
+            >
+              <div className="absolute inset-0 w-full h-full">
+                <Image
+                  src={game.image}
+                  alt={game.title}
+                  fill
+                  sizes="(max-width: 768px) 300px, 380px"
+                  className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                  draggable={false}
+                />
+              </div>
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+
+              <span
+                className="absolute top-5 left-5 text-[10px] font-body-premium font-bold uppercase tracking-[0.2em] px-3 py-1.5 rounded-full backdrop-blur-md"
+                style={{ background: `${game.color}dd`, color: 'var(--home-bg)' }}
+              >
+                {game.category}
+              </span>
+
+              <div className="relative mt-auto p-6 md:p-7 text-white">
+                <h3 className="font-display-premium text-2xl md:text-[26px] font-semibold mb-3 uppercase tracking-wide">
+                  {game.title}
+                </h3>
+
+                <div className="grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(0.22,0.61,0.36,1)] grid-rows-[0fr] group-hover:grid-rows-[1fr]">
+                  <div className="overflow-hidden">
+                    <p className="text-white/75 text-sm leading-relaxed mb-5 font-body-premium">
+                      {game.desc}
+                    </p>
+                    <div className="flex items-center gap-3 font-body-premium text-xs font-bold uppercase tracking-[0.25em]" style={{ color: game.color }}>
+                      <span className="relative">
+                        ОЙНАУ
+                        <span className="absolute -bottom-1 left-0 w-full h-px scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 delay-150" style={{ background: game.color }} />
+                      </span>
+                      <span className="transition-transform duration-300 group-hover:translate-x-2">→</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+        ))}
+        <div className="shrink-0 w-px" aria-hidden="true" />
+      </div>
+
+      {/* Scroll progress bar */}
+      <div className="max-w-[1440px] mx-auto px-6 md:px-10 mt-4">
+        <div className="h-1 rounded-full bg-[var(--home-border)] overflow-hidden max-w-[200px]">
+          <motion.div
+            className="h-full bg-[var(--home-terracotta)] rounded-full"
+            style={{ width: `${8 + progress * 92}%` }}
+            transition={{ type: 'tween', duration: 0.1 }}
           />
         </div>
       </div>
     </section>
-  )
-}
-
-function ShowcaseCard({ 
-  title, 
-  desc, 
-  category, 
-  href, 
-  image, 
-  ornament,
-  delay
-}: { 
-  title: string, 
-  desc: string, 
-  category: string, 
-  href: string, 
-  image: string,
-  ornament: 'qoshqar-muiiz' | 'tumar' | 'su' | 'geometric',
-  delay: number
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-10%" }}
-      transition={{ duration: 1, delay, ease: [0.25, 0.1, 0.25, 1] }}
-      className="flex-1 min-h-[500px] lg:min-h-0 relative"
-    >
-      <Link href={href} className="group relative w-full h-full rounded-3xl overflow-hidden block border border-border/20 bg-background transition-all duration-700 shadow-xl hover:shadow-[0_0_60px_-10px_rgba(212,175,55,0.25)] hover:border-gold/40 hover:-translate-y-2">
-        {/* Background Image */}
-        <div className="absolute inset-0 w-full h-full transition-transform duration-[1.5s] ease-[cubic-bezier(0.25,0.1,0.25,1)] group-hover:scale-105 group-focus:scale-105">
-          <Image src={image} alt={title} fill className="object-cover opacity-40 mix-blend-luminosity grayscale group-hover:grayscale-0 group-hover:opacity-60 transition-all duration-1000" />
-        </div>
-        
-        {/* Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
-        <div className="absolute inset-0 bg-gradient-to-b from-background/40 to-transparent" />
-        <div className="absolute inset-0 bg-gold/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 mix-blend-overlay" />
-        
-        {/* Ornament that draws on hover */}
-        <div className="absolute top-10 right-10 opacity-0 group-hover:opacity-60 transition-opacity duration-700 delay-100">
-          <KazakhOrnament variant={ornament} animate="draw" className="w-16 h-16 text-gold drop-shadow-[0_0_10px_rgba(212,175,55,0.5)]" />
-        </div>
-
-        {/* Content */}
-        <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 flex flex-col justify-end">
-          <div className="transform transition-transform duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)] lg:translate-y-12 group-hover:translate-y-0">
-            <span className="text-xs font-heading font-bold uppercase tracking-[0.2em] text-gold mb-4 inline-block drop-shadow-md border border-gold/30 bg-gold/10 px-3 py-1 rounded-full">
-              {category}
-            </span>
-            <h3 className="font-display text-4xl md:text-5xl font-bold text-foreground mb-4 drop-shadow-xl uppercase">
-              {title}
-            </h3>
-            
-            <div className="lg:h-0 lg:opacity-0 lg:overflow-hidden group-hover:h-auto group-hover:opacity-100 transition-all duration-700 ease-[cubic-bezier(0.25,0.1,0.25,1)]">
-              <p className="text-text-muted text-sm md:text-base leading-relaxed mb-8 font-heading tracking-wider">
-                {desc}
-              </p>
-              
-              {/* CTA Line */}
-              <div className="flex items-center gap-4 text-gold font-heading text-sm font-bold uppercase tracking-widest">
-                <span className="relative">
-                  ОЙНАУ
-                  <span className="absolute -bottom-1 left-0 w-full h-px bg-gold scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 delay-200" />
-                </span>
-                <span className="transform translate-x-0 group-hover:translate-x-3 transition-transform duration-500 ease-out">→</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </Link>
-    </motion.div>
   )
 }

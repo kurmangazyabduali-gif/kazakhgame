@@ -2,202 +2,183 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform } from 'framer-motion'
-import { HeritageButton } from '../ui/heritage/HeritageButton'
-import { HomeScrollIndicator } from './HomeScrollIndicator'
 import Link from 'next/link'
+import { QoshqarMuiz } from './ornaments/QoshqarMuiz'
+import { HomeScrollIndicator } from './HomeScrollIndicator'
+import { HomeMarquee } from './HomeMarquee'
+import { HomeMagnetic } from './HomeMagnetic'
 
-// Detailed Kazakh Ornament (Koshkar Muiiz / Horns) for side framing
-function SideOrnamentSVG({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 100 300" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
-      <path d="M50,10 C50,10 70,30 70,50 C70,70 50,90 30,90 C10,90 10,70 20,60 C30,50 50,70 50,90 C50,110 30,130 10,130 M50,10 C50,10 30,30 30,50 C30,70 50,90 70,90 C90,90 90,70 80,60 C70,50 50,70 50,90 C50,110 70,130 90,130" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-      <path d="M50,120 L50,180" stroke="currentColor" strokeWidth="2" strokeDasharray="6 6"/>
-      <path d="M50,180 C50,180 80,195 80,215 C80,235 60,250 40,250 C20,250 15,235 25,225 C35,215 50,230 50,250 C50,270 30,290 10,290" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/>
-      <circle cx="50" cy="10" r="4" fill="currentColor"/>
-      <circle cx="50" cy="150" r="3" fill="currentColor"/>
-      <circle cx="50" cy="290" r="4" fill="currentColor"/>
-    </svg>
-  )
-}
+const TICKER_ITEMS = ['АСЫҚ АТУ', 'ЖАМБЫ АТУ', 'КЕЛІН ШАЙ', 'ТОҒЫЗҚҰМАЛАҚ', 'ҚҰСБЕГІЛІК', 'ҰЛЫ ДАЛА МҰРАСЫ']
 
-// Epic Shanyraq SVG with inner ornaments
-function ShanyraqPortalSVG({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 300 300" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} aria-hidden="true">
-      <circle cx="150" cy="150" r="140" stroke="currentColor" strokeWidth="3"/>
-      <circle cx="150" cy="150" r="110" stroke="currentColor" strokeWidth="1.5" strokeDasharray="4 4"/>
-      <circle cx="150" cy="150" r="70" stroke="currentColor" strokeWidth="2"/>
-      <circle cx="150" cy="150" r="30" fill="currentColor" opacity="0.15"/>
-      {/* 12 major cross-beams resembling yurt roof */}
-      <line x1="150" y1="10" x2="150" y2="290" stroke="currentColor" strokeWidth="2"/>
-      <line x1="10" y1="150" x2="290" y2="150" stroke="currentColor" strokeWidth="2"/>
-      <line x1="51" y1="51" x2="249" y2="249" stroke="currentColor" strokeWidth="1.5"/>
-      <line x1="249" y1="51" x2="51" y2="249" stroke="currentColor" strokeWidth="1.5"/>
-      {/* Traditional curved yurt roof details */}
-      <path d="M150,10 A140,140 0 0,1 290,150" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-      <path d="M290,150 A140,140 0 0,1 150,290" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-      <path d="M150,290 A140,140 0 0,1 10,150" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-      <path d="M10,150 A140,140 0 0,1 150,10" stroke="currentColor" strokeWidth="1" opacity="0.3"/>
-    </svg>
-  )
-}
+const titleTop = 'ULY'.split('')
+const titleBottom = 'DALA'.split('')
 
 export function HomeHero() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const { scrollY } = useScroll()
 
-  // Track mouse movement for 3D parallax layers
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 30, // Max offset X
-        y: (e.clientY / window.innerHeight - 0.5) * 30, // Max offset Y
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20,
       })
     }
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  // Scroll Transforms
-  const ySky = useTransform(scrollY, [0, 800], [0, 200])
-  const yBackHills = useTransform(scrollY, [0, 800], [0, 120])
-  const yFrontHills = useTransform(scrollY, [0, 800], [0, 50])
-  const yText = useTransform(scrollY, [0, 800], [0, -80])
+  const yText = useTransform(scrollY, [0, 700], [0, -60])
   const opacityText = useTransform(scrollY, [0, 500], [1, 0])
-  const scaleText = useTransform(scrollY, [0, 500], [1, 0.9])
+
+  // Depth-of-field parallax: far ornament drifts slower than the near one,
+  // both layered on top of the existing cursor-tilt for a richer sense of depth.
+  const yOrnamentFar = useTransform(scrollY, [0, 900], [0, -110])
+  const yOrnamentNear = useTransform(scrollY, [0, 900], [0, -220])
+
+  const letterVariants = {
+    hidden: { opacity: 0, y: 60 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: { delay: 0.3 + i * 0.05, duration: 0.7, ease: [0.22, 0.61, 0.36, 1] as const },
+    }),
+  }
 
   return (
-    <section className="relative w-full h-[100dvh] flex items-center justify-center overflow-hidden bg-[#FAF7F0] select-none">
-      
-      {/* 1. SKY & SUNPORTAL (Deep background) */}
-      <motion.div 
-        style={{ y: ySky, x: mousePos.x * 0.2 }}
-        className="absolute inset-0 flex items-center justify-center pointer-events-none z-0"
-      >
-        {/* Glowing Sun/Shanyraq Gate */}
-        <div className="absolute right-[-10%] top-[-10%] md:right-[10%] md:top-[5%] w-[350px] h-[350px] md:w-[600px] md:h-[600px] text-gold/10 animate-shanyrak opacity-80">
-          <ShanyraqPortalSVG className="w-full h-full"/>
-        </div>
-        {/* Soft atmospheric golden radial gradient */}
-        <div className="absolute right-[5%] top-[10%] w-[500px] h-[500px] rounded-full bg-gold/5 blur-[120px] pointer-events-none" />
-      </motion.div>
-
-      {/* 2. STARS / FLOATING PARTICLES */}
-      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        {Array.from({ length: 20 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute rounded-full bg-gold/30 animate-dust"
-            style={{
-              left: `${(i * 7) % 100}%`,
-              bottom: `${(i * 13) % 80}%`,
-              width: `${2 + (i % 3)}px`,
-              height: `${2 + (i % 3)}px`,
-              animationDelay: `${i * 0.4}s`,
-              animationDuration: `${6 + (i % 5)}s`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* 3. SILHOUETTE HILLS / STEPPE MOUNTAINS (Back Layer) */}
-      <motion.div 
-        style={{ y: yBackHills, x: mousePos.x * -0.4 }}
-        className="absolute bottom-0 inset-x-0 w-full h-[35vh] pointer-events-none z-10"
-      >
-        <svg viewBox="0 0 1440 300" className="absolute bottom-[-2px] w-full h-full text-[#EADEC9] fill-current" preserveAspectRatio="none">
-          <path d="M0,220 Q360,150 720,200 T1440,160 L1440,300 L0,300 Z" />
-        </svg>
-      </motion.div>
-
-      {/* 4. RUNNING HORSES SILHOUETTES (Middle dynamic layer) */}
-      <motion.div
-        style={{ y: yFrontHills, x: mousePos.x * 0.5 }}
-        className="absolute bottom-[8vh] md:bottom-[12vh] inset-x-0 h-20 pointer-events-none z-20 overflow-hidden"
-      >
-        {/* Animated Horse moving across the hills */}
-        <div className="absolute w-24 h-24 text-gold/30 opacity-40 animate-marquee-horse" style={{ left: '-10%' }}>
-          <svg viewBox="0 0 100 100" fill="currentColor" className="w-full h-full">
-            <path d="M20,50 Q30,40 45,43 T75,35 Q85,45 80,55 T55,50 Q45,60 30,55 Z M50,55 L45,75 M55,55 L60,78 M35,53 L30,73 M30,53 L22,70" stroke="currentColor" strokeWidth="4" strokeLinecap="round"/>
-          </svg>
-        </div>
-      </motion.div>
-
-      {/* 5. FOREGROUND STEPPE HILL (Front Layer) */}
-      <motion.div 
-        style={{ y: yFrontHills, x: mousePos.x * -0.8 }}
-        className="absolute bottom-0 inset-x-0 w-full h-[22vh] pointer-events-none z-30"
-      >
-        <svg viewBox="0 0 1440 200" className="absolute bottom-[-2px] w-full h-full text-[#FAF7F0] fill-current drop-shadow-[0_-15px_30px_rgba(212,175,55,0.04)]" preserveAspectRatio="none">
-          <path d="M0,150 Q400,100 800,140 T1440,110 L1440,200 L0,200 Z" />
-        </svg>
-      </motion.div>
-
-      {/* 6. SIDE FRAMING ORNAMENTS (Elegant traditional frame) */}
-      <div className="absolute inset-y-0 left-0 w-16 md:w-32 flex items-center justify-center text-gold/25 z-40 hidden md:flex">
-        <SideOrnamentSVG className="h-[70vh] w-auto animate-pulse-slow" />
-      </div>
-      <div className="absolute inset-y-0 right-0 w-16 md:w-32 flex items-center justify-center text-gold/25 z-40 hidden md:flex scale-x-[-1]">
-        <SideOrnamentSVG className="h-[70vh] w-auto animate-pulse-slow" />
-      </div>
-
-      {/* 7. FOREGROUND HERO CONTENT (Centered overlay) */}
-      <motion.div 
-        style={{ y: yText, opacity: opacityText, scale: scaleText }}
-        className="relative z-40 flex flex-col items-center text-center px-6 w-full max-w-4xl"
-      >
-        {/* Ethno Tag */}
+    <>
+      <section className="relative w-full min-h-[92dvh] flex items-center justify-center overflow-hidden home-vignette home-dotgrid home-grain pt-20">
+        {/* Diagonal corner ribbon */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex items-center gap-3 mb-6 bg-gold/10 border border-gold/30 rounded-full px-5 py-2 text-gold font-heading text-xs font-bold tracking-[0.25em] uppercase shadow-inner"
+          initial={{ x: 140, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
+          className="absolute top-8 -right-16 z-30 rotate-45 bg-[var(--home-ink)] text-[var(--home-bg)] px-20 py-2 shadow-lg hidden sm:block"
         >
-          <span className="w-1.5 h-1.5 bg-gold rotate-45" />
-          Ұлы Дала Мұрасы
-          <span className="w-1.5 h-1.5 bg-gold rotate-45" />
+          <span className="font-body-premium text-[11px] font-bold tracking-[0.3em] uppercase">2026 · Жаңа маусым</span>
         </motion.div>
 
-        {/* Grand Title */}
-        <h1 className="font-display text-8xl md:text-9xl lg:text-[160px] font-extrabold text-foreground tracking-wider mb-6 relative">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-foreground via-foreground/90 to-gold drop-shadow-sm select-text">
-            ULY DALA
-          </span>
-        </h1>
-
-        {/* Subtitle */}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.7 }}
-          transition={{ duration: 1, delay: 0.5 }}
-          className="text-lg md:text-2xl text-text-muted font-heading font-medium tracking-[0.15em] max-w-2xl mx-auto mb-16 uppercase"
-        >
-          Қазақтың ұлттық ойындар платформасы
-        </motion.p>
-
-        {/* Grand CTA Button */}
+        {/* Two-tone floating ornament, offset from center for an editorial (not symmetric-generic) feel.
+            Cursor tilt and scroll-parallax drift compose on separate transforms so both stay smooth. */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
+          style={{ y: yOrnamentFar }}
+          className="absolute -right-24 top-[8%] md:right-[2%] md:top-[6%] pointer-events-none z-0"
+        >
+          <motion.div style={{ x: mousePos.x * 0.15, y: mousePos.y * 0.15 }}>
+            <QoshqarMuiz spin className="w-[340px] h-[340px] md:w-[480px] md:h-[480px] text-[var(--home-terracotta)]/[0.10]" />
+          </motion.div>
+        </motion.div>
+        <motion.div
+          style={{ y: yOrnamentNear }}
+          className="absolute -left-20 bottom-[6%] md:left-[4%] pointer-events-none z-0"
+        >
+          <motion.div style={{ x: mousePos.x * -0.1, y: mousePos.y * -0.1 }}>
+            <QoshqarMuiz className="w-[220px] h-[220px] md:w-[320px] md:h-[320px] text-[var(--home-turquoise)]/[0.10]" drawOnView={false} />
+          </motion.div>
+        </motion.div>
+
+        {/* Small drifting accent chips */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={{ duration: 0.8, delay: 1.1 }}
+          className="hidden lg:flex absolute left-[10%] top-[28%] items-center gap-2 bg-[var(--home-surface)] border border-[var(--home-border)] rounded-full pl-2 pr-4 py-2 shadow-[0_10px_30px_-12px_rgba(33,28,21,0.18)] animate-home-bob z-20"
         >
-          <Link href="/games">
-            <HeritageButton
-              variant="gold"
-              size="lg"
-              className="px-16 py-8 text-xl font-bold tracking-[0.2em] animate-pulse-glow hover:scale-105 transition-transform rounded-2xl shadow-xl shadow-gold/15"
-            >
-              ОЙЫНДАРДЫ БАСТАУ
-            </HeritageButton>
-          </Link>
+          <span className="w-7 h-7 rounded-full bg-[var(--home-saffron-soft)] flex items-center justify-center text-[var(--home-saffron)] font-display-premium font-bold text-sm">4</span>
+          <span className="font-body-premium text-xs font-semibold uppercase tracking-widest text-[var(--home-ink-soft)]">ойын режимі</span>
+        </motion.div>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 1.3 }}
+          className="hidden lg:flex absolute right-[12%] bottom-[24%] items-center gap-2 bg-[var(--home-surface)] border border-[var(--home-border)] rounded-full pl-2 pr-4 py-2 shadow-[0_10px_30px_-12px_rgba(33,28,21,0.18)] animate-home-drift z-20"
+        >
+          <span className="w-7 h-7 rounded-full bg-[var(--home-turquoise-soft)] flex items-center justify-center text-[var(--home-turquoise)] font-display-premium font-bold text-sm">5</span>
+          <span className="font-body-premium text-xs font-semibold uppercase tracking-widest text-[var(--home-ink-soft)]">дала өңірі</span>
         </motion.div>
 
-        {/* Micro decor line */}
-        <div className="w-32 h-[1px] bg-gradient-to-r from-transparent via-gold/50 to-transparent mt-12" />
-      </motion.div>
+        {/* Foreground content */}
+        <motion.div
+          style={{ y: yText, opacity: opacityText }}
+          className="relative z-40 flex flex-col items-center text-center px-6 w-full max-w-4xl"
+        >
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7 }}
+            className="flex items-center gap-3 mb-8 bg-[var(--home-terracotta-soft)] border border-[var(--home-terracotta)]/25 rounded-full px-5 py-2 text-[var(--home-terracotta)] font-body-premium text-xs font-bold tracking-[0.3em] uppercase"
+          >
+            <span className="w-1.5 h-1.5 bg-[var(--home-terracotta)] rotate-45" />
+            Ұлы Дала Мұрасы
+            <span className="w-1.5 h-1.5 bg-[var(--home-terracotta)] rotate-45" />
+          </motion.div>
 
-      {/* Scroll indicator */}
-      <HomeScrollIndicator />
-    </section>
+          <h1 className="font-display-premium text-7xl md:text-9xl lg:text-[164px] font-semibold tracking-tight mb-6 leading-[0.88] text-[var(--home-ink)]">
+            <span className="flex justify-center overflow-hidden">
+              {titleTop.map((ch, i) => (
+                <motion.span key={i} custom={i} variants={letterVariants} initial="hidden" animate="visible" className="inline-block">
+                  {ch}
+                </motion.span>
+              ))}
+            </span>
+            <span className="flex justify-center overflow-hidden italic text-accent-gradient">
+              {titleBottom.map((ch, i) => (
+                <motion.span key={i} custom={i + 3} variants={letterVariants} initial="hidden" animate="visible" className="inline-block">
+                  {ch}
+                </motion.span>
+              ))}
+            </span>
+          </h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1, delay: 0.9 }}
+            className="text-base md:text-xl text-[var(--home-ink-soft)] font-body-premium font-medium tracking-[0.15em] max-w-2xl mx-auto mb-12"
+          >
+            Қазақтың ұлттық ойындар мен мәдени мұра платформасы
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 1.1 }}
+            className="flex flex-col sm:flex-row items-center gap-6"
+          >
+            <HomeMagnetic strength={0.3}>
+              <Link
+                href="/games"
+                data-cursor="Бастау"
+                data-cursor-color="var(--home-bg)"
+                className="home-tinted-shadow group relative inline-flex items-center gap-4 px-12 py-5 rounded-full bg-[var(--home-ink)] text-[var(--home-bg)] font-body-premium font-bold text-base tracking-[0.15em] uppercase overflow-hidden transition-transform duration-300 hover:scale-[1.04]"
+                style={{ ['--shadow-tint' as string]: 'rgba(33,28,21,0.42)' }}
+              >
+                <span className="relative z-10">Ойынды бастау</span>
+                <span className="relative z-10 transition-transform duration-300 group-hover:translate-x-1.5">→</span>
+              </Link>
+            </HomeMagnetic>
+
+            <Link
+              href="/culture"
+              data-cursor="Танысу"
+              data-cursor-color="var(--home-terracotta)"
+              className="group inline-flex items-center gap-2 font-body-premium font-semibold text-sm tracking-widest uppercase text-[var(--home-ink)]"
+            >
+              Мұрамен танысу
+              <span className="relative">
+                <span className="absolute -bottom-1 left-0 w-full h-px bg-[var(--home-ink)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-400" />
+                →
+              </span>
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <HomeScrollIndicator />
+      </section>
+
+      <div className="border-y border-[var(--home-border)] bg-[var(--home-bg-deep)] py-4 text-[var(--home-ink-soft)]">
+        <HomeMarquee items={TICKER_ITEMS} />
+      </div>
+    </>
   )
 }

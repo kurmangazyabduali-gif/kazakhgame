@@ -1,123 +1,175 @@
 'use client'
 
 import React, { useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
-import { KazakhOrnament } from '../ui/heritage/KazakhOrnament'
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import Image from 'next/image'
+import { TuyeTaban } from './ornaments/TuyeTaban'
 
-export function HomeWorldSection() {
-  const containerRef = useRef<HTMLDivElement>(null)
-  
-  // Track scroll through the whole 300vh container
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start start", "end end"]
-  })
+interface World {
+  id: string
+  title: string
+  desc: string
+  tags: string
+  image: string
+  imageAlt: string
+  color: string
+  soft: string
+}
 
-  // Map scroll progress to the 3 sections
-  // Section 1: 0 to 0.33
-  // Section 2: 0.33 to 0.66
-  // Section 3: 0.66 to 1.0
+const WORLDS: World[] = [
+  {
+    id: 'sport',
+    title: 'ҰЛТТЫҚ СПОРТ',
+    desc: 'Мергендік, күш және төзімділік. Ұрпақтан ұрпаққа берілетін жарыс рухын сезініңіз.',
+    tags: 'АСЫҚ АТУ · ЖАМБЫ АТУ · ҚҰСБЕГІЛІК',
+    image: '/images/games/jamby-atu.jpg',
+    imageAlt: 'Ұлттық спорт',
+    color: 'var(--home-terracotta)',
+    soft: 'var(--home-terracotta-soft)',
+  },
+  {
+    id: 'tradition',
+    title: 'ҰЛТТЫҚ ДӘСТҮР',
+    desc: 'Қонақжайлылық пен құрмет. Адамдар арасындағы байланысты қалыптастыратын тірі этика.',
+    tags: 'КЕЛІН ШАЙ',
+    image: '/images/games/kelin-shai.jpg',
+    imageAlt: 'Ұлттық дәстүр',
+    color: 'var(--home-turquoise)',
+    soft: 'var(--home-turquoise-soft)',
+  },
+  {
+    id: 'strategy',
+    title: 'СТРАТЕГИЯ',
+    desc: 'Терең ойлауды талап ететін интеллектуалды шайқастар. Әр қадам — ұрпақтан ұрпаққа жеткен есеп.',
+    tags: 'ТОҒЫЗҚҰМАЛАҚ',
+    image: '/images/games/togyzqumalak.jpg',
+    imageAlt: 'Стратегия',
+    color: 'var(--home-saffron)',
+    soft: 'var(--home-saffron-soft)',
+  },
+]
 
-  // Title opacities
-  const op1 = useTransform(scrollYProgress, [0, 0.25, 0.33], [1, 1, 0])
-  const op2 = useTransform(scrollYProgress, [0.25, 0.33, 0.58, 0.66], [0, 1, 1, 0])
-  const op3 = useTransform(scrollYProgress, [0.58, 0.66, 1], [0, 1, 1])
+function TiltCard({ world, index }: { world: World; index: number }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const rx = useMotionValue(0)
+  const ry = useMotionValue(0)
+  const srx = useSpring(rx, { stiffness: 200, damping: 20 })
+  const sry = useSpring(ry, { stiffness: 200, damping: 20 })
+  const glowX = useMotionValue(50)
+  const glowY = useMotionValue(50)
 
-  // Image opacities
-  const imgOp1 = useTransform(scrollYProgress, [0, 0.25, 0.33], [0.6, 0.6, 0])
-  const imgOp2 = useTransform(scrollYProgress, [0.25, 0.33, 0.58, 0.66], [0, 0.6, 0.6, 0])
-  const imgOp3 = useTransform(scrollYProgress, [0.58, 0.66, 1], [0, 0.6, 0.6])
+  function handleMove(e: React.MouseEvent<HTMLDivElement>) {
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width
+    const py = (e.clientY - rect.top) / rect.height
+    ry.set((px - 0.5) * 14)
+    rx.set((0.5 - py) * 10)
+    glowX.set(px * 100)
+    glowY.set(py * 100)
+  }
 
-  // Parallax subtle scales
-  const scale1 = useTransform(scrollYProgress, [0, 0.33], [1, 1.1])
-  const scale2 = useTransform(scrollYProgress, [0.33, 0.66], [1, 1.1])
-  const scale3 = useTransform(scrollYProgress, [0.66, 1], [1, 1.1])
+  function handleLeave() {
+    rx.set(0)
+    ry.set(0)
+  }
+
+  const glowBackground = useTransform([glowX, glowY], ([gx, gy]: number[]) =>
+    `radial-gradient(340px circle at ${gx}% ${gy}%, ${world.color}22, transparent 70%)`
+  )
 
   return (
-    <div ref={containerRef} className="relative h-[300vh] w-full bg-[#FAF7F0]">
-      {/* Sticky container that stays in view */}
-      <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
-        
-        
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-10%' }}
+      transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 0.61, 0.36, 1] }}
+      style={{ perspective: 1200 }}
+    >
+      <motion.article
+        ref={ref}
+        onMouseMove={handleMove}
+        onMouseLeave={handleLeave}
+        data-cursor="Ашу"
+        data-cursor-color={world.color}
+        style={{
+          rotateX: srx,
+          rotateY: sry,
+          transformStyle: 'preserve-3d',
+          ['--shadow-tint' as string]: `${world.color}2E`,
+        }}
+        className="home-tinted-shadow group relative rounded-2xl overflow-hidden border border-[var(--home-border)] bg-[var(--home-surface)] hover:shadow-[0_34px_70px_-22px_var(--shadow-tint)]"
+      >
+        <motion.div className="absolute inset-0 pointer-events-none z-20" style={{ background: glowBackground }} />
 
-        {/* IMAGE LAYERS */}
-        <div className="absolute inset-0 z-0 w-full h-full">
-          {/* World 1: Sport */}
-          <motion.div style={{ opacity: imgOp1, scale: scale1 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/jamby-atu.jpg" alt="National Sport" fill className="object-cover opacity-30" priority />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
-            <div className="absolute inset-0 bg-gold/5" />
-          </motion.div>
-
-          {/* World 2: Tradition */}
-          <motion.div style={{ opacity: imgOp2, scale: scale2 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/kelin-shai.jpg" alt="National Tradition" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
-            <div className="absolute inset-0 bg-[#8B4513]/10" />
-          </motion.div>
-
-          {/* World 3: Steppe */}
-          <motion.div style={{ opacity: imgOp3, scale: scale3 }} className="absolute inset-0 origin-center will-change-transform">
-            <Image src="/images/games/togyzqumalak.jpg" alt="The Great Steppe" fill className="object-cover opacity-30" />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#FAF7F0] via-[#FAF7F0]/80 to-transparent" />
-            <div className="absolute inset-0 bg-[#0F172A]/20" />
-          </motion.div>
-        </div>
-
-        {/* CONTENT LAYER */}
-        <div className="relative z-30 w-full max-w-7xl mx-auto px-6 md:px-12 flex items-center h-full">
-          
-          <div className="w-full md:w-1/2 h-full flex items-center relative">
-            {/* World 1 Content */}
-            <motion.div style={{ opacity: op1 }} className="absolute w-full">
-              <KazakhOrnament variant="geometric" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ СПОРТ</h2>
-              <div className="w-12 h-1 bg-gold mb-6" />
-              <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Мергендік, күш және төзімділік. Ұрпақтан ұрпаққа берілетін жарыс рухын сезініңіз.
-              </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">АСЫҚ АТУ • ЖАМБЫ АТУ • ҚҰСБЕГІЛІК</div>
-            </motion.div>
-
-            {/* World 2 Content */}
-            <motion.div style={{ opacity: op2 }} className="absolute w-full pointer-events-none">
-              <KazakhOrnament variant="tumar" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛТТЫҚ ДӘСТҮР</h2>
-              <div className="w-12 h-1 bg-gold mb-6" />
-              <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Қонақжайлылық пен құрмет. Адамдар арасындағы байланысты қалыптастыратын тірі этика.
-              </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">КЕЛІН ШӘЙ</div>
-            </motion.div>
-
-            {/* World 3 Content */}
-            <motion.div style={{ opacity: op3 }} className="absolute w-full pointer-events-none">
-              <KazakhOrnament variant="su" animate="draw" className="w-16 h-16 text-gold mb-8 opacity-80" />
-              <h2 className="font-display text-5xl md:text-8xl font-bold mb-6 text-foreground drop-shadow-xl uppercase">ҰЛЫ ДАЛА</h2>
-              <div className="w-12 h-1 bg-gold mb-6" />
-              <p className="text-text-muted text-lg md:text-2xl max-w-lg font-heading tracking-widest leading-relaxed uppercase">
-                Стратегия және зияткерлік. Терең ойлауды талап ететін интеллектуалды шайқастар.
-              </p>
-              <div className="mt-12 text-gold/60 font-heading font-bold text-sm tracking-[0.3em] uppercase">ТОҒЫЗҚҰМАЛАҚ</div>
-            </motion.div>
-          </div>
-
-        </div>
-        
-        {/* Section Global Title */}
-        <div className="absolute right-8 top-1/2 -translate-y-1/2 z-40 hidden md:block">
-          <div 
-            className="text-sand font-display text-[150px] font-bold uppercase tracking-tighter opacity-10 leading-none select-none pointer-events-none"
-            style={{ writingMode: 'vertical-rl' }}
+        <div className="relative h-56 w-full overflow-hidden">
+          <Image
+            src={world.image}
+            alt={world.imageAlt}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[var(--home-surface)] via-[var(--home-surface)]/10 to-transparent" />
+          <div
+            className="absolute top-5 left-5 w-10 h-10 rounded-full border flex items-center justify-center"
+            style={{ background: world.soft, borderColor: `${world.color}40`, color: world.color }}
           >
-            ҮШ ӘЛЕМ
+            <TuyeTaban className="w-5 h-5" />
           </div>
         </div>
 
-      </div>
-    </div>
+        <div className="p-7 md:p-8" style={{ transform: 'translateZ(30px)' }}>
+          <h3 className="font-display-premium text-2xl md:text-[27px] font-semibold text-[var(--home-ink)] mb-3 tracking-wide uppercase">
+            {world.title}
+          </h3>
+          <div className="w-10 h-[2.5px] rounded-full mb-4" style={{ background: world.color }} />
+          <p className="text-[var(--home-ink-soft)] font-body-premium text-sm leading-relaxed mb-6 min-h-[72px]">
+            {world.desc}
+          </p>
+          <p className="font-body-premium text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: world.color }}>
+            {world.tags}
+          </p>
+        </div>
+      </motion.article>
+    </motion.div>
   )
 }
 
+export function HomeWorldSection() {
+  return (
+    <section className="relative py-32 bg-[var(--home-bg-soft)] home-grain overflow-hidden">
+      <div
+        aria-hidden="true"
+        className="hidden lg:block absolute right-6 top-1/2 -translate-y-1/2 text-[var(--home-ink)] font-display-premium text-[150px] font-semibold uppercase tracking-tighter opacity-[0.03] leading-none select-none pointer-events-none"
+        style={{ writingMode: 'vertical-rl' }}
+      >
+        ҮШ ӘЛЕМ
+      </div>
 
+      <div className="max-w-[1400px] mx-auto px-6 md:px-10 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-10%' }}
+          transition={{ duration: 0.9 }}
+          className="text-center mb-20"
+        >
+          <span className="inline-block font-body-premium text-xs font-bold tracking-[0.35em] uppercase text-[var(--home-terracotta)] mb-4">
+            Үш Әлем
+          </span>
+          <h2 className="font-display-premium text-4xl md:text-6xl font-semibold text-[var(--home-ink)]">
+            Бір мұра, <span className="italic text-accent-gradient">үш қырынан</span>
+          </h2>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          {WORLDS.map((world, i) => (
+            <TiltCard key={world.id} world={world} index={i} />
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}

@@ -66,7 +66,7 @@ export const REGIONS: Record<string, Region> = {
     nameKk: 'Орталық Қазақстан',
     nameRu: 'Центральный Казахстан',
     nameEn: 'Central Kazakhstan',
-    games: [],
+    games: ['arqan-tartys'],
     traditions: ['Дала құрылтайлары', 'Айтыс өнері'],
     description: 'Зерттеудің мәдени аймағы: Орталық макро-аймақ. Сарыарқа — Ұлы Даланың жүрегі.',
     verified: true,

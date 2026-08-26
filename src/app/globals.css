@@ -294,4 +294,165 @@
   animation: marquee-horse 28s linear infinite;
 }
 
+/* ============================================================
+   ULY DALA — Homepage Scope ("Ivory Atlas")
+   Scoped entirely to `.uly-home` so the rest of the platform
+   (dashboard, profile, games, navbar, footer) keeps the
+   existing heritage theme untouched.
+   ============================================================ */
+.uly-home {
+  /* base — milk-white / ivory paper */
+  --home-bg: #FBF9F3;
+  --home-bg-soft: #F6F1E6;
+  --home-bg-deep: #EFE8D6;
+  --home-surface: #FFFFFF;
+  --home-panel: rgba(33, 28, 21, 0.03);
+  --home-panel-hover: rgba(33, 28, 21, 0.055);
+  --home-border: rgba(33, 28, 21, 0.1);
+  --home-border-strong: rgba(33, 28, 21, 0.22);
+
+  /* ink */
+  --home-ink: #211C15;
+  --home-ink-soft: #6E6656;
+  --home-ink-faint: #A79C86;
+
+  /* steppe accent palette — used deliberately, not decoratively */
+  --home-terracotta: #C1502E;
+  --home-terracotta-soft: #F3DECF;
+  --home-turquoise: #1B8378;
+  --home-turquoise-soft: #DBEEE9;
+  --home-saffron: #C98A15;
+  --home-saffron-soft: #F6E6BE;
+  --home-indigo: #37437C;
+  --home-indigo-soft: #E1E3EF;
+
+  --home-font-display: var(--font-spectral), Georgia, "Times New Roman", serif;
+  --home-font-body: var(--font-golos), ui-sans-serif, system-ui, sans-serif;
+
+  background: var(--home-bg);
+  color: var(--home-ink);
+}
+
+.font-display-premium {
+  font-family: var(--home-font-display);
+}
+
+.font-body-premium {
+  font-family: var(--home-font-body);
+}
+
+/* warm steppe-sunset sweep used sparingly on emphasis words */
+.text-accent-gradient {
+  background-image: linear-gradient(100deg, var(--home-terracotta) 0%, var(--home-saffron) 45%, var(--home-turquoise) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.home-vignette {
+  background:
+    radial-gradient(ellipse 80% 55% at 12% -10%, rgba(193, 80, 46, 0.07), transparent 60%),
+    radial-gradient(ellipse 70% 55% at 100% 10%, rgba(27, 131, 120, 0.07), transparent 60%),
+    var(--home-bg);
+}
+
+.home-noise {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+}
+
+/* fine dot-grid paper texture, used behind the hero */
+.home-dotgrid {
+  background-image: radial-gradient(rgba(33, 28, 21, 0.09) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+@keyframes home-glow-pulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.04); }
+}
+
+.animate-home-glow {
+  animation: home-glow-pulse 4s ease-in-out infinite;
+}
+
+@keyframes home-drift {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -14px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.animate-home-drift {
+  animation: home-drift 9s ease-in-out infinite;
+}
+
+/* infinite horizontal ticker — content is duplicated x2 by the component */
+@keyframes home-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.animate-home-marquee {
+  animation: home-marquee 30s linear infinite;
+}
+
+.group:hover .group-hover\:pause-marquee,
+.pause-marquee-hover:hover .animate-home-marquee {
+  animation-play-state: paused;
+}
+
+@keyframes home-bob {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+.animate-home-bob {
+  animation: home-bob 6s ease-in-out infinite;
+}
+
+@keyframes home-underline-grow {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+.animate-home-underline {
+  animation: home-underline-grow 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+  transform-origin: left;
+}
+
+/* subtle grain layer, laid over full sections for visual depth beyond flat paper */
+.home-grain {
+  position: relative;
+  isolation: isolate;
+}
+
+.home-grain::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+/* resting-state colored shadow, driven by a per-element --shadow-tint custom property */
+.home-tinted-shadow {
+  box-shadow: 0 22px 46px -28px var(--shadow-tint, rgba(33, 28, 21, 0.28));
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+/* top-of-viewport scroll progress rail */
+.home-progress-rail {
+  transform-origin: 0% 50%;
+  will-change: transform;
+}
+
+@keyframes home-cursor-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.12); }
+}
+
+.animate-home-cursor-pulse {
+  animation: home-cursor-pulse 2.2s ease-in-out infinite;
+}
 

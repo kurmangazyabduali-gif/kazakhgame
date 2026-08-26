@@ -68,6 +68,17 @@ export default function GamesLibraryPage() {
       duration: '5 мин',
       image: '/images/games/jamby-atu.jpg',
       status: (bestScores['zhamby-atu'] !== undefined ? 'completed' : 'available')
+    },
+    { 
+      slug: 'arqan-tartys', 
+      name: 'Арқан тартыс', 
+      category: 'Спорт', 
+      description: 'Күш пен ырғаққа құрылған дәстүрлі арқан тартыс ойыны. Командалық рухты сезініңіз.', 
+      difficulty: 'Орташа (Medium)',
+      players: 'Командалық',
+      duration: '5-10 мин',
+      image: '/images/games/arqan-tartys.jpg',
+      status: 'locked'
     }
   ]
 
