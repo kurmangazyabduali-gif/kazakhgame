@@ -1,6 +1,7 @@
 import * as Phaser from 'phaser'
 import { PoseState } from '../characters/characterSvg'
 import { teamATextureKey, teamBTextureKey } from '../engine/BootScene'
+import { fatigueTintColor } from '../fx/JuiceRules'
 
 export type TeamSide = 'A' | 'B'
 
@@ -16,6 +17,8 @@ export class TeamEntity {
   private side: TeamSide
   private sprites: Phaser.GameObjects.Sprite[] = []
   private currentPose: PoseState = 'IDLE'
+  private breathTweens: Phaser.Tweens.Tween[] = []
+  private groundY = 0
 
   /** Sprites are authored at 160x220 (see CHARACTER_SIZE) — scaled down and
    *  slightly shrunk per queue position (nearer-the-rope characters render
@@ -26,6 +29,7 @@ export class TeamEntity {
   constructor(scene: Phaser.Scene, side: TeamSide, anchorX: number, groundY: number, spacing: number) {
     this.scene = scene
     this.side = side
+    this.groundY = groundY
 
     for (let i = 0; i < 4; i++) {
       const key = side === 'A' ? teamATextureKey(i, 'IDLE') : teamBTextureKey(i, 'IDLE')
@@ -40,6 +44,40 @@ export class TeamEntity {
       sprite.setDepth(10 + (4 - i)) // frontmost (rope-nearest) draws on top
       this.sprites.push(sprite)
     }
+
+    this.startBreathing()
+  }
+
+  /** Subtle, desynced idle life: each of the 4 athletes rises and settles
+   *  on its own phase (offset by index) so the roster reads as 4 separate
+   *  people breathing, not one sprite cloned 4 times moving in lockstep. */
+  private startBreathing() {
+    this.stopBreathing()
+    this.sprites.forEach((sprite, i) => {
+      const tween = this.scene.tweens.add({
+        targets: sprite,
+        y: this.groundY - (2 + (i % 2)),
+        duration: 1400 + i * 180,
+        delay: i * 220,
+        yoyo: true,
+        repeat: -1,
+        ease: 'Sine.easeInOut',
+      })
+      this.breathTweens.push(tween)
+    })
+  }
+
+  private stopBreathing() {
+    this.breathTweens.forEach((t) => t.stop())
+    this.breathTweens = []
+  }
+
+  /** Fatigue-driven tint (see JuiceRules.fatigueTintColor) — exhaustion
+   *  reads on the athletes themselves as the round wears on, not only in
+   *  the HUD fatigue bar. `fatigue` is the team's 0..1 ForceEngine value. */
+  setFatigue(fatigue: number) {
+    const tint = fatigueTintColor(fatigue)
+    this.sprites.forEach((sprite) => sprite.setTint(tint))
   }
 
   setPose(pose: PoseState) {
@@ -66,10 +104,14 @@ export class TeamEntity {
   }
 
   setPositions(anchorX: number, groundY: number, spacing: number) {
+    this.groundY = groundY
     const direction = this.side === 'A' ? -1 : 1
     this.sprites.forEach((sprite, i) => {
       sprite.setPosition(anchorX + direction * (i * spacing), groundY)
     })
+    // Restart breathing against the new baseline Y so the running tweens
+    // don't keep interpolating toward a pre-resize target.
+    this.startBreathing()
   }
 
   /** Approximate width of the roster's queue span in world units, used by
@@ -86,7 +128,16 @@ export class TeamEntity {
     return { x: front.x, y: front.y - 90 }
   }
 
+  /** Ground-contact point of the frontmost character — sprites use origin
+   *  (0.5, 1), so `.y` is already the foot/ground line. Used to anchor dust
+   *  particle bursts at a pull. */
+  getFrontFootPosition(): { x: number; y: number } {
+    const front = this.sprites[0]
+    return { x: front.x, y: front.y }
+  }
+
   destroy() {
+    this.stopBreathing()
     this.sprites.forEach((s) => s.destroy())
   }
 }

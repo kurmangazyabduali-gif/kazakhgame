@@ -9,6 +9,13 @@ export interface ArqanLevelConfig {
   matchConfig: Partial<MatchConfig>
   /** Whether this level shows the first-time tutorial overlay. */
   isTutorial?: boolean
+  /** Rival team's name, shown on the pre-match opponent intro card so the
+   *  AI reads as a specific team to beat rather than an anonymous "Level N
+   *  AI". Fictional aul/team names, not real places or organizations. */
+  opponentName: string
+  /** One-line read on how this opponent plays — sets expectations before
+   *  the round starts, echoing the tier's actual AI_TIERS behavior. */
+  opponentStyle: string
 }
 
 // Eight levels, each introducing one clearly new challenge over the last,
@@ -20,6 +27,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
     challenge: 'Оқыту — ырғаққа үйрену (tutorial — learn the rhythm)',
     aiDifficulty: 'BALDYRGAN',
     isTutorial: true,
+    opponentName: 'Қарашаңырақ ауылы',
+    opponentStyle: 'Достық сайыс — асықпа, ырғаққа құла',
     matchConfig: {
       beatIntervalMs: 1050,
       goodWindowMs: 300,
@@ -36,6 +45,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       goodWindowMs: 260,
       perfectWindowMs: 120,
     },
+    opponentName: 'Талдыбастау ауылы',
+    opponentStyle: 'Байқаусыз қарсылас — жиі ырғақтан жаңылады',
   },
   3: {
     level: 3,
@@ -46,6 +57,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       goodWindowMs: 220,
       perfectWindowMs: 100,
     },
+    opponentName: 'Жасыл дала тобы',
+    opponentStyle: 'Жылдам аяқ — қарқынды ұстай біл',
   },
   4: {
     level: 4,
@@ -56,6 +69,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       goodWindowMs: 210,
       perfectWindowMs: 95,
     },
+    opponentName: 'Ақтөбе батырлары',
+    opponentStyle: 'Күшті білек — әр тартысы ауыр тиеді',
   },
   5: {
     level: 5,
@@ -68,6 +83,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       goodWindowMs: 200,
       perfectWindowMs: 90,
     },
+    opponentName: 'Қызыл жар ауылы',
+    opponentStyle: 'Төзімді команда — соңына дейін таусылмайды',
   },
   6: {
     level: 6,
@@ -80,6 +97,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       perfectWindowMs: 85,
       momentumBonusPerStreak: 0.05,
     },
+    opponentName: 'Көкшетау жасақшылары',
+    opponentStyle: 'Қайтарым күш — есеп теңелмей тынышталмайды',
   },
   7: {
     level: 7,
@@ -91,6 +110,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       perfectWindowMs: 70,
       fatiguePerPull: 0.11,
     },
+    opponentName: 'Алтын дала одағы',
+    opponentStyle: 'Дәл ырғақ — бір тактіні де жібермейді',
   },
   8: {
     level: 8,
@@ -104,6 +125,8 @@ export const ARQAN_LEVELS: Record<number, ArqanLevelConfig> = {
       fatigueRecoveryPerMs: 0.00024,
       momentumBonusPerStreak: 0.055,
     },
+    opponentName: 'Ұлы дала чемпиондары',
+    opponentStyle: 'Жеңілмес топ — соңғы сынақ, ең мықты қарсылас',
   },
 }
 

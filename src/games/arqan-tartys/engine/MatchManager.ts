@@ -23,7 +23,7 @@ export interface MatchResult {
   isCleanSweep: boolean // 3:0 (either direction)
 }
 
-const ROUNDS_TO_WIN = 2
+export const ROUNDS_TO_WIN = 2
 const MAX_ROUNDS = 3
 
 /**

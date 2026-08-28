@@ -76,7 +76,8 @@ export default function Teapot3D({ id, engine, initialPosition }: Teapot3DProps)
       if (groupRef.current) groupRef.current.rotation.z = 0
     }
   })
-
+  const streamRef = useRef<THREE.Mesh>(null)
+  
   useFrame((sceneState, delta) => {
     if (!groupRef.current) return
     groupRef.current.position.x = THREE.MathUtils.lerp(groupRef.current.position.x, pos[0], 20 * delta)
@@ -85,6 +86,10 @@ export default function Teapot3D({ id, engine, initialPosition }: Teapot3DProps)
     
     if (!isDragging) {
       groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, 0, 10 * delta)
+    }
+
+    if (streamRef.current) {
+      streamRef.current.visible = groupRef.current.rotation.z < -0.5
     }
   })
 
@@ -132,12 +137,10 @@ export default function Teapot3D({ id, engine, initialPosition }: Teapot3DProps)
           <meshStandardMaterial color="#FAF9F6" roughness={0.05} />
         </mesh>
         {/* Tea Stream (Visual) */}
-        {groupRef.current && groupRef.current.rotation.z < -0.5 && (
-          <mesh position={[0, 0.3, 0]} rotation={[0, 0, 0]}>
-            <cylinderGeometry args={[0.01, 0.01, 0.6, 8]} />
-            <meshBasicMaterial color="#d17a3a" transparent opacity={0.6} />
-          </mesh>
-        )}
+        <mesh ref={streamRef} position={[0, 0.3, 0]} rotation={[0, 0, 0]} visible={false}>
+          <cylinderGeometry args={[0.01, 0.01, 0.6, 8]} />
+          <meshBasicMaterial color="#d17a3a" transparent opacity={0.6} />
+        </mesh>
       </group>
       
       {/* Sweeping Gold Handle */}

@@ -82,6 +82,27 @@ export function dustParticleSvg(): string {
 </svg>`.trim()
 }
 
+const CLOUDS_W = 720
+const CLOUDS_H = 160
+
+/** Soft, horizontally-tileable cloud strip — a slow-drifting TileSprite
+ *  layer between the sky and the mountains so the steppe backdrop reads as
+ *  a living sky rather than a static painted backdrop. Deliberately low
+ *  contrast/opacity so it stays a background layer, not a distraction. */
+export function cloudsSvg(): string {
+  const puff = (cx: number, cy: number, rx: number, ry: number, opacity: number) =>
+    `<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff8e6" opacity="${opacity}" />`
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CLOUDS_W} ${CLOUDS_H}" width="${CLOUDS_W}" height="${CLOUDS_H}">
+  <g>
+    ${puff(70, 55, 54, 18, 0.45)}${puff(130, 65, 34, 12, 0.32)}
+    ${puff(260, 85, 60, 20, 0.4)}${puff(320, 95, 36, 13, 0.28)}
+    ${puff(470, 60, 58, 19, 0.42)}${puff(530, 70, 34, 12, 0.3)}
+    ${puff(650, 90, 46, 16, 0.35)}
+  </g>
+</svg>`.trim()
+}
+
 export function mountainsDataUri(): string {
   return svgToDataUri(mountainsSvg())
 }
@@ -94,7 +115,11 @@ export function ornamentBannerDataUri(accent: string): string {
 export function dustParticleDataUri(): string {
   return svgToDataUri(dustParticleSvg())
 }
+export function cloudsDataUri(): string {
+  return svgToDataUri(cloudsSvg())
+}
 
 export const ENV_SIZE = { width: W, height: H }
 export const MOUNTAINS_SIZE = { width: W, height: 260 }
 export const BANNER_SIZE = { width: 120, height: 180 }
+export const CLOUDS_SIZE = { width: CLOUDS_W, height: CLOUDS_H }

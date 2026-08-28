@@ -31,7 +31,7 @@ export class GameAudioService {
 
   // Synthesize basic premium sounds instead of requiring external assets for now
   // In a real production environment, this would load MP3s/OGGs
-  public playSfx(type: 'hit' | 'success' | 'transition' | 'click' | 'pour' | 'stone' | 'bowDraw' | 'bowRelease' | 'arrowImpact' | 'ropeCut' | 'miss' | 'ropePullPerfect' | 'ropePullGood' | 'ropePullWeak' | 'ropeTension' | 'footstepDig' | 'crowdEffort' | 'matchVictory' | 'matchDefeat') {
+  public playSfx(type: 'hit' | 'success' | 'transition' | 'click' | 'pour' | 'stone' | 'bowDraw' | 'bowRelease' | 'arrowImpact' | 'ropeCut' | 'miss' | 'ropePullPerfect' | 'ropePullGood' | 'ropePullWeak' | 'ropeTension' | 'footstepDig' | 'crowdEffort' | 'matchVictory' | 'matchDefeat' | 'matchPoint') {
     if (this.isMuted || !this.audioContext) return;
     if (this.audioContext.state === 'suspended') this.audioContext.resume();
 
@@ -355,6 +355,33 @@ export class GameAudioService {
         osc.start(t);
         osc.stop(t + 0.7);
         break;
+      case 'matchPoint': {
+        // Two-note rising alert — a brief "heads up, this is it" sting,
+        // brighter and shorter than the ambient rope-tension creak so it
+        // reads as a distinct event rather than a texture.
+        const blips = [520, 720];
+        blips.forEach((freq, i) => {
+          const vOsc = this.audioContext!.createOscillator();
+          const vGain = this.audioContext!.createGain();
+          vOsc.connect(vGain);
+          vGain.connect(this.audioContext!.destination);
+          vOsc.type = 'square';
+          const start = t + i * 0.09;
+          vOsc.frequency.setValueAtTime(freq, start);
+          vGain.gain.setValueAtTime(0, start);
+          vGain.gain.linearRampToValueAtTime(v * 0.22, start + 0.015);
+          vGain.gain.linearRampToValueAtTime(0, start + 0.14);
+          vOsc.start(start);
+          vOsc.stop(start + 0.14);
+        });
+        // The shared osc/gain pair created above the switch is unused by
+        // this multi-voice case — start and immediately stop it silently
+        // so we never call stop() on a node that was never started.
+        gain.gain.setValueAtTime(0, t);
+        osc.start(t);
+        osc.stop(t);
+        break;
+      }
     }
   }
 

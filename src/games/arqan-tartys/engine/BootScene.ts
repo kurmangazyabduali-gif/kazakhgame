@@ -11,9 +11,11 @@ import {
   steppeDataUri,
   ornamentBannerDataUri,
   dustParticleDataUri,
+  cloudsDataUri,
   ENV_SIZE,
   MOUNTAINS_SIZE,
   BANNER_SIZE,
+  CLOUDS_SIZE,
 } from './assets/environmentSvg'
 
 const POSES: PoseState[] = ['IDLE', 'PULL', 'STRAIN', 'RECOVER', 'VICTORY', 'DEFEAT']
@@ -58,6 +60,7 @@ export class BootScene extends Phaser.Scene {
     this.load.svg('bannerA', ornamentBannerDataUri('#d4af37'), BANNER_SIZE)
     this.load.svg('bannerB', ornamentBannerDataUri('#1a5c8c'), BANNER_SIZE)
     this.load.svg('dustParticle', dustParticleDataUri(), { width: 24, height: 24 })
+    this.load.svg('clouds', cloudsDataUri(), CLOUDS_SIZE)
 
     // Team A characters (4 athletes x 6 pose states)
     TEAM_A_ROSTER.forEach((spec, i) => {
