@@ -28,9 +28,7 @@ export class AchievementService {
       titlesToUnlock.push('Мастер асық ату')
     }
 
-    if (payload.gameId === 'kelin-shai' && payload.didWin !== undefined) {
-      titlesToUnlock.push('Қонақжай келін') // Assuming didWin means completed all scenarios for now
-    }
+
 
     if (payload.gameId === 'togyzqumalak' && payload.didWin && payload.difficulty === 'hard') {
       titlesToUnlock.push('Тоғызқұмалақ шебері')

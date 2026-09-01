@@ -7,6 +7,7 @@ import { QoshqarMuiz } from './ornaments/QoshqarMuiz'
 import { HomeScrollIndicator } from './HomeScrollIndicator'
 import { HomeMarquee } from './HomeMarquee'
 import { HomeMagnetic } from './HomeMagnetic'
+import { HomeHeroMapBackground } from './HomeHeroMapBackground'
 
 const TICKER_ITEMS = ['АСЫҚ АТУ', 'ЖАМБЫ АТУ', 'КЕЛІН ШАЙ', 'ТОҒЫЗҚҰМАЛАҚ', 'ҚҰСБЕГІЛІК', 'ҰЛЫ ДАЛА МҰРАСЫ']
 
@@ -56,6 +57,21 @@ export function HomeHero() {
           className="absolute top-8 -right-16 z-30 rotate-45 bg-[var(--home-ink)] text-[var(--home-bg)] px-20 py-2 shadow-lg hidden sm:block"
         >
           <span className="font-body-premium text-[11px] font-bold tracking-[0.3em] uppercase">2026 · Жаңа маусым</span>
+        </motion.div>
+
+        {/* Animated Background Map of Kazakhstan */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1.5, delay: 0.6 }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none z-0 overflow-hidden"
+        >
+          <motion.div 
+            style={{ x: mousePos.x * 0.12, y: mousePos.y * 0.12 }}
+            className="w-full max-w-[1450px] aspect-[5/3] flex items-center justify-center p-8 opacity-[0.16] text-[var(--home-terracotta)]"
+          >
+            <HomeHeroMapBackground className="w-full h-full drop-shadow-md animate-ornament-float" />
+          </motion.div>
         </motion.div>
 
         {/* Two-tone floating ornament, offset from center for an editorial (not symmetric-generic) feel.

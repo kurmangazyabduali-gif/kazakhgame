@@ -27,16 +27,7 @@ const WORLDS: World[] = [
     color: 'var(--home-terracotta)',
     soft: 'var(--home-terracotta-soft)',
   },
-  {
-    id: 'tradition',
-    title: 'ҰЛТТЫҚ ДӘСТҮР',
-    desc: 'Қонақжайлылық пен құрмет. Адамдар арасындағы байланысты қалыптастыратын тірі этика.',
-    tags: 'КЕЛІН ШАЙ',
-    image: '/images/games/kelin-shai.jpg',
-    imageAlt: 'Ұлттық дәстүр',
-    color: 'var(--home-turquoise)',
-    soft: 'var(--home-turquoise-soft)',
-  },
+
   {
     id: 'strategy',
     title: 'СТРАТЕГИЯ',

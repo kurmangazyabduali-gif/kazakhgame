@@ -24,7 +24,7 @@ export default function DesignSystemPage() {
         <CinematicHero
           title="ULY DALA"
           subtitle="Heritage design system"
-          imageUrl="/images/games/kelin-shai.jpg"
+          imageUrl="/images/games/jamby-atu.jpg"
         />
       </section>
 

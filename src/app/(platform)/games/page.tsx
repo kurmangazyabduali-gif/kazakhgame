@@ -36,17 +36,7 @@ export default function GamesLibraryPage() {
       image: '/images/games/asyk-atu.jpg',
       status: (bestScores['asyk-atu'] !== undefined ? 'completed' : 'available')
     },
-    { 
-      slug: 'kelin-shai', 
-      name: 'Келін шай', 
-      category: 'Дәстүр', 
-      description: 'Познайте искусство гостеприимства. Правильная заварка и подача чая в казахской семье.', 
-      difficulty: 'Оңай (Easy)',
-      players: '1',
-      duration: '3-5 мин',
-      image: '/images/games/kelin-shai.jpg',
-      status: (bestScores['kelin-shai'] !== undefined ? 'completed' : 'available')
-    },
+
     { 
       slug: 'togyz-kumalak', 
       name: 'Тоғызқұмалақ', 
@@ -79,6 +69,17 @@ export default function GamesLibraryPage() {
       duration: '5-10 мин',
       image: '/images/games/arqan-tartys-bg.jpg',
       status: (bestScores['arqan-tartys'] !== undefined ? 'completed' : 'available')
+    },
+    { 
+      slug: 'qol-kures', 
+      name: 'Қол күрес', 
+      category: 'Спорт', 
+      description: 'Күш, шыдамдылық пен дұрыс тактикаға негізделген дәстүрлі қол күрес белдесуі.', 
+      difficulty: 'Орташа (Medium)',
+      players: '1 vs AI',
+      duration: '3-5 мин',
+      image: '/images/games/qol-kures.jpg',
+      status: (bestScores['qol-kures'] !== undefined ? 'completed' : 'available')
     }
   ]
 
@@ -101,7 +102,7 @@ export default function GamesLibraryPage() {
           <h1 className="font-display text-5xl md:text-7xl font-bold mb-6 text-foreground uppercase tracking-widest drop-shadow-lg">
             Ойындар Атласы
           </h1>
-          <p className="text-text-muted max-w-2xl mx-auto text-lg font-heading tracking-widest">
+          <p className="text-text-muted max-w-2xl mx-auto text-lg font-heading tracking-widest uppercase">
             DIGITAL NATIONAL GAMES ATLAS
           </p>
         </div>
@@ -117,7 +118,7 @@ export default function GamesLibraryPage() {
               onClick={() => setActiveCategory(cat)}
               className={`px-8 py-3 rounded-full whitespace-nowrap text-sm font-bold uppercase tracking-widest transition-all duration-500 border ${
                 activeCategory === cat 
-                  ? 'bg-gold text-primary border-gold shadow-[0_0_20px_rgba(212,175,55,0.3)]' 
+                  ? 'bg-gold text-primary border-gold shadow-[0_0_20px_rgba(212,175,55,0.4)]' 
                   : 'bg-surface text-text-muted border-border/50 hover:border-gold/50 hover:text-gold hover:shadow-lg'
               }`}
             >
@@ -171,15 +172,15 @@ function AtlasGameCard({ game, bestScore }: { game: AtlasGame, bestScore: number
   return (
     <Link 
       href={isLocked ? '#' : `/games/info/${game.slug}`} 
-      className={`group relative h-[450px] w-full rounded-3xl overflow-hidden block border border-border/20 bg-surface transition-all duration-[800ms] ${isLocked ? 'cursor-not-allowed opacity-80' : 'hover:border-gold/40 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(0,0,0,0.5)]'}`}
+      className={`group relative h-[450px] w-full rounded-[2.5rem] overflow-hidden block border border-border/20 bg-surface transition-all duration-[800ms] ${isLocked ? 'cursor-not-allowed opacity-80' : 'hover:border-gold/40 hover:-translate-y-2 hover:shadow-[0_30px_60px_rgba(0,0,0,0.6)]'}`}
     >
       {/* Background Cinematic Image */}
-      <div className="absolute inset-0 w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-[1.03]">
-        <Image src={game.image} alt={game.name} fill className={`object-cover mix-blend-luminosity grayscale ${!isLocked && 'group-hover:grayscale-0'} transition-all duration-[1200ms] opacity-40`} />
+      <div className="absolute inset-0 w-full h-full transition-transform duration-[1200ms] ease-out group-hover:scale-[1.05]">
+        <Image src={game.image} alt={game.name} fill className={`object-cover mix-blend-luminosity grayscale ${!isLocked && 'group-hover:grayscale-0'} transition-all duration-[1200ms] opacity-35`} />
       </div>
       
       {/* Gradients for depth */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/80 to-transparent opacity-90 group-hover:opacity-100 transition-opacity duration-700" />
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-transparent opacity-95 group-hover:opacity-100 transition-opacity duration-700" />
       <div className="absolute inset-0 bg-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
       
       {/* Animated Ornament on Hover */}
@@ -192,11 +193,11 @@ function AtlasGameCard({ game, bestScore }: { game: AtlasGame, bestScore: number
         
         {/* Top left category & status badge */}
         <div className="absolute top-8 left-8 flex gap-3">
-          <span className="px-4 py-1.5 rounded-full bg-background/50 border border-gold/30 text-gold font-heading text-xs font-bold uppercase tracking-widest backdrop-blur-md">
+          <span className="px-4 py-1.5 rounded-full bg-background/60 border border-gold/30 text-gold font-heading text-xs font-bold uppercase tracking-widest backdrop-blur-md">
             {game.category}
           </span>
           {isLocked && (
-            <span className="px-4 py-1.5 rounded-full bg-background/50 border border-border/50 text-text-muted font-heading text-xs font-bold uppercase tracking-widest backdrop-blur-md">
+            <span className="px-4 py-1.5 rounded-full bg-background/60 border border-border/50 text-text-muted font-heading text-xs font-bold uppercase tracking-widest backdrop-blur-md">
               Құлыптаулы
             </span>
           )}

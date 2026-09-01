@@ -24,13 +24,11 @@ const SHOWCASE_SEQUENCE: SlideDef[] = [
   { id: 'kazakhstan-map', title: 'Казахстан', type: 'iframe', url: '/map?showcase=true' },
   { id: 'cultural-context', title: 'Культурный Контекст', type: 'native' },
   { id: 'asyk-atu', title: 'Асық ату', type: 'iframe', url: '/games/asyk-atu?showcase=true' },
-  { id: 'kelin-shai', title: 'Келін шай', type: 'iframe', url: '/games/kelin-shai?showcase=true' },
   { id: 'togyzqumalak', title: 'Тоғызқұмалақ', type: 'iframe', url: '/games/togyzqumalak?showcase=true' },
   { id: 'jamby-atu', title: 'Жамбы ату', type: 'iframe', url: '/games/jamby-atu?showcase=true' },
   { id: 'kusbegilik', title: 'Құсбегілік', type: 'iframe', url: '/games/kusbegilik?showcase=true' },
   { id: 'learning', title: 'Обучение', type: 'native' },
   { id: 'cultural-map', title: 'Культурная Карта', type: 'iframe', url: '/map?showcase=true&discovered=true' },
-  { id: 'profile', title: 'Профиль', type: 'iframe', url: '/profile?showcase=true' },
   { id: 'final', title: 'Финал', type: 'native' }
 ]
 
@@ -326,7 +324,6 @@ function IframeSlide({ step, onNext }: { step: SlideDef, onNext: () => void }) {
   // Focus management text for accessibility
   let focusLabel = ''
   if (step.id === 'asyk-atu') focusLabel = 'Учись → практикуй → совершенствуй'
-  if (step.id === 'kelin-shai') focusLabel = 'Культурная интерактивная симуляция'
 
   return (
     <div className="w-full h-full flex flex-col relative bg-black animate-in fade-in duration-500">

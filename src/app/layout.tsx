@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar'
 import { Footer } from '@/components/layout/Footer'
 import { NotificationProvider } from '@/components/layout/NotificationProvider'
 import { DemoDetector } from '@/components/layout/DemoDetector'
+import AksakalGuide from '@/components/ai/AksakalGuide'
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -62,6 +63,7 @@ export default function RootLayout({
               {children}
             </NotificationProvider>
           </main>
+          <AksakalGuide />
           <Footer />
         </div>
       </body>

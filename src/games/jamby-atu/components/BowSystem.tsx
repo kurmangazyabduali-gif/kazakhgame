@@ -1,7 +1,7 @@
 'use client'
 
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+import { useFrame, useThree, useLoader } from '@react-three/fiber'
 import { HitZone, useJambyEngine } from '../engine'
 import * as THREE from 'three'
 import { ArrowProjectile } from './ArrowProjectile'
@@ -23,7 +23,47 @@ export function BowSystem() {
   } | null>(null)
   const arrowIdRef = useRef(0)
 
-  // We map mouse/touch position to aim the bow
+  // Load the ultra-realistic bow texture
+  const bowTex = useLoader(THREE.TextureLoader, '/assets/jamby-atu/bow.jpg')
+  
+  // Custom ChromaKey Shader to remove the neon green background
+  const bowMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: bowTex },
+        keyColor: { value: new THREE.Color('#00ff00') },
+        threshold: { value: 0.45 },
+        smoothness: { value: 0.1 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D map;
+        uniform vec3 keyColor;
+        uniform float threshold;
+        uniform float smoothness;
+        varying vec2 vUv;
+        void main() {
+          vec4 texColor = texture2D(map, vUv);
+          float diff = distance(texColor.rgb, vec3(0.0, 1.0, 0.0));
+          if (diff < threshold) {
+            discard;
+          }
+          float alpha = smoothstep(threshold, threshold + smoothness, diff);
+          gl_FragColor = vec4(texColor.rgb, alpha);
+        }
+      `,
+      transparent: true,
+      depthTest: false // Ensures it renders cleanly over the scene
+    })
+  }, [bowTex])
+
+
   useFrame((state) => {
     if (!bowGroup.current) return
     if (gameState !== 'AIM' && gameState !== 'DRAW') return
@@ -33,10 +73,10 @@ export function BowSystem() {
     vector.unproject(camera)
     const dir = vector.sub(camera.position).normalize()
     
-    // Position bow relative to camera but slightly offset
-    const bowPos = camera.position.clone().add(dir.clone().multiplyScalar(2))
-    // Offset slightly to the right and down
-    bowPos.add(new THREE.Vector3(0.5, -0.5, 0))
+    // Position bow relative to camera
+    const bowPos = camera.position.clone().add(dir.clone().multiplyScalar(1.5))
+    // Offset to the right and slightly down
+    bowPos.add(new THREE.Vector3(0.6, -0.4, 0))
     
     bowGroup.current.position.copy(bowPos)
     
@@ -44,15 +84,17 @@ export function BowSystem() {
     const targetLook = bowPos.clone().add(dir)
     bowGroup.current.lookAt(targetLook)
 
-    // Handle drawing logic if in DRAW state
     if (gameState === 'DRAW') {
-      setDrawStrength(drawStrength + (100 * state.clock.getDelta())) // takes ~1s to reach 100%
+      setDrawStrength(drawStrength + (100 * state.clock.getDelta())) 
+      
+      // Add shaking effect when drawing hard
+      if (drawStrength > 70) {
+        bowGroup.current.position.x += (Math.random() - 0.5) * 0.02
+        bowGroup.current.position.y += (Math.random() - 0.5) * 0.02
+      }
     }
   })
 
-  // Global pointer events attached to a generic overlay later, 
-  // but for now we expose a method to shoot.
-  
   const handleShoot = useCallback((power: number) => {
     if (!bowGroup.current) return
     
@@ -71,8 +113,6 @@ export function BowSystem() {
     setGameState('ARROW_FLIGHT')
   }, [setGameState])
 
-  // Effect to listen for custom shoot event dispatched from UI overlay
-  // (We use window events to decouple UI DOM from Canvas logic)
   useEffect(() => {
     const onRelease = (event: Event) => {
       const shootEvent = event as CustomEvent<{ power: number }>
@@ -86,7 +126,6 @@ export function BowSystem() {
   }, [gameState, handleShoot])
 
   const handleArrowHit = (zone: HitZone) => {
-    // Just a basic accuracy calc for now based on zone
     const accuracy = zone === 'BULLSEYE' ? 100 : zone === 'CENTER' ? 70 : 30
     useJambyEngine.getState().registerShot(zone, accuracy)
   }
@@ -97,17 +136,12 @@ export function BowSystem() {
 
   return (
     <>
-      {/* The Bow Visual */}
+      {/* Ultra-Realistic 2.5D Bow Sprite */}
       {(gameState === 'AIM' || gameState === 'DRAW') && (
         <group ref={bowGroup}>
-          <mesh rotation={[Math.PI / 2, 0, 0]}>
-            <torusGeometry args={[0.5, 0.05, 8, 20, Math.PI]} />
-            <meshStandardMaterial color="#8b4513" />
-          </mesh>
-          {/* Arrow knocked on bow */}
-          <mesh position={[0, 0, -0.2]} rotation={[Math.PI/2, 0, 0]}>
-            <cylinderGeometry args={[0.01, 0.01, 1]} />
-            <meshStandardMaterial color="white" />
+          <mesh rotation={[0, Math.PI, 0]}>
+            <planeGeometry args={[2, 2]} />
+            <primitive object={bowMaterial} attach="material" />
           </mesh>
         </group>
       )}

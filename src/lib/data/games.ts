@@ -22,16 +22,7 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     skills: ['Точность', 'Глазомер', 'Расчет силы'],
     imageUrl: '/images/games/asyk-atu.jpg'
   },
-  'kelin-shai': {
-    id: 'kelin-shai',
-    slug: 'kelin-shai',
-    title: 'Келін шай',
-    description: 'Традиционное чаепитие',
-    category: 'Ұлттық дәстүр',
-    difficulty: 'Medium',
-    skills: ['Внимательность', 'Память', 'Этикет'],
-    imageUrl: '/images/games/kelin-shai.jpg'
-  },
+
   'togyz-kumalak': {
     id: 'togyz-kumalak',
     slug: 'togyz-kumalak',
@@ -61,5 +52,15 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     difficulty: 'Medium',
     skills: ['Ырғақ', 'Күш', 'Команда рухы'],
     imageUrl: '/images/games/arqan-tartys-bg.jpg'
+  },
+  'qol-kures': {
+    id: 'qol-kures',
+    slug: 'qol-kures',
+    title: 'Қол күрес',
+    description: 'Күш, шыдамдылық пен дұрыс тактикаға негізделген дәстүрлі қол күрес белдесуі',
+    category: 'Ұлттық спорт',
+    difficulty: 'Medium',
+    skills: ['Күш', 'Төзімділік', 'Ракция және Тайминг'],
+    imageUrl: '/images/games/qol-kures.jpg'
   }
 }

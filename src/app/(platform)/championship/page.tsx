@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { RankingService } from "@/lib/services/RankingService";
-import { Trophy } from "lucide-react";
+import { Trophy, Star, Crown } from "lucide-react";
 import { MaterialSurface } from "@/components/ui/heritage/MaterialSurface";
 import { KazakhOrnament } from "@/components/ui/heritage/KazakhOrnament";
 
@@ -37,8 +37,8 @@ export default async function ChampionshipPage({
   const tabs = [
     { id: "global", label: "Жалпы" },
     { id: "asyk-atu", label: "Асық ату" },
-    { id: "kelin-shai", label: "Келін шай" },
     { id: "togyz-kumalak", label: "Тоғызқұмалақ" },
+    { id: "qol-kures", label: "Қол күрес" },
   ];
 
   let leaderboardData: { id: string; name: string; rankScore: number }[] = [];
@@ -62,7 +62,6 @@ export default async function ChampionshipPage({
       leaderboardData.sort((a, b) => b.rankScore - a.rankScore);
     }
   } else {
-    // Try to query both old and new slugs to be safe
     let gameId = null;
     const { data: gameData } = (await supabase.from('games').select('id').eq('slug', tab).maybeSingle()) as unknown as { data: { id: string } | null }
     if (gameData) gameId = gameData.id;
@@ -98,6 +97,10 @@ export default async function ChampionshipPage({
       }
     }
   }
+
+  // Split top 3 and others for beautiful podium styling
+  const topThree = leaderboardData.slice(0, 3);
+  const otherPlayers = leaderboardData.slice(3);
 
   return (
     <div className="w-full flex flex-col min-h-screen bg-background relative overflow-hidden">
@@ -140,8 +143,46 @@ export default async function ChampionshipPage({
           ))}
         </div>
 
+        {/* Podium visualization for top 3 */}
+        {topThree.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 items-end animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-150">
+            
+            {/* 2nd Place */}
+            {topThree[1] && (
+              <div className="bg-surface/50 border border-border/10 rounded-3xl p-6 text-center order-2 md:order-1 flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-slate-400 text-white flex items-center justify-center font-bold text-xl mb-4 shadow">2</div>
+                <div className="font-bold text-xl text-foreground mb-1">{topThree[1].name}</div>
+                <div className="text-sm font-heading font-medium text-text-muted uppercase tracking-wider">Екінші орын</div>
+                <div className="text-2xl font-display font-black text-slate-400 mt-4">{topThree[1].rankScore.toLocaleString()}</div>
+              </div>
+            )}
+
+            {/* 1st Place */}
+            {topThree[0] && (
+              <div className="bg-gradient-to-b from-gold/10 to-surface/80 border-2 border-gold/40 rounded-3xl p-8 text-center order-1 md:order-2 flex flex-col items-center shadow-2xl relative">
+                <Crown className="w-8 h-8 text-gold animate-bounce mb-2" />
+                <div className="w-16 h-16 rounded-full bg-gold text-primary flex items-center justify-center font-bold text-2xl mb-4 shadow-[0_0_20px_rgba(212,175,55,0.5)]">1</div>
+                <div className="font-bold text-2xl text-foreground mb-1">{topThree[0].name}</div>
+                <div className="text-sm font-heading font-medium text-gold uppercase tracking-widest">Абсолютті чемпион</div>
+                <div className="text-3xl font-display font-black text-gold mt-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]">{topThree[0].rankScore.toLocaleString()}</div>
+              </div>
+            )}
+
+            {/* 3rd Place */}
+            {topThree[2] && (
+              <div className="bg-surface/50 border border-border/10 rounded-3xl p-6 text-center order-3 flex flex-col items-center">
+                <div className="w-12 h-12 rounded-full bg-amber-700/80 text-white flex items-center justify-center font-bold text-xl mb-4 shadow">3</div>
+                <div className="font-bold text-xl text-foreground mb-1">{topThree[2].name}</div>
+                <div className="text-sm font-heading font-medium text-text-muted uppercase tracking-wider">Үшінші орын</div>
+                <div className="text-2xl font-display font-black text-amber-700 mt-4">{topThree[2].rankScore.toLocaleString()}</div>
+              </div>
+            )}
+
+          </div>
+        )}
+
         {/* Leaderboard Table */}
-        <div className="bg-surface border border-border/20 rounded-3xl overflow-hidden shadow-xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 relative group">
+        <div className="bg-surface border border-border/20 rounded-[2rem] overflow-hidden shadow-2xl animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 relative group">
           <div className="absolute bottom-0 right-0 opacity-5 group-hover:opacity-10 transition-opacity duration-700 pointer-events-none">
              <KazakhOrnament variant="tumar" className="w-96 h-96 text-gold" />
           </div>
@@ -152,7 +193,7 @@ export default async function ChampionshipPage({
             <div className="col-span-3 text-right">Ұпай</div>
           </div>
 
-          <div className="relative z-10">
+          <div className="relative z-10 divide-y divide-border/10">
             {leaderboardData.length === 0 ? (
               <div className="p-16 text-center text-text-muted font-heading tracking-wider">
                 <KazakhOrnament variant="geometric" className="w-12 h-12 text-gold/30 mx-auto mb-4" />
@@ -162,7 +203,9 @@ export default async function ChampionshipPage({
               leaderboardData.map((player, idx) => (
                 <div
                   key={player.id}
-                  className="grid grid-cols-12 gap-4 p-6 border-b border-border/10 last:border-0 items-center hover:bg-surface-elevated transition-colors duration-300"
+                  className={`grid grid-cols-12 gap-4 p-6 items-center hover:bg-surface-elevated transition-colors duration-300 ${
+                    idx < 3 ? 'bg-gold/5 font-medium' : ''
+                  }`}
                 >
                   <div className="col-span-2 text-center font-bold text-2xl font-display text-gold">
                     {idx === 0
@@ -173,8 +216,9 @@ export default async function ChampionshipPage({
                           ? "🥉"
                           : idx + 1}
                   </div>
-                  <div className="col-span-7 font-bold text-foreground text-lg">
+                  <div className="col-span-7 font-bold text-foreground text-lg flex items-center gap-2">
                     {player.name}
+                    {idx < 3 && <Star className="w-4 h-4 text-gold fill-gold/50" />}
                   </div>
                   <div className="col-span-3 text-right font-display font-bold text-gold text-2xl drop-shadow-sm">
                     {player.rankScore.toLocaleString()}

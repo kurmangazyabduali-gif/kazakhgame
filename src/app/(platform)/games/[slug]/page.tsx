@@ -19,14 +19,14 @@ export default async function GameDetailsPage({ params }: GameDetailsProps) {
     .eq('slug', slug)
     .single()
 
-  if (!game && !['asyk-atu', 'kelin-shai', 'togyzqumalak'].includes(slug)) {
+  if (!game && !['asyk-atu', 'togyzqumalak'].includes(slug)) {
     notFound()
   }
 
   // Fallbacks
   const gameData = game || {
     slug,
-    name: slug === 'asyk-atu' ? 'Асық ату' : slug === 'kelin-shai' ? 'Келін шай' : 'Тоғызқұмалақ',
+    name: slug === 'asyk-atu' ? 'Асық ату' : 'Тоғызқұмалақ',
     category: slug === 'togyzqumalak' ? 'Стратегия' : 'Ұлттық дәстүр',
     description: 'Ойын сипаттамасы',
     image_url: `/images/games/${slug}.jpg`
@@ -101,7 +101,6 @@ export default async function GameDetailsPage({ params }: GameDetailsProps) {
             <div className="prose prose-lg dark:prose-invert max-w-none">
               <p>
                 {slug === 'asyk-atu' && 'Асық ату – қазақ халқының ең көне әрі кең тараған ұлттық ойындарының бірі. Ол көшпелі өмір салтымен тығыз байланысты және балалардың ептілігін, мергендігін, дәлдігі мен көз мөлшерін дамытуға бағытталған.'}
-                {slug === 'kelin-shai' && 'Келін шай – қазақ халқының қонақжайлылық дәстүрінің ең маңызды әрі нәзік көрінісі. Шай құю өнері тек сусын ұсыну емес, бұл отбасындағы сыйластық, үйлесімділік және әдептілік мектебі.'}
                 {slug === 'togyzqumalak' && 'Тоғызқұмалақ – төрт мың жылдық тарихы бар, «дала математикасы» аталған зияткерлік ұлттық ойын. Ойын логикалық ойлауды, математикалық есептеуді және стратегиялық жоспарлауды талап етеді.'}
                 {slug === 'jamby-atu' && 'Жамбы ату — садақ ату өнерінің шыңы. Шауып келе жатқан ат үстінен нысанаға дәл тигізу үлкен шеберлікті, тепе-теңдікті және мінсіз координацияны қажет етеді.'}
                 {slug === 'kusbegilik' && 'Құсбегілік (саятшылық) — қыран құстарды (бүркіт, ителгі, қаршыға) қолға үйретіп, аңға салу өнері. Бұл тек аңшылық емес, адам мен табиғаттың, құстың арасындағы терең рухани байланыс.'}
@@ -128,13 +127,7 @@ export default async function GameDetailsPage({ params }: GameDetailsProps) {
                     <li className="flex items-start gap-4"><div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</div> <span className="pt-1 leading-relaxed">Комбо жасап, көбірек ұпай жинаңыз.</span></li>
                   </>
                 )}
-                {slug === 'kelin-shai' && (
-                  <>
-                    <li className="flex items-start gap-4"><div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</div> <span className="pt-1 leading-relaxed">Қонақтардың тілегіне (сүт, қант) қарай шай құю.</span></li>
-                    <li className="flex items-start gap-4"><div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">2</div> <span className="pt-1 leading-relaxed">Кесеге шайдың мөлшерін дұрыс (орташа) құю (сарқыт емес, толтырып емес).</span></li>
-                    <li className="flex items-start gap-4"><div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">3</div> <span className="pt-1 leading-relaxed">Дәстүрлі этикетті сақтау арқылы құрмет көрсету.</span></li>
-                  </>
-                )}
+
                 {slug === 'togyzqumalak' && (
                   <>
                     <li className="flex items-start gap-4"><div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">1</div> <span className="pt-1 leading-relaxed">Әр ойыншының 9 отауы және 1 қазаны бар.</span></li>

@@ -30,7 +30,7 @@ export const REGIONS: Record<string, Region> = {
     nameKk: 'Оңтүстік Қазақстан',
     nameRu: 'Южный Казахстан',
     nameEn: 'Southern Kazakhstan',
-    games: ['asyk-atu', 'kelin-shai'],
+    games: ['asyk-atu'],
     traditions: ['Наурыз мейрамы', 'Дәстүрлі қонақжайлылық'],
     description: 'Зерттеудің мәдени аймағы: Оңтүстік макро-аймақ. Көктемгі дәстүрлер мен қонақжайлылық салт-жоралғыларының орталығы.',
     verified: true,

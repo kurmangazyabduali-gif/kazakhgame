@@ -3,7 +3,6 @@ import { ShanyraqMark } from "../ui/heritage/ShanyraqMark";
 import { HeritageButton } from "../ui/heritage/HeritageButton";
 import { KazakhOrnament } from "../ui/heritage/KazakhOrnament";
 import { createClient } from "@/lib/supabase/server";
-import Image from "next/image";
 
 export default async function Navbar() {
   const supabase = await createClient();
@@ -53,9 +52,10 @@ export default async function Navbar() {
                 className="w-2 h-2 opacity-50"
               />
             </span>
-            <NavLink href="/profile">ПРОФИЛЬ</NavLink>
+            <NavLink href="/kyzylorda-museum">ҚЫЗЫЛОРДА</NavLink>
           </div>
         </div>
+
         {/* ACTIONS */}
         <div className="flex gap-4 items-center">
           <Link href="/showcase" className="hidden md:block">
@@ -63,57 +63,6 @@ export default async function Navbar() {
               КӨРМЕ
             </HeritageButton>
           </Link>
-          {!user ? (
-            <div className="flex gap-2">
-              <Link href="/login">
-                <HeritageButton variant="secondary" size="sm" tabIndex={-1}>
-                  КІРУ
-                </HeritageButton>
-              </Link>
-              <Link href="/register">
-                <HeritageButton variant="primary" size="sm" tabIndex={-1}>
-                  ТІРКЕЛУ
-                </HeritageButton>
-              </Link>
-            </div>
-          ) : (
-            <div className="flex gap-4 items-center">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-full bg-surface-elevated border border-gold/50 flex items-center justify-center overflow-hidden">
-                  {user.user_metadata?.avatar_url ? (
-                    <Image
-                      src={user.user_metadata.avatar_url}
-                      alt="Avatar"
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <span className="text-gold font-bold text-xs uppercase">
-                      {user.email?.slice(0, 2)}
-                    </span>
-                  )}
-                </div>
-                <Link
-                  href="/dashboard"
-                  className="text-sm font-bold text-gold hover:underline"
-                >
-                  {user.user_metadata?.username || "БАТЫР"}
-                </Link>
-              </div>
-              <form
-                action={async () => {
-                  "use server";
-                  const { signout } = await import("@/app/auth/actions");
-                  await signout();
-                }}
-              >
-                <HeritageButton variant="cultural" size="sm" type="submit">
-                  ШЫҒУ
-                </HeritageButton>
-              </form>
-            </div>
-          )}
         </div>
       </div>
     </nav>

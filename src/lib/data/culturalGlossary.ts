@@ -84,13 +84,5 @@ export const GLOSSARY: GlossaryTerm[] = [
     gameSlug: 'jamby-atu',
     sourceIds: ['enc-nomadic-games']
   },
-  // Келін шай
-  {
-    term: 'Келін',
-    language: 'kk',
-    transliteration: 'Kelin',
-    meaning: 'Невестка. Молодая жена, вошедшая в семью мужа.',
-    gameSlug: 'kelin-shai',
-    sourceIds: ['enc-nomadic-games']
-  }
+
 ]

@@ -34,15 +34,7 @@ const GAMES: GameCard[] = [
     color: 'var(--home-terracotta)',
     soft: 'var(--home-terracotta-soft)',
   },
-  {
-    title: 'КЕЛІН ШАЙ',
-    desc: 'Этикет пен құрметтің қыр-сырын біліңіз. Жайлы үйде шай құйып, қонақтарға құрмет көрсетіңіз.',
-    category: 'ДӘСТҮР',
-    href: '/games/kelin-shai',
-    image: '/images/games/kelin-shai.jpg',
-    color: 'var(--home-turquoise)',
-    soft: 'var(--home-turquoise-soft)',
-  },
+
   {
     title: 'ТОҒЫЗҚҰМАЛАҚ',
     desc: 'Премиум тақтадағы зияткерлік шайқас. Қадамдарыңызды есептеп, тұздықтар жасап, жасанды интеллектті жеңіңіз.',

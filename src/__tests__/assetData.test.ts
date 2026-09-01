@@ -24,7 +24,7 @@ describe('Visual Authenticity & Asset Manifest', () => {
   })
 
   it('primary games must have a hero asset', () => {
-    const games = ['kusbegilik', 'jamby-atu', 'togyzqumalak', 'asyk-atu', 'kelin-shai']
+    const games = ['kusbegilik', 'jamby-atu', 'togyzqumalak', 'asyk-atu']
     
     games.forEach(slug => {
       const heroAssets = ASSETS.filter(a => a.gameSlug === slug && a.type === 'hero')

@@ -98,29 +98,7 @@ export const ASSETS: CulturalAsset[] = [
     priority: 1
   },
 
-  // КЕЛІН ШАЙ (Priority 5)
-  {
-    id: 'teapot-hero',
-    gameSlug: 'kelin-shai',
-    type: 'hero',
-    path: '/models/kelin-shai/teapot.glb',
-    source: 'mock',
-    license: 'unknown',
-    generated: false,
-    referenceSourceIds: ['enc-nomadic-games'],
-    priority: 1
-  },
-  {
-    id: 'bowl-high',
-    gameSlug: 'kelin-shai',
-    type: 'high',
-    path: '/models/kelin-shai/bowl.glb',
-    source: 'mock',
-    license: 'unknown',
-    generated: false,
-    referenceSourceIds: ['enc-nomadic-games'],
-    priority: 2
-  }
+
 ]
 
 /**

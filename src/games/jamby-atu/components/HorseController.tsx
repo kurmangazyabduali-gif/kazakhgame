@@ -1,63 +1,107 @@
 'use client'
 
-import { useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
+import { useRef, useMemo } from 'react'
+import { useFrame, useLoader } from '@react-three/fiber'
 import { useJambyEngine } from '../engine'
 import * as THREE from 'three'
 
 export function HorseController({ children }: { children: React.ReactNode }) {
   const gameState = useJambyEngine(s => s.gameState)
   const group = useRef<THREE.Group>(null)
+  const headGroup = useRef<THREE.Group>(null)
   const speed = useRef(0)
   
+  // Load our ultra-realistic generated horse texture
+  const horseTex = useLoader(THREE.TextureLoader, '/assets/jamby-atu/horse.jpg')
+  
+  // Custom ChromaKey Shader to remove the neon green background
+  const horseMaterial = useMemo(() => {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        map: { value: horseTex },
+        keyColor: { value: new THREE.Color('#00ff00') },
+        threshold: { value: 0.5 }, // Adjust for exact green
+        smoothness: { value: 0.1 }
+      },
+      vertexShader: `
+        varying vec2 vUv;
+        void main() {
+          vUv = uv;
+          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+      `,
+      fragmentShader: `
+        uniform sampler2D map;
+        uniform vec3 keyColor;
+        uniform float threshold;
+        uniform float smoothness;
+        varying vec2 vUv;
+        void main() {
+          vec4 texColor = texture2D(map, vUv);
+          
+          // Compute difference to pure neon green
+          float diff = distance(texColor.rgb, vec3(0.0, 1.0, 0.0));
+          
+          if (diff < threshold) {
+            discard;
+          }
+          
+          float alpha = smoothstep(threshold, threshold + smoothness, diff);
+          gl_FragColor = vec4(texColor.rgb, alpha);
+        }
+      `,
+      transparent: true,
+      side: THREE.DoubleSide
+    })
+  }, [horseTex])
+
   useFrame((state, delta) => {
     if (!group.current) return
 
-    // Reset position if we are in AIM but Z is way past target, or we just changed levels
-    // Actually, let's reset horse position when state goes back to RIDE for the new level
     if (gameState === 'RIDE' && group.current.position.z < -20) {
       group.current.position.z = 0
     }
 
-    // Logic: move forward on Z axis during RIDE, AIM, DRAW, RELEASE, ARROW_FLIGHT
     const movingStates = ['RIDE', 'AIM', 'DRAW', 'RELEASE', 'ARROW_FLIGHT']
     const targetSpeed = movingStates.includes(gameState) ? 15 : 0
     
-    // Smooth acceleration / deceleration
     speed.current = THREE.MathUtils.lerp(speed.current, targetSpeed, delta * 2)
-    
-    // Move horse
     group.current.position.z -= speed.current * delta
     
-    // Simple bobbing effect
+    // Horse Galloping Bobbing Effect
     if (speed.current > 1) {
-      group.current.position.y = Math.sin(state.clock.elapsedTime * 10) * 0.1
+      const bob = Math.sin(state.clock.elapsedTime * 12) * 0.15
+      group.current.position.y = bob
+      
+      // The head bobs slightly out of phase
+      if (headGroup.current) {
+        headGroup.current.position.y = Math.sin(state.clock.elapsedTime * 12 + 1) * 0.1
+        headGroup.current.rotation.z = Math.sin(state.clock.elapsedTime * 6) * 0.05
+      }
     } else {
       group.current.position.y = THREE.MathUtils.lerp(group.current.position.y, 0, delta * 5)
+      if (headGroup.current) {
+        headGroup.current.position.y = THREE.MathUtils.lerp(headGroup.current.position.y, 0, delta * 5)
+        headGroup.current.rotation.z = THREE.MathUtils.lerp(headGroup.current.rotation.z, 0, delta * 5)
+      }
     }
   })
 
   return (
     <group ref={group}>
+      {/* 2.5D Ultra-Realistic Horse Head Sprite */}
+      {/* Placed slightly ahead of the camera so we look at the back of its head */}
+      <group ref={headGroup} position={[0, 1.5, -2.5]}>
+        <mesh>
+          <planeGeometry args={[3, 3]} />
+          <primitive object={horseMaterial} attach="material" />
+        </mesh>
+      </group>
       {children}
     </group>
   )
 }
 
-// Temporary visual mock for the horse
 export function HorseMock() {
-  return (
-    <group position={[0, 1, 0]}>
-      {/* Body */}
-      <mesh castShadow receiveShadow position={[0, 0, 0]}>
-        <boxGeometry args={[1, 1.5, 2.5]} />
-        <meshStandardMaterial color="#5c4033" />
-      </mesh>
-      {/* Head */}
-      <mesh castShadow position={[0, 1.2, -1.5]}>
-        <boxGeometry args={[0.6, 1, 1]} />
-        <meshStandardMaterial color="#3e2723" />
-      </mesh>
-    </group>
-  )
+  return null // We don't need the mock cubes anymore
 }

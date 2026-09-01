@@ -31,10 +31,8 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-heading font-bold mb-6 uppercase text-xs tracking-widest text-gold">Игроку</h3>
+            <h3 className="font-heading font-bold mb-6 uppercase text-xs tracking-widest text-gold">Көмекші</h3>
             <ul className="space-y-4 text-sm font-heading tracking-wider text-text-muted">
-              <li><Link href="/profile" className="hover:text-foreground transition-colors duration-300">Профиль</Link></li>
-              <li><Link href="/profile/achievements" className="hover:text-foreground transition-colors duration-300">Достижения</Link></li>
               <li><Link href="/ai-mentor" className="hover:text-foreground transition-colors duration-300">AI Ұстаз</Link></li>
             </ul>
           </div>

@@ -19,13 +19,6 @@ describe('Cultural Authenticity Data Validation', () => {
     })
   })
 
-  it('Kelin Shai is strictly NOT a sport', () => {
-    const kelinClaims = CLAIMS.filter(c => c.gameSlug === 'kelin-shai')
-    kelinClaims.forEach(claim => {
-      expect(claim.category).not.toBe('modern_sport')
-      expect(claim.category).not.toBe('rules')
-    })
-  })
 
   it('Glossary terms have valid sources', () => {
     GLOSSARY.forEach(term => {

@@ -128,16 +128,7 @@ export const CLAIMS: CulturalClaim[] = [
     verified: true,
     confidence: 'high'
   },
-  // КЕЛІН ШАЙ
-  {
-    id: 'kelinshai-context-1',
-    gameSlug: 'kelin-shai',
-    category: 'cultural_practice',
-    claim: 'Келін шай — социальная традиция и проявление гостеприимства. Символизирует уважение невестки (келін) к родственникам мужа и гостям через ритуал подачи чая.',
-    sourceIds: ['enc-nomadic-games'],
-    verified: true,
-    confidence: 'high'
-  }
+
 ]
 
 // Validation Utility
@@ -157,10 +148,6 @@ export function validateCulturalClaims(claims: CulturalClaim[], sources: Record<
       }
     })
 
-    // 3. Kelin Shai cannot be classified as a sport
-    if (claim.gameSlug === 'kelin-shai' && (claim.category === 'modern_sport' || claim.category === 'rules')) {
-      errors.push(`Claim "${claim.id}" invalid: Kelin Shai is a cultural_practice, not a sport.`)
-    }
   })
 
   if (errors.length > 0) {

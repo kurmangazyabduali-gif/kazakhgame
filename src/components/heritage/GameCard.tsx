@@ -12,7 +12,7 @@ interface GameCardProps {
   description: string
   skills: string[]
   gameSlug: string
-  visualMotif?: 'asyk-atu' | 'kelin-shai' | 'togyzqumalak' | 'jamby-atu' | 'kusbegilik'
+  visualMotif?: 'asyk-atu' | 'togyzqumalak' | 'jamby-atu' | 'kusbegilik'
   className?: string
   href?: string
   bestScore?: number
@@ -36,8 +36,6 @@ export function GameCard({
     switch(visualMotif) {
       case 'asyk-atu':
         return <div className="absolute -right-8 -top-8 text-terracotta opacity-20"><KazakhOrnament variant="geometric" className="w-48 h-48" /></div>
-      case 'kelin-shai':
-        return <div className="absolute right-0 top-0 text-gold opacity-10"><KazakhOrnament variant="su" className="w-32 h-32" /></div>
       case 'togyzqumalak':
         return <div className="absolute right-4 bottom-4 text-sand opacity-20"><KazakhOrnament variant="geometric" className="w-24 h-24" /></div>
       case 'jamby-atu':
