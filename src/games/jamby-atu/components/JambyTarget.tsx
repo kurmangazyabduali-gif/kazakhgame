@@ -3,7 +3,7 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useJambyEngine, LEVELS } from '../engine'
-import { GamePhysicsBody, CuboidCollider } from '@/three/systems/PhysicsAdapter'
+import { GamePhysicsBody } from '@/three/systems/PhysicsAdapter'
 import * as THREE from 'three'
 
 interface JambyTargetProps {
@@ -27,46 +27,61 @@ export function JambyTarget({ position }: JambyTargetProps) {
 
   // Sizes for score zones based on level difficulty
   const baseSize = level.targetSize
-  const bullseyeR = 0.2 * baseSize
-  const centerR = 0.5 * baseSize
-  const outerR = 1.0 * baseSize
+  const bullseyeR = 0.25 * baseSize
+  const centerR = 0.6 * baseSize
+  const outerR = 1.1 * baseSize
 
   return (
     <group ref={group} position={position}>
-      {/* Stand */}
+      {/* Wooden Pole with Gold Ornament Cap */}
       <mesh position={[0, -2, 0]} castShadow>
-        <cylinderGeometry args={[0.1, 0.1, 4]} />
-        <meshStandardMaterial color="#4a3b2c" />
-      </mesh>
-      
-      {/* Target Board - visually */}
-      <mesh rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[outerR, outerR, 0.2]} />
-        <meshStandardMaterial color="white" />
-      </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.11]}>
-        <cylinderGeometry args={[centerR, centerR, 0.02]} />
-        <meshStandardMaterial color="blue" />
-      </mesh>
-      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.12]}>
-        <cylinderGeometry args={[bullseyeR, bullseyeR, 0.02]} />
-        <meshStandardMaterial color="red" />
+        <cylinderGeometry args={[0.08, 0.12, 4.5]} />
+        <meshStandardMaterial color="#3D2817" roughness={0.7} />
       </mesh>
 
-      {/* Physics Hitboxes - Using Sensor colliders attached to a fixed body. 
-          We use sensor so the arrow can overlap and trigger intersection manually, or just bounce. 
-          For MVP, we just use standard colliders and detect collision. */}
+      <mesh position={[0, 0.2, 0]} castShadow>
+        <sphereGeometry args={[0.22, 16, 16]} />
+        <meshStandardMaterial color="#D4AF37" metalness={0.8} roughness={0.2} />
+      </mesh>
       
+      {/* Target Outer Ring (Felt Backing) */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[outerR, outerR, 0.2]} />
+        <meshStandardMaterial color="#5C1D15" roughness={0.8} />
+      </mesh>
+
+      {/* Target Inner Ring (Terracotta Red) */}
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.11]}>
+        <cylinderGeometry args={[centerR, centerR, 0.02]} />
+        <meshStandardMaterial color="#B85D36" roughness={0.5} />
+      </mesh>
+
+      {/* Bullseye Gold "ЖАМБЫ" Silver-Gold Disk */}
+      <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 0.13]}>
+        <cylinderGeometry args={[bullseyeR, bullseyeR, 0.03]} />
+        <meshStandardMaterial color="#D4AF37" metalness={0.9} roughness={0.15} />
+      </mesh>
+
+      {/* Physics Hitboxes */}
       <GamePhysicsBody type="fixed" userData={{ type: 'target', zone: 'BULLSEYE' }}>
-        <CuboidCollider args={[bullseyeR, bullseyeR, 0.2]} />
+        <mesh position={[0, 0, 0.13]}>
+          <cylinderGeometry args={[bullseyeR, bullseyeR, 0.1]} />
+          <meshBasicMaterial visible={false} />
+        </mesh>
       </GamePhysicsBody>
-      
+
       <GamePhysicsBody type="fixed" userData={{ type: 'target', zone: 'CENTER' }}>
-        <CuboidCollider args={[centerR, centerR, 0.15]} />
+        <mesh position={[0, 0, 0.11]}>
+          <cylinderGeometry args={[centerR, centerR, 0.1]} />
+          <meshBasicMaterial visible={false} />
+        </mesh>
       </GamePhysicsBody>
 
       <GamePhysicsBody type="fixed" userData={{ type: 'target', zone: 'OUTER' }}>
-        <CuboidCollider args={[outerR, outerR, 0.1]} />
+        <mesh position={[0, 0, 0]}>
+          <cylinderGeometry args={[outerR, outerR, 0.1]} />
+          <meshBasicMaterial visible={false} />
+        </mesh>
       </GamePhysicsBody>
     </group>
   )

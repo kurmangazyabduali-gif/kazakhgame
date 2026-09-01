@@ -5,6 +5,7 @@ import { Target, Wind, Trophy, ArrowRight } from 'lucide-react'
 import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { guestStorage } from '@/lib/guestStorage'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export function JambyUI() {
   const router = useRouter()
@@ -17,7 +18,7 @@ export function JambyUI() {
       fetch('/api/games/jamby-atu/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ score, hits, combo, accuracy: 100, results }) // 100 accuracy placeholder for now
+        body: JSON.stringify({ score, hits, combo, accuracy: 100, results })
       }).then(res => res.json()).then(data => {
         if (data.guest) {
           guestStorage.saveGameResult('jamby-atu', data.validatedScore || score, data.xpEarned || score)
@@ -37,39 +38,45 @@ export function JambyUI() {
   const handlePointerUp = (e: React.PointerEvent) => {
     e.preventDefault()
     if (gameState === 'DRAW') {
-      // Fire custom event for BowSystem to pick up
       const event = new CustomEvent('jamby-shoot', { detail: { power: drawStrength } })
       window.dispatchEvent(event)
     }
   }
 
-  // Animation frame loop to update UI strength bar smoothly outside react render if needed,
-  // but for MVP, zustand binding is okay since it's just a simple bar.
-
   return (
     <div 
-      className="absolute inset-0 z-10 select-none touch-none"
+      className="absolute inset-0 z-10 select-none touch-none font-sans"
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
     >
-      {/* Top HUD */}
-      <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none">
+      {/* Top Main HUD */}
+      <div className="absolute top-4 left-4 right-4 flex justify-between items-start pointer-events-none z-20">
         
-        <div className="bg-background/80 backdrop-blur border p-4 rounded-xl shadow-md min-w-[150px]">
-          <div className="text-sm font-bold text-muted-foreground uppercase mb-1">Ұпай</div>
-          <div className="text-3xl font-black text-primary">{score}</div>
+        {/* Left: Score Card */}
+        <div className="bg-[#FAF7F2]/90 backdrop-blur-md border-2 border-[#D4AF37]/50 p-4 rounded-2xl shadow-xl min-w-[160px] text-[#2A2621]">
+          <div className="text-[10px] font-mono font-bold text-[#B85D36] uppercase tracking-widest mb-0.5">
+            УПАЙ (SCORE)
+          </div>
+          <div className="text-3xl font-serif font-black text-[#2A2621]">{score}</div>
           {combo > 1 && (
-            <div className="text-xs font-bold text-orange-500 mt-1 animate-pulse">
-              {combo}x COMBO!
-            </div>
+            <motion.div 
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1.1 }}
+              className="text-xs font-black text-[#B85D36] mt-1 flex items-center gap-1"
+            >
+              <span>🔥</span> {combo}x COMBO!
+            </motion.div>
           )}
         </div>
 
-        <div className="bg-background/80 backdrop-blur border p-4 rounded-xl shadow-md text-right">
-          <div className="text-sm font-bold text-muted-foreground uppercase mb-1">Кезең</div>
-          <div className="text-xl font-bold flex items-center justify-end gap-2">
-            <Target className="w-5 h-5 text-red-500" />
+        {/* Right: Round Counter */}
+        <div className="bg-[#FAF7F2]/90 backdrop-blur-md border-2 border-[#D4AF37]/50 p-4 rounded-2xl shadow-xl text-right text-[#2A2621]">
+          <div className="text-[10px] font-mono font-bold text-[#B85D36] uppercase tracking-widest mb-0.5">
+            НЫСАНА (LEVEL)
+          </div>
+          <div className="text-lg font-serif font-bold flex items-center justify-end gap-2 text-[#2A2621]">
+            <Target className="w-5 h-5 text-[#B85D36]" />
             {currentLevelIndex + 1} / {LEVELS.length}
           </div>
         </div>
@@ -77,40 +84,40 @@ export function JambyUI() {
 
       {/* Wind Indicator */}
       {level && level.windStrength > 0 && (
-        <div className="absolute top-24 right-4 bg-background/80 backdrop-blur border p-3 rounded-xl shadow-md flex items-center gap-3 pointer-events-none">
-          <Wind className="w-6 h-6 text-blue-400" />
+        <div className="absolute top-24 right-4 bg-[#FAF7F2]/90 backdrop-blur-md border border-[#D4AF37]/40 p-3 rounded-2xl shadow-lg flex items-center gap-3 pointer-events-none text-[#2A2621]">
+          <Wind className="w-5 h-5 text-[#D4AF37] animate-pulse" />
           <div>
-            <div className="text-xs font-bold text-muted-foreground uppercase">Жел</div>
+            <div className="text-[10px] font-mono font-bold text-[#B85D36] uppercase tracking-wider">ЖЕЛ БАҒЫТЫ</div>
             <div className="font-mono text-sm font-bold">{Math.round(level.windStrength * 100)}%</div>
           </div>
         </div>
       )}
 
-      {/* Crosshair */}
+      {/* Golden Kazakh Archery Crosshair */}
       {(gameState === 'AIM' || gameState === 'DRAW') && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none flex items-center justify-center">
-          <div className="w-12 h-12 border-2 border-white/50 rounded-full relative">
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1 h-1 bg-red-500 rounded-full" />
+          <div className="w-16 h-16 border-2 border-[#D4AF37] rounded-full relative shadow-[0_0_20px_rgba(212,175,55,0.6)] flex items-center justify-center">
+            <div className="w-2 h-2 bg-[#B85D36] rounded-full shadow" />
             
-            {/* Draw Strength Indicator */}
+            {/* Draw Strength Arc Indicator */}
             {gameState === 'DRAW' && (
               <svg className="absolute inset-0 w-full h-full -rotate-90">
                 <circle
-                  cx="24"
-                  cy="24"
-                  r="22"
+                  cx="32"
+                  cy="32"
+                  r="28"
                   fill="none"
-                  stroke="rgba(255, 255, 255, 0.2)"
+                  stroke="rgba(212, 175, 55, 0.2)"
                   strokeWidth="4"
                 />
                 <circle
-                  cx="24"
-                  cy="24"
-                  r="22"
+                  cx="32"
+                  cy="32"
+                  r="28"
                   fill="none"
-                  stroke={drawStrength > 90 ? '#ef4444' : '#3b82f6'}
+                  stroke={drawStrength > 90 ? '#EF4444' : '#D4AF37'}
                   strokeWidth="4"
-                  strokeDasharray={`${(drawStrength / 100) * 138} 138`}
+                  strokeDasharray={`${(drawStrength / 100) * 175} 175`}
                   className="transition-all duration-75"
                 />
               </svg>
@@ -119,59 +126,82 @@ export function JambyUI() {
         </div>
       )}
 
-      {/* Intro State */}
+      {/* Intro Modal */}
       {gameState === 'INTRO' && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur flex items-center justify-center pointer-events-auto">
-          <div className="bg-card p-8 rounded-2xl max-w-md w-full border text-center shadow-2xl">
-            <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-black mb-2 uppercase">Жамбы Ату</h1>
-            <p className="text-muted-foreground mb-6">
-              Мергендік пен ат құлағында ойнау өнері.
-            </p>
-            <ul className="text-left text-sm space-y-3 mb-8 bg-secondary/50 p-4 rounded-xl">
-              <li className="flex items-center gap-2"><span>🎯</span> Нысанаға бағыттаңыз (Drag)</li>
-              <li className="flex items-center gap-2"><span>🏹</span> Тетиваны тартыңыз (Hold)</li>
-              <li className="flex items-center gap-2"><span>💨</span> Желдің бағытын ескеріңіз</li>
-            </ul>
+        <div className="absolute inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center p-6 pointer-events-auto">
+          <motion.div 
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-[#FAF7F2] p-8 rounded-3xl max-w-md w-full border-2 border-[#D4AF37] text-center shadow-2xl text-[#2A2621] space-y-6"
+          >
+            <div className="w-16 h-16 rounded-full bg-[#B85D36]/15 border border-[#B85D36]/30 flex items-center justify-center mx-auto text-3xl">
+              🏹
+            </div>
+            <div>
+              <h1 className="text-3xl font-serif font-black uppercase tracking-wider mb-2 text-[#2A2621]">ЖАМБЫ АТУ</h1>
+              <p className="text-xs text-[#2A2621]/80 font-serif leading-relaxed">
+                Шауып бара жатқан ат үстінде күміс мен алтын жамбыны мергендікпен атып түсір!
+              </p>
+            </div>
+
+            <div className="text-left text-xs space-y-3 bg-white p-4 rounded-2xl border border-[#2A2621]/15 shadow-sm">
+              <div className="flex items-center gap-3">
+                <span className="text-lg">🎯</span>
+                <div><span className="font-bold text-[#B85D36]">Нысаналаңыз:</span> Экранды басып көздеңіз</div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg">🏹</span>
+                <div><span className="font-bold text-[#D4AF37]">Тетиваны тартыңыз:</span> Шертіп ұстап тұрыңыз</div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-lg">💨</span>
+                <div><span className="font-bold text-[#2A2621]">Желді ескеріңіз:</span> Көздеуді желге бұрыңыз</div>
+              </div>
+            </div>
+
             <button 
               onClick={() => setGameState('RIDE')}
-              className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl shadow-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2"
+              className="w-full py-4 bg-gradient-to-r from-[#B85D36] to-[#944422] hover:from-[#a34f2d] hover:to-[#7c371b] text-white font-bold text-sm uppercase tracking-widest rounded-2xl shadow-lg transition-all active:scale-95 border border-[#D4AF37]/40 flex items-center justify-center gap-2"
             >
-              Бастау <ArrowRight className="w-5 h-5" />
+              ОЙЫНДЫ БАСТАУ <ArrowRight className="w-5 h-5" />
             </button>
-          </div>
+          </motion.div>
         </div>
       )}
 
-      {/* Result State */}
+      {/* Result / Final Result Modal */}
       {(gameState === 'RESULT' || gameState === 'FINAL_RESULT') && (
-        <div className="absolute inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center pointer-events-auto">
-          <div className="bg-card p-8 rounded-2xl max-w-sm w-full border text-center shadow-2xl animate-in zoom-in duration-300">
-            <h2 className="text-2xl font-black mb-2">
-              {gameState === 'FINAL_RESULT' ? 'Ойын аяқталды!' : 'Нәтиже'}
+        <div className="absolute inset-0 bg-black/75 backdrop-blur-md flex items-center justify-center p-6 pointer-events-auto">
+          <motion.div 
+            initial={{ scale: 0.85, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            className="bg-[#FAF7F2] p-8 rounded-3xl max-w-sm w-full border-2 border-[#D4AF37] text-center shadow-2xl text-[#2A2621] space-y-6"
+          >
+            <h2 className="text-3xl font-serif font-black uppercase tracking-wider">
+              {gameState === 'FINAL_RESULT' ? 'ОЙЫН АЯҚТАЛДЫ!' : 'МЕРГЕНДІК НӘТИЖЕСІ'}
             </h2>
             
             {gameState === 'RESULT' && (
-              <div className="py-6">
-                <div className="text-5xl mb-4">🎯</div>
-                <div className="text-xl font-bold mb-1">Тамаша!</div>
-                <div className="text-primary font-mono text-2xl font-bold">+{score} ұпай</div>
+              <div className="py-4 space-y-2">
+                <div className="text-5xl">🎯</div>
+                <div className="text-lg font-serif font-bold text-[#2A2621]">ТАМАША ТИЮ!</div>
+                <div className="text-[#B85D36] font-mono text-3xl font-black">+{score} ұпай</div>
               </div>
             )}
 
             {gameState === 'FINAL_RESULT' && (
-              <div className="py-6 space-y-4 text-left bg-secondary/50 p-4 rounded-xl mb-6">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Жалпы ұпай:</span>
-                  <span className="font-bold">{score}</span>
+              <div className="py-4 space-y-3 text-left bg-white p-5 rounded-2xl border border-[#2A2621]/15 text-xs font-mono">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">ЖАЛПЫ УПАЙ:</span>
+                  <span className="font-bold text-base text-[#B85D36]">{score}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Дәл тигені:</span>
-                  <span className="font-bold">{hits} / {LEVELS.length}</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">ДӘЛ ТИГЕНІ:</span>
+                  <span className="font-bold text-sm text-[#2A2621]">{hits} / {LEVELS.length}</span>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Макс. комбо:</span>
-                  <span className="font-bold text-orange-500">{combo}x</span>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-500">МАКС. КОМБО:</span>
+                  <span className="font-bold text-sm text-[#D4AF37]">{combo}x</span>
                 </div>
               </div>
             )}
@@ -179,21 +209,21 @@ export function JambyUI() {
             {gameState === 'RESULT' ? (
               <button 
                 onClick={() => useJambyEngine.getState().nextLevel()}
-                className="w-full py-3 bg-primary text-primary-foreground font-bold rounded-xl shadow-md hover:bg-primary/90 transition-all"
+                className="w-full py-4 bg-gradient-to-r from-[#B85D36] to-[#944422] hover:from-[#a34f2d] hover:to-[#7c371b] text-white font-bold text-xs uppercase tracking-widest rounded-2xl shadow-lg transition-all active:scale-95 border border-[#D4AF37]/40"
               >
-                Келесі нысана
+                КЕЛЕСІ НЫСАНА →
               </button>
             ) : (
               <div className="flex gap-3">
                 <button 
                   onClick={() => router.push('/games/jamby-atu')}
-                  className="flex-1 py-3 bg-secondary text-secondary-foreground font-bold rounded-xl shadow-md hover:bg-secondary/80 transition-all"
+                  className="flex-1 py-4 bg-white text-[#2A2621] font-bold text-xs uppercase tracking-widest rounded-2xl border border-[#2A2621]/20 shadow hover:bg-gray-100 transition-all"
                 >
-                  Ойыннан шығу
+                  ОЙЫННАН ШЫҒУ
                 </button>
               </div>
             )}
-          </div>
+          </motion.div>
         </div>
       )}
     </div>
