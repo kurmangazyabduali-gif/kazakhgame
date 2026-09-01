@@ -43,3 +43,5 @@ kelin-mobile-debug.png
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+.vercel
