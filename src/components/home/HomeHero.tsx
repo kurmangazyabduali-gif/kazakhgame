@@ -49,16 +49,6 @@ export function HomeHero() {
   return (
     <>
       <section className="relative w-full min-h-[92dvh] flex items-center justify-center overflow-hidden home-vignette home-dotgrid home-grain pt-20">
-        {/* Diagonal corner ribbon */}
-        <motion.div
-          initial={{ x: 140, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 0.61, 0.36, 1] }}
-          className="absolute top-8 -right-16 z-30 rotate-45 bg-[var(--home-ink)] text-[var(--home-bg)] px-20 py-2 shadow-lg hidden sm:block"
-        >
-          <span className="font-body-premium text-[11px] font-bold tracking-[0.3em] uppercase">2026 · Жаңа маусым</span>
-        </motion.div>
-
         {/* Animated Background Map of Kazakhstan */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
@@ -74,8 +64,7 @@ export function HomeHero() {
           </motion.div>
         </motion.div>
 
-        {/* Two-tone floating ornament, offset from center for an editorial (not symmetric-generic) feel.
-            Cursor tilt and scroll-parallax drift compose on separate transforms so both stay smooth. */}
+        {/* Two-tone floating ornament, offset from center for an editorial feel. */}
         <motion.div
           style={{ y: yOrnamentFar }}
           className="absolute -right-24 top-[8%] md:right-[2%] md:top-[6%] pointer-events-none z-0"
@@ -137,7 +126,7 @@ export function HomeHero() {
                 </motion.span>
               ))}
             </span>
-            <span className="flex justify-center overflow-hidden italic text-accent-gradient">
+            <span className="flex justify-center overflow-hidden italic text-[var(--home-ink)]">
               {titleBottom.map((ch, i) => (
                 <motion.span key={i} custom={i + 3} variants={letterVariants} initial="hidden" animate="visible" className="inline-block">
                   {ch}
@@ -178,13 +167,9 @@ export function HomeHero() {
               href="/culture"
               data-cursor="Танысу"
               data-cursor-color="var(--home-terracotta)"
-              className="group inline-flex items-center gap-2 font-body-premium font-semibold text-sm tracking-widest uppercase text-[var(--home-ink)]"
+              className="group inline-flex items-center gap-3 px-8 py-5 rounded-full border border-[var(--home-border-strong)] text-[var(--home-ink)] font-body-premium font-bold text-base tracking-[0.15em] uppercase transition-all duration-300 hover:border-[var(--home-terracotta)] hover:text-[var(--home-terracotta)]"
             >
-              Мұрамен танысу
-              <span className="relative">
-                <span className="absolute -bottom-1 left-0 w-full h-px bg-[var(--home-ink)] scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-400" />
-                →
-              </span>
+              <span>Мұрамен танысу</span>
             </Link>
           </motion.div>
         </motion.div>
@@ -192,9 +177,7 @@ export function HomeHero() {
         <HomeScrollIndicator />
       </section>
 
-      <div className="border-y border-[var(--home-border)] bg-[var(--home-bg-deep)] py-4 text-[var(--home-ink-soft)]">
-        <HomeMarquee items={TICKER_ITEMS} />
-      </div>
+      <HomeMarquee items={TICKER_ITEMS} />
     </>
   )
 }
