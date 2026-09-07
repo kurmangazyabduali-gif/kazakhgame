@@ -19,8 +19,6 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/map', label: 'ҚАЗАҚСТАН', icon: '🗺️', desc: 'Интерактивный 3D картасы' },
   { href: '/culture', label: 'МҰРА', icon: '📜', desc: 'Дәстүрлі киелі мұралар мен тарих' },
   { href: '/kyzylorda-museum', label: 'ҚЫЗЫЛОРДА', icon: '🏛️', desc: 'Сыр өңірінің виртуалды мұражайы' },
-  { href: '/showcase', label: 'КӨРМЕ', icon: '🖼️', desc: 'Цифрлық мәдени көрме галереясы' },
-  { href: '/championship', label: 'ЧЕМПИОНАТ', icon: '🏆', desc: 'Ұлттық лига турнирлер рейтингі' },
 ]
 
 export function MobileMenu() {

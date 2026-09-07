@@ -25,8 +25,8 @@ export function Footer() {
             <ul className="space-y-4 text-sm font-heading tracking-wider text-text-muted">
               <li><Link href="/games" className="hover:text-foreground transition-colors duration-300">Библиотека игр</Link></li>
               <li><Link href="/map" className="hover:text-foreground transition-colors duration-300">Карта Казахстана</Link></li>
-              <li><Link href="/championship" className="hover:text-foreground transition-colors duration-300">Чемпионат</Link></li>
-              <li><Link href="/showcase" className="text-gold hover:text-gold-muted transition-colors duration-300">Showcase</Link></li>
+              <li><Link href="/culture" className="hover:text-foreground transition-colors duration-300">Мұра</Link></li>
+              <li><Link href="/kyzylorda-museum" className="hover:text-foreground transition-colors duration-300">Қызылорда Мұражайы</Link></li>
             </ul>
           </div>
 
