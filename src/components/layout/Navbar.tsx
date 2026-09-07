@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ShanyraqMark } from "../ui/heritage/ShanyraqMark";
 import { HeritageButton } from "../ui/heritage/HeritageButton";
 import { KazakhOrnament } from "../ui/heritage/KazakhOrnament";
+import { MobileMenu } from "./MobileMenu";
 import { createClient } from "@/lib/supabase/server";
 
 export default async function Navbar() {
@@ -56,13 +57,15 @@ export default async function Navbar() {
           </div>
         </div>
 
-        {/* ACTIONS */}
+        {/* ACTIONS & MOBILE MENU */}
         <div className="flex gap-4 items-center">
           <Link href="/showcase" className="hidden md:block">
             <HeritageButton variant="cultural" size="sm" tabIndex={-1}>
               КӨРМЕ
             </HeritageButton>
           </Link>
+
+          <MobileMenu />
         </div>
       </div>
     </nav>
