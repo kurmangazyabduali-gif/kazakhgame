@@ -22,16 +22,6 @@ export const GAMES_METADATA: Record<string, GameMetadata> = {
     skills: ['Точность', 'Глазомер', 'Расчет силы'],
     imageUrl: '/images/games/asyk-atu.jpg'
   },
-  'hantalapay': {
-    id: 'hantalapay',
-    slug: 'hantalapay',
-    title: 'Ханталапай',
-    description: 'Асықтарды шашып, Ханды бірінші болып іліп кет! Шапшаңдық пен реакция ойыны.',
-    category: 'Ұлттық ойын',
-    difficulty: 'Medium',
-    skills: ['Реакция', 'Шапшаңдық', 'Көру зейіні'],
-    imageUrl: '/images/games/hantalapay-bg.jpg'
-  },
   'togyz-kumalak': {
     id: 'togyz-kumalak',
     slug: 'togyz-kumalak',

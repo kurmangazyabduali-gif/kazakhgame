@@ -26,17 +26,6 @@ export default function GamesLibraryPage() {
 
   const allGames = [
     { 
-      slug: 'hantalapay', 
-      name: 'Ханталапай', 
-      category: 'Дәстүр', 
-      description: 'Асықтарды шашып, Ханды бірінші болып іліп кет! Реакция мен шапшаңдыққа құрылған ұлттық ойын.', 
-      difficulty: 'Орташа (Medium)',
-      players: '1',
-      duration: '3-5 мин',
-      image: '/images/games/asyk-atu.jpg',
-      status: (bestScores['hantalapay'] !== undefined ? 'completed' : 'available')
-    },
-    { 
       slug: 'asyk-atu', 
       name: 'Асық ату', 
       category: 'Спорт', 
